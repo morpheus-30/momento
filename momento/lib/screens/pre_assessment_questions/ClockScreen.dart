@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:momento/constants.dart';
+import 'package:momento/screens/pre_assessment_questions/ListenAndSpell.dart';
 import 'package:momento/widgets/buttons/signUpButton.dart';
 import 'package:sizer/sizer.dart';
 import 'DrawingBoard.dart';
@@ -49,7 +50,12 @@ class _ClockScreenState extends State<ClockScreen> {
                   Navigator.pop(context);
                 },
               ),
-              IconButton(onPressed: (){}, icon: Icon(Icons.home, color: Colors.white,))
+              IconButton(
+                  onPressed: () {},
+                  icon: Icon(
+                    Icons.home,
+                    color: Colors.white,
+                  ))
             ],
           ),
         ),
@@ -83,7 +89,14 @@ class _ClockScreenState extends State<ClockScreen> {
                 SizedBox(
                   width: 50.w,
                   child: SignUpButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ListenAndSpell(),
+                        ),
+                      );
+                    },
                     text: "Continue",
                     color: brown2,
                     textcolor: Colors.white,

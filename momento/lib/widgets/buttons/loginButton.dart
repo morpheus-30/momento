@@ -3,7 +3,8 @@ import 'package:momento/constants.dart';
 
 class LoginButton extends StatelessWidget {
   Function onPressed;
-  LoginButton({required this.onPressed});
+  String text;
+  LoginButton({required this.onPressed, this.text = "Log In"});
 
   @override
   Widget build(BuildContext context) {
@@ -11,7 +12,10 @@ class LoginButton extends StatelessWidget {
       style: ElevatedButton.styleFrom(
         primary: brown2,
         shape: const RoundedRectangleBorder(
-          side: BorderSide(color: Colors.white, width: 2),
+          side: BorderSide(
+            width: 2,
+            color: brown2,
+          ),
           borderRadius: BorderRadius.all(
             Radius.circular(10),
           ),
@@ -21,8 +25,8 @@ class LoginButton extends StatelessWidget {
       onPressed: () {
         onPressed();
       },
-      child: const Text(
-        'Log In',
+      child: Text(
+        text,
         style: TextStyle(
           fontSize: 15,
           color: Colors.white,
