@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:momento/screens/daily_trivia/DailytriviaIntro.dart';
 import 'package:momento/widgets/buttons/signUpButton.dart';
 import 'package:momento/widgets/buttons/loginButton.dart';
 import 'package:momento/constants.dart';
@@ -14,6 +15,7 @@ class LoginScreen extends StatelessWidget {
       return Scaffold(
         appBar: AppBar(
           elevation: 2,
+          leadingWidth: 0,
           centerTitle: true,
           title: Text(
             "Log In",
@@ -31,7 +33,7 @@ class LoginScreen extends StatelessWidget {
               color: Colors.white,
             ),
             onPressed: () {
-              Navigator.pop(context);
+              Navigator.pop(context);   
             },
           ),
         ),
@@ -81,17 +83,24 @@ class LoginScreen extends StatelessWidget {
               ],
             ),
             Align(
-              alignment: Alignment.bottomCenter,
+                alignment: Alignment.bottomCenter,
                 child: Container(
                   margin: EdgeInsets.only(bottom: 3.h),
                   child: SizedBox(
                     width: 85.w,
                     child: SignUpButton(
-                      text:"Login",
+                      text: "Login",
                       color: brown2,
                       textcolor: Colors.white,
-                                onPressed: () {},
-                              ),
+                      onPressed: () {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => DailyTriviaIntro(),
+                          ),
+                        );
+                      },
+                    ),
                   ),
                 )),
           ],

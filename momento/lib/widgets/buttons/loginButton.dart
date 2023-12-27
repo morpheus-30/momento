@@ -14,7 +14,7 @@ class LoginButton extends StatelessWidget {
         shape: const RoundedRectangleBorder(
           side: BorderSide(
             width: 2,
-            color: brown2,
+            color: Colors.white,
           ),
           borderRadius: BorderRadius.all(
             Radius.circular(10),
@@ -27,7 +27,7 @@ class LoginButton extends StatelessWidget {
       },
       child: Text(
         text,
-        style: TextStyle(
+        style: const TextStyle(
           fontSize: 15,
           color: Colors.white,
           fontFamily: "Montserrat",

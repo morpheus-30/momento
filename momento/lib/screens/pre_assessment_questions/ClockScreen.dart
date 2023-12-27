@@ -87,7 +87,7 @@ class _ClockScreenState extends State<ClockScreen> {
                   child: DrawingBoard(),
                 ),
                 SizedBox(
-                  width: 50.w,
+                  width: 80.w,
                   child: SignUpButton(
                     onPressed: () {
                       Navigator.pushReplacement(

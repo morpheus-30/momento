@@ -126,7 +126,7 @@ class VideoScreen extends StatelessWidget {
                       icon: Icon(
                         Icons.play_arrow,
                         color: Colors.white,
-                        size: 50.sp,
+                        size: 35.sp,
                       ),
                     ),
                   ),
@@ -149,12 +149,15 @@ class VideoScreen extends StatelessWidget {
               SizedBox(
                 height: 2.h,
               ),
-              LoginButton(
-                onPressed: () {
-                  Navigator.pushReplacement(context,
-                      MaterialPageRoute(builder: (context) => MathScreen()));
-                },
-                text: "Continue",
+              SizedBox(
+                width: 80.w,
+                child: LoginButton(
+                  onPressed: () {
+                    Navigator.pushReplacement(context,
+                        MaterialPageRoute(builder: (context) => MathScreen()));
+                  },
+                  text: "Continue",
+                ),
               )
             ],
           ),

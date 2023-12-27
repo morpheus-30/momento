@@ -145,12 +145,15 @@ class ListenAndSpell extends StatelessWidget {
           SizedBox(
             height: 2.h,
           ),
-          LoginButton(onPressed: (){
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (context) => VideoScreen()),
-            );
-          },text: "Continue",),
+          SizedBox(
+            width: 80.w,
+            child: LoginButton(onPressed: (){
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => VideoScreen()),
+              );
+            },text: "Continue",),
+          ),
         ],
       ),
     );

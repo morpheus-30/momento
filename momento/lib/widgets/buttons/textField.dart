@@ -31,7 +31,7 @@ class MomentotextField extends StatelessWidget {
           filled: true,
           fillColor: Colors.grey[200],
           contentPadding: EdgeInsets.all(20),
-          hintText: "Enter your $inputText",
+          hintText: inputText,
           hintStyle: TextStyle(
             fontSize: 12,
             color: Colors.grey[400],

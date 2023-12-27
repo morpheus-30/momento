@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:momento/constants.dart';
+import 'package:momento/screens/pre_assessment_questions/DateScreen.dart';
 import 'package:momento/widgets/buttons/loginButton.dart';
 import 'package:momento/widgets/buttons/textField.dart';
 import 'package:sizer/sizer.dart';
@@ -11,6 +12,7 @@ class MathScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Sizer(builder: ((context, orientation, deviceType) {
       return Scaffold(
+        resizeToAvoidBottomInset: false,
         appBar: AppBar(
           leadingWidth: 25.w,
           actions: [
@@ -97,9 +99,14 @@ class MathScreen extends StatelessWidget {
               SizedBox(
                 height: 10.h,
               ),
-              LoginButton(
-                onPressed: () {},
-                text: "Continue",
+              SizedBox(
+                width: 90.w,
+                child: LoginButton(
+                  onPressed: () {
+                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>DateScreen()));
+                  },
+                  text: "Continue",
+                ),
               ),
             ],
           ),
