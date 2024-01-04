@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:momento/constants.dart';
+import 'package:momento/screens/Games/pattern/PatternGame.dart';
 import 'package:sizer/sizer.dart';
 
 class PatternLevelScreen extends StatelessWidget {
@@ -91,6 +92,11 @@ class PatternLevelScreen extends StatelessWidget {
                 padding: EdgeInsets.symmetric(vertical: 1.h),
                 child: ElevatedButton(
                   onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                PatternMatchGameScreen(level: level)));
                   },
                   child: Text(
                     level,
@@ -111,8 +117,6 @@ class PatternLevelScreen extends StatelessWidget {
                 ),
               );
             }).toList(),
-
-
           ],
         ),
       ),

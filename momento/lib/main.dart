@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:momento/screens/Games/GamesRecommendations.dart';
+import 'package:momento/screens/Games/pattern/PatternGame.dart';
 import 'package:momento/screens/HelpScreen.dart';
+import 'package:momento/screens/MusicPreferences/MusicPreferences.dart';
 import 'package:momento/screens/Profile/EditProfile.dart';
 import 'package:momento/screens/HomeScreen.dart';
 import 'package:momento/screens/LoginScreen.dart';
@@ -34,6 +36,7 @@ class MyApp extends StatelessWidget {
         '/Edit Profile': (_) => EditProfile(),
         '/Games' : (_) => GamesRecommendationScreen(),
         '/Help' : (_) => HelpScreen(),
+        '/Music Preferences' : (_) => MusicPreferencesScreen(),
       },
     );
   }

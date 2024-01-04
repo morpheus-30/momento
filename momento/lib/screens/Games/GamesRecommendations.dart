@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:momento/constants.dart';
-import 'package:momento/screens/Games/PatternLevel.dart';
+import 'package:momento/screens/Games/pattern/PatternLevel.dart';
 import 'package:momento/widgets/buttons/loginButton.dart';
 import 'package:sizer/sizer.dart';
 
