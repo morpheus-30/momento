@@ -60,7 +60,7 @@ class HomeScreen extends StatelessWidget {
             Column(
               children: [ 
                 ...["Games", "Resources", "High Score", "Profile", "My Coupons"]
-                    .map((e) => Column(
+                    .map((e) =>   Column(
                           children: [
                             SizedBox(
                               width: 80.w,

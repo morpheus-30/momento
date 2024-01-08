@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:momento/constants.dart';
+import 'package:momento/screens/MusicPreferences/ArtistScreen.dart';
+import 'package:momento/screens/MusicPreferences/DecadeScreen.dart';
+import 'package:momento/screens/MusicPreferences/GenreScreen.dart';
 import 'package:momento/widgets/buttons/loginButton.dart';
 import 'package:sizer/sizer.dart';
 
@@ -79,7 +82,9 @@ class MusicPreferencesScreen extends StatelessWidget {
             SizedBox(
               width: 80.w,
               child: LoginButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => GenreScreen()));
+                },
                 text: "Genre",
               ),
             ),
@@ -87,7 +92,9 @@ class MusicPreferencesScreen extends StatelessWidget {
             SizedBox(
               width: 80.w,
               child: LoginButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => ArtistScreen()));
+                },
                 text: "Artist",
               ),
             ),
@@ -95,7 +102,9 @@ class MusicPreferencesScreen extends StatelessWidget {
             SizedBox(
               width: 80.w,
               child: LoginButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => DecadeScreen()));
+                },
                 text: "Decade",
               ),
             ),

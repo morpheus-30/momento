@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:momento/constants.dart';
+import 'package:momento/screens/Games/mystery%20lyrics/DifficultyScreen.dart';
 import 'package:momento/screens/Games/pattern/PatternLevel.dart';
 import 'package:momento/widgets/buttons/loginButton.dart';
 import 'package:sizer/sizer.dart';
@@ -81,14 +82,29 @@ class GamesRecommendationScreen extends StatelessWidget {
                 SizedBox(height: 5.h),
                 SizedBox(
                   width: 80.w,
-                  child: LoginButton(onPressed: () {}, text: "Mystery"),
+                  child: LoginButton(
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    MysteryDifficultyScreen()));
+                      },
+                      text: "Mystery"),
                 ),
-                SizedBox(height: 3.h,),
+                SizedBox(
+                  height: 3.h,
+                ),
                 SizedBox(
                   width: 80.w,
-                  child: LoginButton(onPressed: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => PatternLevelScreen() ));
-                  }, text: "Pattern"),
+                  child: LoginButton(
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => PatternLevelScreen()));
+                      },
+                      text: "Pattern"),
                 ),
               ],
             ),
@@ -106,7 +122,9 @@ class GamesRecommendationScreen extends StatelessWidget {
                   width: 80.w,
                   child: LoginButton(onPressed: () {}, text: "Short-Term"),
                 ),
-                SizedBox(height: 3.h,),
+                SizedBox(
+                  height: 3.h,
+                ),
                 SizedBox(
                   width: 80.w,
                   child: LoginButton(onPressed: () {}, text: "Long-Term"),
