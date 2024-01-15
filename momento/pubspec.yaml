@@ -36,6 +36,10 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
   sizer: ^2.0.15
+  audio_video_progress_bar: ^2.0.1
+  spotify: ^0.12.0
+  youtube_explode_dart: ^2.0.2
+  audioplayers: ^5.2.1
 
 dev_dependencies:
   flutter_test:
