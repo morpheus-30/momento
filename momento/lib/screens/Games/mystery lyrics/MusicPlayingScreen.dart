@@ -1,6 +1,9 @@
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:momento/constants.dart';
 import 'package:sizer/sizer.dart';
+import 'package:spotify/spotify.dart';
+import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
 class MusicPlayingScreen extends StatefulWidget {
   const MusicPlayingScreen({super.key});
@@ -14,6 +17,31 @@ class _MusicPlayingScreenState extends State<MusicPlayingScreen> {
   String artistName = "Neffex";
   String songName = "Fight Back";
   String musicTrackId = "6KigD0mlF4VGDYiSEzAyYw?si=5c5d12d7ed424cdf";
+  Duration? duration ;
+  
+  final player = AudioPlayer(); 
+
+  @override
+  void initState() {
+    final credentials = SpotifyApiCredentials(
+        CustomStrings.clientId, CustomStrings.clientSecret);
+    final spotifyApi = SpotifyApi(credentials);
+    spotifyApi.tracks.get(musicTrackId).then((track) async {
+      String? songName = track.name;
+      if (songName != null) {
+        final yt = YoutubeExplode();
+        final video = (await yt.search.search(songName)).first;
+        final videoID = video.id.value;
+        duration = video.duration;
+        setState(() {});
+        var manifest = await yt.videos.streamsClient.getManifest(videoID);
+        var audioUrl = manifest.audioOnly.first.url;
+        print(audioUrl);
+        // player.play(UrlSource(audioUrl.toString()));
+      }
+    });
+    super.initState();
+  }
 
 
   @override
@@ -31,6 +59,7 @@ class _MusicPlayingScreenState extends State<MusicPlayingScreen> {
                 ColouredBgIconButton(
                   iconSize: 20.sp,
                   onPressed: () {
+                    player.pause();
                     print("Play");
                   },
                 ),
@@ -68,7 +97,9 @@ And never let go 'til we're gone
             ),
           ),
           ColouredBgIconButton(
-            onPressed: () {},
+            onPressed: () {
+              player.resume();
+            },
             icon: Icons.mic_none_outlined,
             boundaryColor: Colors.black,
             bgColor: Color(0xFFCCCCCC),

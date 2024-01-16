@@ -41,7 +41,7 @@ class DailyTriviaIntro extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Text("Hello Naksh,",
+              Text("Hello User,",
                   style: TextStyle(
                     fontSize: 30.sp,
                     color: Colors.white,

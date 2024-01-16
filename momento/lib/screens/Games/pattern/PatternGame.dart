@@ -443,45 +443,55 @@ class _PatternMatchGameScreenState extends State<PatternMatchGameScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
-                width: 100.w,
-                margin: EdgeInsets.symmetric(horizontal: 10.w),
-                padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 1.h),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: widget.level=="Easy"?Colors.green:widget.level=="Medium"?Colors.yellow:Colors.red,
-                ),
-                child: Center(
-                  child: Text(
-                    widget.level,
-                    style: TextStyle(
-                      fontSize: 20.sp,
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontFamily: "Montserrat",
-                    ),
-                  ),
-                ),
-              ),
-              SizedBox(
-                height: 1.h,
-              ),
-              Container(
                 width: 80.w,
-                padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 1.h),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: brown2,
-                ),
-                child: Center(
-                  child: Text(
-                    "Score",
-                    style: TextStyle(
-                      fontSize: 20.sp,
-                      fontWeight: FontWeight.bold,
-                      fontFamily: "Montserrat",
-                      color: Colors.white,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Container(
+                      width: 39.w,
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 5.w, vertical: 1.h),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: widget.level == "Easy"
+                            ? Colors.green
+                            : widget.level == "Medium"
+                                ? Colors.yellow
+                                : Colors.red,
+                      ),
+                      child: Center(
+                        child: Text(
+                          widget.level,
+                          style: TextStyle(
+                            fontSize: 20.sp,
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontFamily: "Montserrat",
+                          ),
+                        ),
+                      ),
                     ),
-                  ),
+                    Container(
+                      width: 39.w,
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 5.w, vertical: 1.h),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: brown2,
+                      ),
+                      child: Center(
+                        child: Text(
+                          "Score",
+                          style: TextStyle(
+                            fontSize: 20.sp,
+                            fontWeight: FontWeight.bold,
+                            fontFamily: "Montserrat",
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
               SizedBox(

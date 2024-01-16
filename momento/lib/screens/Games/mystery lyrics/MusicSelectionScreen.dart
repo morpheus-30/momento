@@ -8,37 +8,14 @@ import 'package:spotify/spotify.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
 class MusicSelectionScreen extends StatefulWidget {
-  const MusicSelectionScreen({super.key});
+  const MusicSelectionScreen({super.key});  
 
   @override
   State<MusicSelectionScreen> createState() => _MusicSelectionScreenState();
 }
 
 class _MusicSelectionScreenState extends State<MusicSelectionScreen> {
-  String musicTrackId = "6KigD0mlF4VGDYiSEzAyYw?si=5c5d12d7ed424cdf";
-  final player = AudioPlayer();
 
-
-
-  @override
-  void initState() {
-    final credentials = SpotifyApiCredentials(
-        CustomStrings.clientId, CustomStrings.clientSecret);
-    final spotifyApi = SpotifyApi(credentials);
-    spotifyApi.tracks.get(musicTrackId).then((track) async {
-      String? songName = track.name;
-      if (songName != null) {
-        final yt = YoutubeExplode();
-        final result = await yt.search(songName);
-        final videoID = result[0].id.value;
-        var manifest = await yt.videos.streamsClient.getManifest(videoID);
-        var audioUrl = manifest.audioOnly.first.url;
-        print(audioUrl);
-        // player.play(UrlSource(audioUrl.toString()));
-      }
-    });
-    super.initState();
-  }
 
   Widget build(BuildContext context) {
     return Scaffold(
