@@ -111,12 +111,7 @@ class _DateScreenState extends State<DateScreen> {
                             ),
                           ),
                           onSelected: (value) {
-                            if (Days31Months.contains(value)) {
-                              print("31 days");
-                              setState(() {
-                                if31 = true;
-                              });
-                            }
+                            
                           },
                           width: 30.w,
                           dropdownMenuEntries:
