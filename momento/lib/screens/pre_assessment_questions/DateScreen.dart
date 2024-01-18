@@ -17,9 +17,9 @@ class DateScreen extends StatefulWidget {
 class _DateScreenState extends State<DateScreen> {
   @override
   Widget build(BuildContext context) {
-    bool if31 = false;
     return Sizer(builder: ((context, orientation, devicetype) {
       return Scaffold(
+        resizeToAvoidBottomInset: false,
         appBar: AppBar(
           leadingWidth: 25.w,
           actions: [

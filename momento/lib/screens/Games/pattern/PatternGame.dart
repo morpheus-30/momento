@@ -1,6 +1,4 @@
 import 'dart:async';
-import 'dart:ffi';
-import 'dart:io';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -225,7 +223,9 @@ class _PatternMatchGameScreenState extends State<PatternMatchGameScreen> {
                                 padding: EdgeInsets.zero,
                                 onPressed: () {
                                   Navigator.popUntil(
-                                      context, ModalRoute.withName('/home'));
+                                      context, (route) => route.isFirst);
+                                  Navigator.pushReplacementNamed(
+                                      context, '/home');
                                 },
                                 icon: Icon(
                                   Icons.exit_to_app,
@@ -393,7 +393,9 @@ class _PatternMatchGameScreenState extends State<PatternMatchGameScreen> {
                                           padding: EdgeInsets.zero,
                                           onPressed: () {
                                             Navigator.popUntil(context,
-                                                ModalRoute.withName('/home'));
+                                                (route) => route.isFirst);
+                                            Navigator.pushReplacementNamed(
+                                                context, '/home');
                                           },
                                           icon: Icon(
                                             Icons.exit_to_app,
@@ -428,7 +430,8 @@ class _PatternMatchGameScreenState extends State<PatternMatchGameScreen> {
               ),
               IconButton(
                 onPressed: () {
-                  Navigator.popUntil(context, ModalRoute.withName('/home'));
+                  Navigator.popUntil(context, (route) => route.isFirst);
+                  Navigator.pushReplacementNamed(context, '/home');
                 },
                 icon: Icon(
                   Icons.home,
