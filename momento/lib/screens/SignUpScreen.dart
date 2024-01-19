@@ -12,6 +12,7 @@ class SignUpScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Sizer(builder: (context, orientation, deviceType) {
       return Scaffold(
+        resizeToAvoidBottomInset: false,
         appBar: AppBar(
           elevation: 2,
           centerTitle: true,
