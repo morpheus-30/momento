@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:momento/constants.dart';
 import 'package:momento/screens/Games/mystery%20lyrics/DifficultyScreen.dart';
+import 'package:momento/screens/Games/mystery%20lyrics/MusicSelectionScreen.dart';
 import 'package:momento/screens/Games/pattern/PatternLevel.dart';
 import 'package:momento/widgets/buttons/loginButton.dart';
 import 'package:sizer/sizer.dart';
@@ -88,9 +89,9 @@ class GamesRecommendationScreen extends StatelessWidget {
                             context,
                             MaterialPageRoute(
                                 builder: (context) =>
-                                    MysteryDifficultyScreen()));
+                                    MusicSelectionScreen()));
                       },
-                      text: "Mystery"),
+                      text: "Mystery Lyrics"),
                 ),
                 SizedBox(
                   height: 3.h,

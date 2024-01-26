@@ -1,3 +1,5 @@
+import 'package:string_similarity/string_similarity.dart';
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:intl/intl.dart';
@@ -25,8 +27,9 @@ class _MusicPlayingScreenState extends State<MusicPlayingScreen> {
   Music music = Music(
     trackId: "7F1yVPuJ4xRdrDvf8OL0HF",
   );
+  bool hasBeenStarted = false;
   List<Lyric>? lyrics = [];
-  int Score = 0;
+  double Score = 0;
   final itemScrollController = ItemScrollController();
   final itemPositionsListener = ItemPositionsListener.create();
   final scrollOffsetController = ScrollOffsetController();
@@ -109,7 +112,7 @@ class _MusicPlayingScreenState extends State<MusicPlayingScreen> {
     player.positionStream.listen((duration) {
       // print(event);
       // print(lyrics!.length);
-      print(duration.inSeconds.remainder(60));
+      // print(duration.inSeconds.remainder(60));
       DateTime dt = DateTime(1970, 1, 1).copyWith(
           hour: duration.inHours.remainder(60),
           minute: duration.inMinutes.remainder(60),
@@ -137,6 +140,18 @@ class _MusicPlayingScreenState extends State<MusicPlayingScreen> {
 
           _startListening();
           Future.delayed(const Duration(seconds: 10), () async {
+            if (i - 1 >= 0) {
+            //  print("Score ${ lyrics![i - 1].words.similarityTo(_wordsSpoken) }");
+              setState(() {
+                Score += (lyrics![i - 1].words.toLowerCase().similarityTo(_wordsSpoken.toLowerCase()) ) *
+                    100;
+                    Score = Score.roundToDouble();
+              });
+            }else{
+              setState(() {
+                Score += 100;
+              });
+            }
             await player.seek(Duration(
                 milliseconds: lyrics![i].time.millisecond +
                     lyrics![i].time.second * 1000 +
@@ -157,6 +172,7 @@ class _MusicPlayingScreenState extends State<MusicPlayingScreen> {
   }
 
   void _onSpeechResult(result) {
+    print(_speechToText.isListening);
     setState(() {
       _wordsSpoken = result.recognizedWords;
     });
@@ -166,6 +182,7 @@ class _MusicPlayingScreenState extends State<MusicPlayingScreen> {
     setState(() {
       isRecording = true;
     });
+    print(_speechToText.isListening);
     await _speechToText.listen(
       onResult: _onSpeechResult,
       listenFor: const Duration(seconds: 10),
@@ -195,11 +212,22 @@ class _MusicPlayingScreenState extends State<MusicPlayingScreen> {
                           ColouredBgIconButton(
                             iconSize: 20.sp,
                             onPressed: () async {
-                              if (player.playing) {
-                                player.pause();
-                              } else {
-                                player.play();
+                              if(_speechEabled&&!hasBeenStarted){
+                                  player.play();
+                                  hasBeenStarted = true;
+                              }else if(!_speechEabled){
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text(
+                                        "Speech to text not available"),
+                                  ),
+                                );
                               }
+                              // if (player.playing) {
+                              //   player.pause();
+                              // } else {
+                              //   player.play();
+                              // }
                               // Duration lastDuration = Duration(seconds: 0);
                               // for (int i = 0; i < lyrics!.length; i++) {
                               //   // print(lyrics![i].time);
@@ -350,26 +378,46 @@ class _MusicPlayingScreenState extends State<MusicPlayingScreen> {
                           )
                         : const SizedBox(),
                     // SizedBox(height: 2.h,),
-                    ColouredBgIconButton(
-                      onPressed: () {
-                        // isRecording = !isRecording;
-                        // _startListening();
-                        // setState(() {});
-                        // isRecording = !isRecording;
-                      },
-                      icon:
-                          isRecording ? Icons.mic_none_outlined : Icons.mic_off,
-                      boundaryColor: Colors.black,
-                      bgColor: Color(0xFFCCCCCC),
-                      iconSize: 60.sp,
-                      iconColor: Colors.black,
-                    ),
-                    SizedBox(
-                      height: 5.h,
+                    // ColouredBgIconButton(
+                    //   onPressed: () {
+                    //     // isRecording = !isRecording;
+                    //     // _startListening();
+                    //     // setState(() {});
+                    //     // isRecording = !isRecording;
+                    //   },
+                    //   icon:
+                    //       isRecording ? Icons.mic_none_outlined : Icons.mic_off,
+                    //   boundaryColor: Colors.black,
+                    //   bgColor: Color(0xFFCCCCCC),
+                    //   iconSize: 60.sp,
+                    //   iconColor: Colors.black,
+                    // ),
+                    Container(
+                      width: 90.w,
+                      margin:
+                          EdgeInsets.only(bottom: 5.h, left: 5.w, right: 5.w),
+                      padding: EdgeInsets.symmetric(horizontal: 5.w),
+                      decoration: BoxDecoration(
+                        color: brown2,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Text(
+                        _speechToText.isListening
+                            ? "Listening..."
+                            : _speechEabled
+                                ? "Please wait for your turn"
+                                : "Speech not available",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 18.sp,
+                          fontFamily: 'Montserrat',
+                        ),
+                      ),
                     ),
                     Container(
                       width: 90.w,
-                      margin: EdgeInsets.only(bottom: 5.h, left: 5.w, right: 5.w),
+                      margin:
+                          EdgeInsets.only(bottom: 5.h, left: 5.w, right: 5.w),
                       padding: EdgeInsets.symmetric(horizontal: 5.w),
                       decoration: BoxDecoration(
                         color: brown2,
@@ -377,7 +425,7 @@ class _MusicPlayingScreenState extends State<MusicPlayingScreen> {
                       ),
                       child: Row(
                         children: [
-                          Text("Score",
+                          Text("Score:",
                               style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 20.sp,
@@ -386,7 +434,7 @@ class _MusicPlayingScreenState extends State<MusicPlayingScreen> {
                           SizedBox(
                             width: 5.w,
                           ),
-                          Text(Score.toString(),
+                          Text(Score.round().toString(),
                               style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 20.sp,
@@ -414,7 +462,133 @@ class _MusicPlayingScreenState extends State<MusicPlayingScreen> {
                 ),
         ),
         onWillPop: () {
-          player.stop();
+          int finalScore =  ((Score/(lyrics!.length*100))*100).round();
+          int numberOfStars = finalScore>80?3:finalScore>60?2:finalScore>40?1:0;
+          dynamic alert = AlertDialog(
+          title: Text("Are you sure you want to exit?"),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text("No"),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+                dynamic alert2 = AlertDialog(
+                  title: const Text(
+                    "Score",
+                    textAlign: TextAlign.center,
+                  ),
+                  titleTextStyle: TextStyle(
+                    fontSize: 20.sp,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: "Montserrat",
+                    color: Colors.black,
+                  ),
+                  contentTextStyle: TextStyle(
+                    fontSize: 70.sp,
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: "Montserrat",
+                  ),
+                  content: SizedBox(
+                    height: 30.h,
+                    child: Column(
+                      children: [
+                        Text(
+                          finalScore.toString(),
+                          textAlign: TextAlign.center,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.star,
+                              size: 40.sp,
+                              color: numberOfStars>0?Colors.yellow:Colors.grey,
+                            ),
+                            Icon(
+                              Icons.star,
+                              size: 40.sp,
+                              color: numberOfStars>1?Colors.yellow:Colors.grey,
+                            ),
+                            Icon(
+                              Icons.star,
+                              size: 40.sp,
+                              color: numberOfStars>2?Colors.yellow:Colors.grey,
+                            ),
+                          ],
+                        ),
+                        SizedBox(
+                          height: 3.h,
+                        ),
+                        SizedBox(
+                          height: 5.h,
+                          width: 80.w,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              IconButton(
+                                alignment: Alignment.center,
+                                onPressed: ()async {
+                                  setState(() {
+                                    hasBeenStarted = false;
+                                    Score = 0;
+                                  });
+                                  player.stop();
+                                  player.seek(Duration.zero);
+                                  Navigator.pop(context);
+                                },
+                                padding: EdgeInsets.zero,
+                                icon: Icon(
+                                  Icons.loop,
+                                  size: 40.sp,
+                                ),
+                              ),
+                              SizedBox(
+                                width: 5.w,
+                              ),
+                              IconButton(
+                                alignment: Alignment.center,
+                                padding: EdgeInsets.zero,
+                                onPressed: () async{
+                                  player.dispose();
+                                  Navigator.popUntil(
+                                      context, (route) => route.isFirst);
+                                  Navigator.pushReplacementNamed(
+                                      context, '/home');
+                                },
+                                icon: Icon(
+                                  Icons.exit_to_app,
+                                  size: 40.sp,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return alert2;
+                  },
+                );
+              },
+              child: Text("Yes"),
+            ),
+          ],
+        );
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return alert;
+          },
+        );
           return Future.value(true);
         });
   }

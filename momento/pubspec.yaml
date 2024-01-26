@@ -46,6 +46,7 @@ dependencies:
   youtube_player_flutter: ^8.1.2
   just_audio: ^0.9.36
   speech_to_text: ^6.5.1
+  string_similarity: ^2.0.0
 
 dev_dependencies:
   flutter_test:
