@@ -3,8 +3,27 @@ import 'package:momento/constants.dart';
 import 'package:momento/widgets/buttons/loginButton.dart';
 import 'package:sizer/sizer.dart';
 
-class DecadeScreen extends StatelessWidget {
-  const DecadeScreen({super.key});
+class DecadeScreen extends StatefulWidget {
+  @override
+  State<DecadeScreen> createState() => _DecadeScreenState();
+}
+
+class _DecadeScreenState extends State<DecadeScreen> {
+  List<String> selectedDecades = [];
+
+  List<String> decades = [
+    "1920s",
+    "1930s",
+    "1940s",
+    "1950s",
+    "1960s",
+    "1970s",
+    "1980s",
+    "1990s",
+    "2000s",
+    "2010s",
+    "2020s",
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -95,52 +114,41 @@ class DecadeScreen extends StatelessWidget {
                   physics: BouncingScrollPhysics(),
                   shrinkWrap: true,
                   children: [
-                    SizedBox(
-                      width: 80.w,
-                      child: LoginButton(
-                        onPressed: () {},
-                        text: "1960s",
-                      ),
-                    ),
-                    SizedBox(height: 2.h),
-                    SizedBox(
-                      width: 80.w,
-                      child: LoginButton(
-                        onPressed: () {},
-                        text: "1970s",
-                      ),
-                    ),
-                    SizedBox(height: 2.h),
-                    SizedBox(
-                      width: 80.w,
-                      child: LoginButton(
-                        onPressed: () {},
-                        text: "1980s",
-                      ),
-                    ),
-                    SizedBox(height: 2.h),
-                    SizedBox(
-                      width: 80.w,
-                      child: LoginButton(
-                        onPressed: () {},
-                        text: "1990s",
-                      ),
-                    ),
-                    SizedBox(height: 2.h),
-                    SizedBox(
-                      width: 80.w,
-                      child: LoginButton(
-                        onPressed: () {},
-                        text: "2000s",
-                      ),
-                    ),
-                    SizedBox(height: 2.h),
-                    SizedBox(
-                      width: 80.w,
-                      child: LoginButton(
-                        onPressed: () {},
-                        text: "2010s",
-                      ),
+                    ListView.builder(
+                      padding: EdgeInsets.only(bottom: 5.h),
+
+                      physics: NeverScrollableScrollPhysics(),
+                      shrinkWrap: true,
+                      itemCount: decades.length,
+                      itemBuilder: (context, index) {
+                        return Column(
+                          children: [
+                            SizedBox(
+                              height: 2.h,
+                            ),
+                            SizedBox(
+                              width: 100.w,
+                              child: LoginButton(
+                                onPressed: () {
+                                  if (selectedDecades.contains(decades[index])) {
+                                    setState(() {
+                                      selectedDecades.remove(decades[index]);
+                                    });
+                                  } else {
+                                    setState(() {
+                                      selectedDecades.add(decades[index]);
+                                    });
+                                  }
+                                },
+                                text: decades[index],
+                                color: selectedDecades.contains(decades[index])
+                                    ? brown2
+                                    : Colors.grey,
+                              ),
+                            ),
+                          ],
+                        );
+                      },
                     ),
                   ],
                 ),

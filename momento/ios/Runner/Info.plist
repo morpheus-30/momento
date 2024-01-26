@@ -2,8 +2,12 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>io.flutter.embedded_views_preview</key>
+	<string>YES</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>Record audio for speech detection</string>
 	<key>NSMicrophoneUsageDescription</key>
- 	<string>Getting microphone permission for Mystery Lyrics</string>
+	<string>Microphone permission</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>

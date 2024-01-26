@@ -1,4 +1,6 @@
+// import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
+import 'package:just_audio/just_audio.dart';
 import 'package:momento/constants.dart';
 import 'package:momento/screens/pre_assessment_questions/VideoObjects.dart';
 import 'package:momento/widgets/buttons/loginButton.dart';
@@ -7,7 +9,7 @@ import 'package:sizer/sizer.dart';
 
 
 class ListenAndSpell extends StatelessWidget {
-  const ListenAndSpell({super.key});
+  AudioPlayer audioPlayer = AudioPlayer();
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +19,9 @@ class ListenAndSpell extends StatelessWidget {
         leadingWidth: 25.w,
         actions: [
           IconButton(
-              onPressed: () {},
+              onPressed: ()async {
+                
+              },
               icon: Icon(
                 Icons.help_outline_outlined,
                 color: Colors.white,
@@ -84,7 +88,7 @@ class ListenAndSpell extends StatelessWidget {
                     color: Colors.grey.withOpacity(0.5),
                     spreadRadius: 2,
                     blurRadius: 5,
-                    offset: Offset(0, 3))
+                    offset: const Offset(0, 3))
               ],
             ),
             child: Container(
@@ -111,17 +115,19 @@ class ListenAndSpell extends StatelessWidget {
                           backgroundColor:
                               MaterialStateProperty.all(Colors.transparent),
                           shape: MaterialStateProperty.all(
-                            CircleBorder(),
+                            const CircleBorder(),
                           ),
                           side: MaterialStateProperty.all(
-                            BorderSide(
+                            const BorderSide(
                               color: Colors.white,
                               width: 3,
                             ),
                           ),
                         ),
-                        onPressed: () {
-                          print("play");
+                        onPressed: () async{  
+                          // await audioPlayer.play(AssetSource("audio/momento.mp3"));
+                          await audioPlayer.setAsset("assets/audio/momento.mp3");
+                          await audioPlayer.play();
                         },
                         icon: Icon(
                           Icons.play_arrow,
@@ -158,3 +164,5 @@ class ListenAndSpell extends StatelessWidget {
     );
   }
 }
+
+

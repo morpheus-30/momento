@@ -72,7 +72,7 @@ class ResultsScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text("-> Trouble remembering recent events",
+                  Text("• Trouble remembering recent events",
                       style: TextStyle(
                         fontSize: 20.sp,
                         color: Colors.black,
@@ -82,7 +82,7 @@ class ResultsScreen extends StatelessWidget {
                   SizedBox(
                     height: 4.h,
                   ),
-                  Text("-> Organizing and planning",
+                  Text("• Organizing and planning",
                       style: TextStyle(
                         fontSize: 20.sp,
                         color: Colors.black,
@@ -92,7 +92,7 @@ class ResultsScreen extends StatelessWidget {
                   SizedBox(
                     height: 4.h,
                   ),
-                  Text("-> Having trouble finding the right words",
+                  Text("• Having trouble finding the right words",
                       style: TextStyle(
                         fontSize: 20.sp,
                         color: Colors.black,
@@ -103,7 +103,7 @@ class ResultsScreen extends StatelessWidget {
               ),
             ),
             SizedBox(
-              height: 5.h,
+              height: 2.h,
             ),
             SizedBox(
               width: 70.w,
@@ -119,7 +119,7 @@ class ResultsScreen extends StatelessWidget {
               ),
             ),
             SizedBox(
-              height: 5.h,
+              height: 2.h,
             ),
             SizedBox(
                 width: 80.w,
@@ -130,7 +130,7 @@ class ResultsScreen extends StatelessWidget {
                   text: "Continue",
                 )),
             SizedBox(
-              height: 3.h,
+              height: 2.h,
             ),
             SizedBox(
               width: 80.w,
@@ -138,7 +138,7 @@ class ResultsScreen extends StatelessWidget {
                   "This tool does not provide medical advice It is intended for informational purposes only. It is not a substitute for professional medical advice, diagnosis or treatment.",
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    fontSize: 10.sp,
+                    fontSize: 5.sp,
                     color: Colors.black,
                     fontFamily: "Montserrat",
                     fontWeight: FontWeight.bold,

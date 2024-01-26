@@ -3,8 +3,16 @@ import 'package:momento/constants.dart';
 import 'package:momento/widgets/buttons/loginButton.dart';
 import 'package:sizer/sizer.dart';
 
-class GenreScreen extends StatelessWidget {
+class GenreScreen extends StatefulWidget {
   const GenreScreen({super.key});
+
+  @override
+  State<GenreScreen> createState() => _GenreScreenState();
+}
+
+class _GenreScreenState extends State<GenreScreen> {
+
+  List<String> selectedGenres = [];
 
   @override
   Widget build(BuildContext context) {
@@ -100,8 +108,17 @@ class GenreScreen extends StatelessWidget {
                         padding: EdgeInsets.symmetric(vertical: 1.h),
                         child: LoginButton(
                           onPressed: () {
-                            Navigator.pushNamed(context, '/Artist');
+                            if (selectedGenres.contains(e)) {
+                             setState(() {
+                               selectedGenres.remove(e);
+                             });
+                            } else {
+                              setState(() {
+                                selectedGenres.add(e);
+                              });
+                            }
                           },
+                          color: selectedGenres.contains(e) ? brown2 : Colors.grey,
                           text: e,
                         ),
                       );

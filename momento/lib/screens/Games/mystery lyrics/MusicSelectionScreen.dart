@@ -1,5 +1,4 @@
-// import 'package:audioplayers/audioplayers.dart';
-import 'package:audioplayers/audioplayers.dart';
+// import 'package:audioplayers/audioplayers.dart
 import 'package:flutter/material.dart';
 import 'package:momento/constants.dart';
 import 'package:momento/screens/Games/mystery%20lyrics/MusicPlayingScreen.dart';
@@ -117,12 +116,13 @@ class _MusicSelectionScreenState extends State<MusicSelectionScreen> {
                 ),
               ),
               child: Container(
+                
                 padding: EdgeInsets.all(90.sp),
-                color: Colors.black.withOpacity(0.5),
+                color: const Color.fromRGBO(0, 0, 0, 1).withOpacity(0.5),
                 child: Container(
                   decoration: BoxDecoration(
                     color: brown2.withOpacity(0.5),
-                    // borderRadius: BorderRadius.circular(10),
+                    // borderRadius: BorderRadius.circular(100),
                     border: Border.all(
                       color: Colors.white,
                       width: 2,
@@ -131,11 +131,8 @@ class _MusicSelectionScreenState extends State<MusicSelectionScreen> {
                   ),
                   child: IconButton(
                     style: ButtonStyle(
-                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                        RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10.0),
-                        ),
-                      ),
+                      shape: MaterialStateProperty.all<CircleBorder>(
+                          CircleBorder()),
                       side: MaterialStateProperty.all<BorderSide>(
                         BorderSide(
                           color: brown2,

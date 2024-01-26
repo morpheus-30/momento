@@ -1,15 +1,16 @@
-import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:intl/intl.dart';
+import 'package:just_audio/just_audio.dart';
 import 'package:momento/constants.dart';
 import 'package:momento/screens/Games/mystery%20lyrics/models/lyricModel.dart';
 import 'package:momento/screens/Games/mystery%20lyrics/models/musicModel.dart';
-import 'package:permission_handler/permission_handler.dart';
-import 'package:record/record.dart';
+
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:sizer/sizer.dart';
+import 'package:speech_to_text/speech_to_text.dart';
 import 'package:spotify/spotify.dart';
+
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
 class MusicPlayingScreen extends StatefulWidget {
@@ -22,31 +23,32 @@ class MusicPlayingScreen extends StatefulWidget {
 class _MusicPlayingScreenState extends State<MusicPlayingScreen> {
   Duration? duration;
   Music music = Music(
-    trackId: "0V02HHr8eM5O4yEx2ngYHI",
+    trackId: "7F1yVPuJ4xRdrDvf8OL0HF",
   );
   List<Lyric>? lyrics = [];
+  int Score = 0;
   final itemScrollController = ItemScrollController();
   final itemPositionsListener = ItemPositionsListener.create();
   final scrollOffsetController = ScrollOffsetController();
   final scrollOffsetListener = ScrollOffsetListener.create();
-  final recorder = AudioRecorder();
   final player = AudioPlayer();
   Uri? audioUrl;
   bool loading = false;
+  bool isRecording = false;
 
-  void checkPermission() async {
-    bool? hasPermission = await recorder.hasPermission();
-    if (hasPermission == false) {
-      await Permission.microphone.request();
-    }
+  final SpeechToText _speechToText = SpeechToText();
+  bool _speechEabled = false;
+  String _wordsSpoken = "";
+
+  @override
+  void dispose() {
+    player.dispose();
+    super.dispose();
   }
 
-  void startRecording() async {
-    if (await recorder.hasPermission()) {
-      await recorder.start(const RecordConfig(),path: "/tmp/recorded.mp3");
-    }else{
-      openAppSettings();
-    }
+  void initSpeech() async {
+    _speechEabled = await _speechToText.initialize();
+    setState(() {});
   }
 
   @override
@@ -54,7 +56,8 @@ class _MusicPlayingScreenState extends State<MusicPlayingScreen> {
     setState(() {
       loading = true;
     });
-    checkPermission();
+    initSpeech();
+
     final credentials = SpotifyApiCredentials(
         CustomStrings.clientId, CustomStrings.clientSecret);
     final spotifyApi = SpotifyApi(credentials);
@@ -63,19 +66,23 @@ class _MusicPlayingScreenState extends State<MusicPlayingScreen> {
       music.artistName = track.artists?.first.name;
       if (music.songName != null) {
         final yt = YoutubeExplode();
-        final video =
-            (await yt.search.search(music.songName! + " " + music.artistName!))
-                .first;
+        final video = (await yt.search
+                .search(music.songName! + " " + music.artistName! + " lyrics"))
+            .first;
         final videoID = video.id.value;
         music.duration = video.duration;
         setState(() {});
         var manifest = await yt.videos.streamsClient.getManifest(videoID);
         audioUrl = manifest.audioOnly.first.url;
         // print(audioUrl);
-        await player.setSource(UrlSource(audioUrl.toString()));
-
+        // await player.setSource(UrlSource(audioUrl.toString()));
+        await player.setUrl(audioUrl.toString());
+        // print(music.songName!+" "+music.artistName!);
+        String manipulatedName = music.songName! + music.artistName!;
+        manipulatedName = manipulatedName.replaceAll(" ", "");
+        print(manipulatedName);
         get(Uri.parse(
-                "https://paxsenixofc.my.id/server/getLyricsMusix.php?q=${music.songName} ${music.artistName}&type=default"))
+                "https://paxsenixofc.my.id/server/getLyricsMusix.php?q=${manipulatedName}&type=default"))
             .then((response) {
           String data = response.body;
           print(data);
@@ -99,11 +106,12 @@ class _MusicPlayingScreenState extends State<MusicPlayingScreen> {
       }
     });
     String currentSecond = "";
-    player.onPositionChanged.listen((duration) {
+    player.positionStream.listen((duration) {
       // print(event);
       // print(lyrics!.length);
+      print(duration.inSeconds.remainder(60));
       DateTime dt = DateTime(1970, 1, 1).copyWith(
-          hour: duration.inHours,
+          hour: duration.inHours.remainder(60),
           minute: duration.inMinutes.remainder(60),
           second: duration.inSeconds.remainder(60),
           millisecond: duration.inMilliseconds.remainder(100));
@@ -115,7 +123,7 @@ class _MusicPlayingScreenState extends State<MusicPlayingScreen> {
         }
       }
       // print(lyrics![i].time);
-      // print(dt.second);
+      print(dt);
       for (int i = 0; i < lyrics!.length; i++) {
         if (lyrics![i].time.second == dt.second &&
             lyrics![i].time.minute == dt.minute &&
@@ -125,21 +133,47 @@ class _MusicPlayingScreenState extends State<MusicPlayingScreen> {
                     dt.minute.toString() +
                     dt.hour.toString()) {
           player.pause();
-          // print("start recording");
-          
+          print("start recording");
+
+          _startListening();
+          Future.delayed(const Duration(seconds: 10), () async {
+            await player.seek(Duration(
+                milliseconds: lyrics![i].time.millisecond +
+                    lyrics![i].time.second * 1000 +
+                    lyrics![i].time.minute * 60 * 1000 +
+                    lyrics![i].time.hour * 60 * 60 * 1000));
+            await player.play();
+            // print("stop playing");
+          });
+
           currentSecond =
               dt.second.toString() + dt.minute.toString() + dt.hour.toString();
           break;
         }
       }
     });
-    player.onPlayerStateChanged.listen((event) {
-      if (event == PlayerState.completed) {
-        player.stop();
-      }
-    });
 
     super.initState();
+  }
+
+  void _onSpeechResult(result) {
+    setState(() {
+      _wordsSpoken = result.recognizedWords;
+    });
+  }
+
+  void _startListening() async {
+    setState(() {
+      isRecording = true;
+    });
+    await _speechToText.listen(
+      onResult: _onSpeechResult,
+      listenFor: const Duration(seconds: 10),
+      pauseFor: const Duration(seconds: 10),
+    );
+    setState(() {
+      isRecording = false;
+    });
   }
 
   @override
@@ -148,6 +182,7 @@ class _MusicPlayingScreenState extends State<MusicPlayingScreen> {
         child: Scaffold(
           body: !loading
               ? Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Container(
@@ -160,13 +195,90 @@ class _MusicPlayingScreenState extends State<MusicPlayingScreen> {
                           ColouredBgIconButton(
                             iconSize: 20.sp,
                             onPressed: () async {
-                              setState(() {
-                                loading = true;
-                              });
-                              player.resume();
-                              setState(() {
-                                loading = false;
-                              });
+                              if (player.playing) {
+                                player.pause();
+                              } else {
+                                player.play();
+                              }
+                              // Duration lastDuration = Duration(seconds: 0);
+                              // for (int i = 0; i < lyrics!.length; i++) {
+                              //   // print(lyrics![i].time);
+                              //   // print(lastDuration);
+                              //   // await player.resume();
+                              //   // await player.seek(lastDuration);
+                              //   // await Future.delayed(Duration(
+                              //   //   minutes: lyrics![i].time.minute-lastDuration.inMinutes.remainder(60),
+                              //   //   seconds: lyrics![i].time.second-lastDuration.inSeconds.remainder(60),
+                              //   //   milliseconds: lyrics![i].time.millisecond-lastDuration.inMilliseconds.remainder(1000),
+                              //   // ), () async{
+                              //   //   await player.pause();
+                              //   //   print("start recording");
+                              //   //   await Future.delayed(Duration(seconds: 2), () async{
+                              //   //     lastDuration = await player.getCurrentPosition()??Duration(seconds: 0);
+                              //   //   });
+                              //   // });
+                              //   await player.setClip(
+                              //       start: lastDuration,
+                              //       end: Duration(
+                              //           minutes: lyrics![i].time.minute.remainder(60),
+                              //           seconds: lyrics![i].time.second.remainder(60),
+                              //           milliseconds:
+                              //               lyrics![i].time.millisecond.remainder(1000)));
+                              //   await player.play();
+                              //   player.setClip();
+                              //   // Future.delayed(Duration(
+                              //   //   minutes: lyrics![i].time.minute-lastDuration.inMinutes.remainder(60),
+                              //   //   seconds: lyrics![i].time.second-lastDuration.inSeconds.remainder(60),
+                              //   //   milliseconds: lyrics![i].time.millisecond-lastDuration.inMilliseconds.remainder(1000),
+                              //   // ), () async {
+                              //   player.pause();
+                              //   print("start recording");
+                              //   lastDuration = Duration(
+                              //       milliseconds: lyrics![i].time.millisecond +
+                              //           lyrics![i].time.second * 1000 +
+                              //           lyrics![i].time.minute * 60 * 1000 +
+                              //           lyrics![i].time.hour * 60 * 60 * 1000);
+                              //   // });
+                              // }
+                              // Duration lastDuration = Duration(
+                              //     milliseconds: lyrics![0].time.millisecond +
+                              //         lyrics![0].time.second * 1000 +
+                              //         lyrics![0].time.minute * 60 * 1000 +
+                              //         lyrics![0].time.hour * 60 * 60 * 1000);
+                              // await player.setClip(
+                              //     start: lastDuration,
+                              //     end: Duration(
+                              //         milliseconds: lyrics![0]
+                              //                 .time
+                              //                 .millisecond +
+                              //             lyrics![1].time.second * 1000 +
+                              //             lyrics![1].time.minute * 60 * 1000 +
+                              //             lyrics![1].time.hour *
+                              //                 60 *
+                              //                 60 *
+                              //                 1000));
+                              // await player.play();
+                              // Future.delayed(
+                              //     Duration(
+                              //       minutes: lyrics![1].time.minute -
+                              //           lastDuration.inMinutes.remainder(60),
+                              //       seconds: lyrics![1].time.second -
+                              //           lastDuration.inSeconds.remainder(60),
+                              //       milliseconds: lyrics![1].time.millisecond -
+                              //           lastDuration
+                              //               .inMilliseconds
+                              //               .remainder(1000),
+                              //     ), () async {
+                              //   await player.pause();
+                              //   // print("start recording");
+                              //   // await Future.delayed(Duration(seconds: 2),
+                              //   //     () async {
+                              //   //   await player.setClip(
+                              //   //       start: Duration(seconds: 40),
+                              //   //       end: Duration(seconds: 50));
+                              //   //   await player.play();
+                              //   // });
+                              // });
                             },
                           ),
                           SizedBox(
@@ -194,9 +306,8 @@ class _MusicPlayingScreenState extends State<MusicPlayingScreen> {
                             width: 85.w,
                             height: 25.h,
                             child: StreamBuilder<Duration>(
-                                stream: player.onPositionChanged,
+                                stream: player.positionStream,
                                 builder: (context, snapshot) {
-                                  print(snapshot.data);
                                   return ScrollablePositionedList.builder(
                                     itemCount: lyrics!.length,
                                     itemBuilder: (context, index) {
@@ -219,7 +330,10 @@ class _MusicPlayingScreenState extends State<MusicPlayingScreen> {
                                                 lyrics![index].time.isAfter(dt)
                                                     ? Colors.black
                                                     : brown2,
-                                            fontSize: 26,
+                                            fontSize:
+                                                lyrics![index].time.isAfter(dt)
+                                                    ? 20
+                                                    : 26,
                                             fontWeight: FontWeight.bold,
                                           ),
                                         ),
@@ -235,25 +349,64 @@ class _MusicPlayingScreenState extends State<MusicPlayingScreen> {
                                 }),
                           )
                         : const SizedBox(),
+                    // SizedBox(height: 2.h,),
                     ColouredBgIconButton(
-                      onPressed: ()async {
-                        if(await recorder.isRecording()){
-                          recorder.pause();
-                          print("pause recording");
-                        }else if(await recorder.isPaused()){
-                          recorder.resume();
-                          print("resume recording");
-                        }else{
-                          print("start recording");
-                          startRecording();
-                        }
+                      onPressed: () {
+                        // isRecording = !isRecording;
+                        // _startListening();
+                        // setState(() {});
+                        // isRecording = !isRecording;
                       },
-                      icon: Icons.mic_none_outlined,
+                      icon:
+                          isRecording ? Icons.mic_none_outlined : Icons.mic_off,
                       boundaryColor: Colors.black,
                       bgColor: Color(0xFFCCCCCC),
-                      iconSize: 30.sp,
+                      iconSize: 60.sp,
                       iconColor: Colors.black,
-                    )
+                    ),
+                    SizedBox(
+                      height: 5.h,
+                    ),
+                    Container(
+                      width: 90.w,
+                      margin: EdgeInsets.only(bottom: 5.h, left: 5.w, right: 5.w),
+                      padding: EdgeInsets.symmetric(horizontal: 5.w),
+                      decoration: BoxDecoration(
+                        color: brown2,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Row(
+                        children: [
+                          Text("Score",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 20.sp,
+                                fontFamily: 'Montserrat',
+                              )),
+                          SizedBox(
+                            width: 5.w,
+                          ),
+                          Text(Score.toString(),
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 20.sp,
+                                fontFamily: 'Montserrat',
+                              )),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      margin:
+                          EdgeInsets.only(bottom: 5.h, left: 5.w, right: 5.w),
+                      child: Text(
+                        _wordsSpoken,
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 20.sp,
+                          fontFamily: 'Montserrat',
+                        ),
+                      ),
+                    ),
                   ],
                 )
               : const Center(
@@ -297,11 +450,7 @@ class ColouredBgIconButton extends StatelessWidget {
       ),
       child: IconButton(
         style: ButtonStyle(
-          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-            RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10.0),
-            ),
-          ),
+          shape: MaterialStateProperty.all<CircleBorder>(CircleBorder()),
           side: MaterialStateProperty.all<BorderSide>(
             BorderSide(
               color: boundaryColor,

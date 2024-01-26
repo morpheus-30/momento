@@ -4,13 +4,14 @@ import 'package:momento/constants.dart';
 class LoginButton extends StatelessWidget {
   Function onPressed;
   String text;
-  LoginButton({required this.onPressed, this.text = "Log In"});
+  Color color;
+  LoginButton({required this.onPressed, this.text = "Log In", this.color = brown2});
 
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
-        primary: brown2,
+        primary: color,
         shape: const RoundedRectangleBorder(
           side: BorderSide(
             width: 2,

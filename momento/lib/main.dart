@@ -8,6 +8,7 @@ import 'package:momento/screens/HomeScreen.dart';
 import 'package:momento/screens/LoginScreen.dart';
 import 'package:momento/screens/PreAssessmentScreen.dart';
 import 'package:momento/screens/Profile/ProfileScreen.dart';
+import 'package:momento/screens/Resources/ChooseResourcesScreen.dart';
 import 'package:momento/screens/SignUpScreen.dart';
 import 'package:momento/screens/StartScreen.dart';
 import 'package:momento/screens/pre_assessment_questions/DateScreen.dart';
@@ -37,6 +38,7 @@ class MyApp extends StatelessWidget {
         '/Games' : (_) => GamesRecommendationScreen(),
         '/Help' : (_) => HelpScreen(),
         '/Music Preferences' : (_) => MusicPreferencesScreen(),
+        '/Resources' : (_) => ChooseResourcesScreen(),
       },
     );
   }

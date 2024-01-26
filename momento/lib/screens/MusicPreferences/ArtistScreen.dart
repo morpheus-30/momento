@@ -3,8 +3,14 @@ import 'package:momento/constants.dart';
 import 'package:momento/widgets/buttons/loginButton.dart';
 import 'package:sizer/sizer.dart';
 
-class ArtistScreen extends StatelessWidget {
-  const ArtistScreen({super.key});
+class ArtistScreen extends StatefulWidget {
+
+  @override
+  State<ArtistScreen> createState() => _ArtistScreenState();
+}
+
+class _ArtistScreenState extends State<ArtistScreen> {
+  List<String> selectedArtists = [];
 
   @override
   Widget build(BuildContext context) {
@@ -69,6 +75,11 @@ class ArtistScreen extends StatelessWidget {
             SizedBox(
               width: 90.w,
               child: TextField(
+                onChanged: (value) {
+                  setState(() {
+                    
+                  });
+                },
                 decoration: InputDecoration(
                   prefixIcon: IconButton(
                     onPressed: () {},
@@ -99,9 +110,15 @@ class ArtistScreen extends StatelessWidget {
                       .map((e) => Container(
                         margin: EdgeInsets.symmetric(vertical: 1.h),
                         child: LoginButton(
+                          color: selectedArtists.contains(e) ? brown2 : Colors.grey,
                           onPressed: () {
-                            Navigator.pushNamed(
-                                context, '/Music Preferences');
+                            setState(() {
+                              if (selectedArtists.contains(e)) {
+                                selectedArtists.remove(e);
+                              } else {
+                                selectedArtists.add(e);
+                              }
+                            });
                           },
                           text: e,
                         ),

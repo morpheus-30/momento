@@ -4,9 +4,20 @@ import 'package:momento/screens/pre_assessment_questions/MathScreen.dart';
 import 'package:momento/widgets/buttons/loginButton.dart';
 import 'package:momento/widgets/buttons/textField.dart';
 import 'package:sizer/sizer.dart';
+import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class VideoScreen extends StatelessWidget {
-  const VideoScreen({super.key});
+  final YoutubePlayerController _controller = YoutubePlayerController(
+    initialVideoId: 'WlHYWYBbJ0U',
+    flags: const YoutubePlayerFlags(
+      hideControls: false,
+      disableDragSeek: true,
+      autoPlay: false,
+      loop: true,
+      showLiveFullscreenButton: false,
+      mute: false,
+    ),
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -76,62 +87,67 @@ class VideoScreen extends StatelessWidget {
                       )),
                 ),
                 Container(
+                  padding: EdgeInsets.all(0.h),
                   margin: EdgeInsets.only(
                       right: 5.w, left: 5.w, top: 2.h, bottom: 2.h),
                   height: 20.h,
                   width: 80.w,
                   decoration: BoxDecoration(
-                    image: DecorationImage(
-                        image: NetworkImage(
-                            "https://static.vecteezy.com/system/resources/thumbnails/023/595/164/small/rabbit-in-the-forest-at-sunset-animal-in-nature-easter-bunny-wildlife-scene-generative-ai-photo.jpg"),
-                        fit: BoxFit.cover),
-                    borderRadius: BorderRadius.circular(10),
                     border: Border.all(
                       color: brown2,
-                      width: 2,
+                      width: 3,
                     ),
                   ),
-                  child: Container(
-                    color: Colors.black.withOpacity(0.5),
-                    child: Container(
-                      margin: EdgeInsets.all(6.h),
-                      decoration: BoxDecoration(
-                        color: brown2.withOpacity(0.5),
-                        // borderRadius: BorderRadius.circular(10),
-                        border: Border.all(
-                          color: Colors.white,
-                          width: 2,
-                        ),
-                        shape: BoxShape.circle,
-                      ),
-                      child: IconButton(
-                        iconSize: 5.h,
-                        style: ButtonStyle(
-                          shape:
-                              MaterialStateProperty.all<RoundedRectangleBorder>(
-                            RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10.0),
-                            ),
-                          ),
-                          side: MaterialStateProperty.all<BorderSide>(
-                            BorderSide(
-                              color: brown2,
-                              width: 2,
-                            ),
-                          ),
-                          backgroundColor:
-                              MaterialStateProperty.all<Color>(brown2),
-                          shadowColor: MaterialStateProperty.all<Color>(brown2),
-                        ),
-                        onPressed: () {
-                          print("play video");
-                        },
-                        icon: Icon(
-                          Icons.play_arrow,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
+                  // child: Container(
+                  //   color: Colors.black.withOpacity(0.5),
+                  //   child: Container(
+                  //     margin: EdgeInsets.all(6.h),
+                  //     decoration: BoxDecoration(
+                  //       color: brown2.withOpacity(0.5),
+                  //       // borderRadius: BorderRadius.circular(10),
+                  //       border: Border.all(
+                  //         color: Colors.white,
+                  //         width: 2,
+                  //       ),
+                  //       shape: BoxShape.circle,
+                  //     ),
+                  //     child: IconButton(
+                  //       iconSize: 5.h,
+                  //       style: ButtonStyle(
+                  //         shape:
+                  //             MaterialStateProperty.all<RoundedRectangleBorder>(
+                  //           RoundedRectangleBorder(
+                  //             borderRadius: BorderRadius.circular(10.0),
+                  //           ),
+                  //         ),
+                  //         side: MaterialStateProperty.all<BorderSide>(
+                  //           BorderSide(
+                  //             color: brown2,
+                  //             width: 2,
+                  //           ),
+                  //         ),
+                  //         backgroundColor:
+                  //             MaterialStateProperty.all<Color>(brown2),
+                  //         shadowColor: MaterialStateProperty.all<Color>(brown2),
+                  //       ),
+                  //       onPressed: () {
+                  //         print("play video");
+                  //       },
+                  //       icon: Icon(
+                  //         Icons.play_arrow,
+                  //         color: Colors.white,
+                  //       ),
+                  //     ),
+                  //   ),
+                  // ),
+                  child: YoutubePlayer(
+                    bottomActions: [
+                      PlayPauseButton(),  
+                      CurrentPosition(),
+                      ProgressBar(isExpanded: true),
+                      RemainingDuration(),
+                    ],
+                    controller: _controller,
                   ),
                 ),
                 SizedBox(
@@ -155,8 +171,10 @@ class VideoScreen extends StatelessWidget {
                   width: 80.w,
                   child: LoginButton(
                     onPressed: () {
-                      Navigator.pushReplacement(context,
-                          MaterialPageRoute(builder: (context) => MathScreen()));
+                      Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => MathScreen()));
                     },
                     text: "Continue",
                   ),
