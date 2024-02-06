@@ -1,13 +1,37 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:momento/constants.dart';
 import 'package:momento/widgets/buttons/loginButton.dart';
 import 'package:sizer/sizer.dart';
 
-class ProfileScreen extends StatelessWidget {
-  const ProfileScreen({super.key});
+class ProfileScreen extends StatefulWidget {
+  @override
+  State<ProfileScreen> createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
+  String imageUrl="";
+
+  void getImage() async {
+    imageUrl =await FirebaseFirestore.instance
+        .collection('Users')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .get()
+        .then((value) => value['Image']);
+        setState(() {
+          
+        });
+  }
+
+  @override
+  void initState() {
+    getImage();
+  }
 
   @override
   Widget build(BuildContext context) {
+    dynamic imageWidget = imageUrl==""?AssetImage('assets/images/profile.png'):NetworkImage(imageUrl);
     return Scaffold(
       appBar: AppBar(
         actions: [
@@ -53,6 +77,7 @@ class ProfileScreen extends StatelessWidget {
             IconButton(
               onPressed: () {
                 Navigator.popUntil(context, ModalRoute.withName('/home'));
+                Navigator.pushNamed(context, '/home');
               },
               icon: Icon(
                 Icons.home,
@@ -76,7 +101,7 @@ class ProfileScreen extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: CircleAvatar(
-                  backgroundImage: AssetImage("assets/images/profile.png"),
+                  backgroundImage: imageWidget,
                   radius: 30.w,
                 ),
               ),
@@ -98,7 +123,7 @@ class ProfileScreen extends StatelessWidget {
                     width: 80.w,
                     child: LoginButton(
                       onPressed: () {
-                        Navigator.pushNamed(context, '/$e');
+                        Navigator.pushReplacementNamed(context, '/$e');
                       },
                       text: e,
                     ),

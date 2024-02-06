@@ -7,9 +7,11 @@ import 'package:momento/widgets/buttons/loginButton.dart';
 import 'package:momento/widgets/buttons/textField.dart';
 import 'package:sizer/sizer.dart';
 
-
 class ListenAndSpell extends StatelessWidget {
   AudioPlayer audioPlayer = AudioPlayer();
+  Map<String, dynamic> data;
+  String word = "";
+  ListenAndSpell({required this.data});
 
   @override
   Widget build(BuildContext context) {
@@ -17,16 +19,6 @@ class ListenAndSpell extends StatelessWidget {
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
         leadingWidth: 25.w,
-        actions: [
-          IconButton(
-              onPressed: ()async {
-                
-              },
-              icon: Icon(
-                Icons.help_outline_outlined,
-                color: Colors.white,
-              ))
-        ],
         elevation: 2,
         centerTitle: true,
         title: Text(
@@ -40,25 +32,6 @@ class ListenAndSpell extends StatelessWidget {
           ),
         ),
         backgroundColor: brown2,
-        leading: Row(
-          children: [
-            IconButton(
-              icon: const Icon(
-                Icons.arrow_back_ios,
-                color: Colors.white,
-              ),
-              onPressed: () {
-                Navigator.pop(context);
-              },
-            ),
-            IconButton(
-                onPressed: () {},
-                icon: Icon(
-                  Icons.home,
-                  color: Colors.white,
-                ))
-          ],
-        ),
       ),
       body: Column(
         children: [
@@ -124,9 +97,10 @@ class ListenAndSpell extends StatelessWidget {
                             ),
                           ),
                         ),
-                        onPressed: () async{  
+                        onPressed: () async {
                           // await audioPlayer.play(AssetSource("audio/momento.mp3"));
-                          await audioPlayer.setAsset("assets/audio/momento.mp3");
+                          await audioPlayer
+                              .setAsset("assets/audio/momento.mp3");
                           await audioPlayer.play();
                         },
                         icon: Icon(
@@ -145,6 +119,9 @@ class ListenAndSpell extends StatelessWidget {
           Container(
               margin: EdgeInsets.symmetric(horizontal: 10.w),
               child: MomentotextField(
+                onSaved: (value) {
+                  word = value;
+                },
                 inputText: "Enter the word",
               )),
           SizedBox(
@@ -152,17 +129,21 @@ class ListenAndSpell extends StatelessWidget {
           ),
           SizedBox(
             width: 80.w,
-            child: LoginButton(onPressed: (){
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (context) => VideoScreen()),
-              );
-            },text: "Continue",),
+            child: LoginButton(
+              onPressed: () {
+                data["listenAndSpell"] = word;
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => VideoScreen(
+                    data:  data,
+                  )),
+                );
+              },
+              text: "Continue",
+            ),
           ),
         ],
       ),
     );
   }
 }
-
-

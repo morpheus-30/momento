@@ -1,5 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:momento/constants.dart';
+import 'package:momento/screens/pre_assessment_questions/DateScreen.dart';
 import 'package:momento/widgets/buttons/loginButton.dart';
 import 'package:sizer/sizer.dart';
 
@@ -12,18 +14,28 @@ class HomeScreen extends StatelessWidget {
       appBar: AppBar(
         actions: [
           IconButton(
-              onPressed: () {},
+              onPressed: () {
+                FirebaseAuth.instance.signOut();
+                Navigator.popUntil(context, (route) => route.isFirst);
+                Navigator.pushNamed(context, '/');
+              },
               icon: Icon(
-                Icons.notifications,
+                Icons.logout,
                 color: Colors.white,
               )),
           IconButton(
-            onPressed: () {},
+            onPressed: () {
+              // Navigator.pushNamed(context, '/Help');
+              Navigator.push(context, MaterialPageRoute(builder: (context) => DateScreen(
+                data: {"name": "Date"}
+              )));
+            },
             icon: Icon(
               Icons.question_mark,
               color: Colors.white,
             ),
           ),
+
         ],
         elevation: 2,
         leadingWidth: 30.w,
@@ -59,7 +71,7 @@ class HomeScreen extends StatelessWidget {
             SizedBox(height: 8.h),
             Column(
               children: [ 
-                ...["Games", "Resources", "High Score", "Profile", "My Coupons"]
+                ...["Games", "Resources", "High Score", "Profile"]
                     .map((e) =>   Column(
                           children: [
                             SizedBox(

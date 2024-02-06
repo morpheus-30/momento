@@ -1,12 +1,42 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:momento/widgets/buttons/signUpButton.dart';
-import 'package:momento/widgets/buttons/loginButton.dart';
 import 'package:momento/constants.dart';
 import 'package:momento/widgets/buttons/textField.dart';
 import 'package:sizer/sizer.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
-class SignUpScreen extends StatelessWidget {
-  const SignUpScreen({super.key});
+class SignUpScreen extends StatefulWidget {
+  @override
+  State<SignUpScreen> createState() => _SignUpScreenState();
+}
+
+class _SignUpScreenState extends State<SignUpScreen> {
+  @override
+  FirebaseAuth auth = FirebaseAuth.instance;
+  FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+  String email = "";
+
+  String password = "";
+
+  bool obscureText = true;
+
+  Future<int> signUp() async {
+    try {
+      UserCredential userCredential = await auth.createUserWithEmailAndPassword(
+          email: email, password: password);
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'weak-password') {
+        return 1;
+      } else if (e.code == 'email-already-in-use') {
+        return 2;
+      }
+    } catch (e) {
+      return 3;
+    }
+    return 0;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -55,26 +85,10 @@ class SignUpScreen extends StatelessWidget {
                           )),
                       SizedBox(height: 1.h),
                       MomentotextField(
+                        onSaved: (value) {
+                          email = value;
+                        },
                         inputText: "Name",
-                      ),
-                    ],
-                  ),
-                ),
-                Container(
-                  margin: EdgeInsets.all(15),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text("Username",
-                          style: TextStyle(
-                            fontSize: 12.sp,
-                            color: Colors.black,
-                            fontFamily: "Montserrat",
-                            fontWeight: FontWeight.bold,
-                          )),
-                      SizedBox(height: 1.h),
-                      MomentotextField(
-                        inputText: "Username",
                       ),
                     ],
                   ),
@@ -92,8 +106,34 @@ class SignUpScreen extends StatelessWidget {
                             fontWeight: FontWeight.bold,
                           )),
                       SizedBox(height: 1.h),
-                      MomentotextField(
-                        inputText: "Password",
+                      Row(
+                        children: [
+                          SizedBox(
+                            width: 75.w,
+                            child: MomentotextField(
+                              obscureText: obscureText,
+                              onSaved: (value) {
+                                password = value;
+                              },
+                              inputText: "Password",
+                            ),
+                          ),
+                          SizedBox(
+                            width: 5.w,
+                          ),
+                          IconButton(
+                            icon: Icon(
+                              obscureText
+                                  ? Icons.visibility_off
+                                  : Icons.visibility,
+                              color: brown2,
+                            ),
+                            onPressed: () {
+                              obscureText = !obscureText;
+                              setState(() {});
+                            },
+                          ),
+                        ],
                       ),
                     ],
                   ),
@@ -101,7 +141,7 @@ class SignUpScreen extends StatelessWidget {
               ],
             ),
             Align(
-              alignment: Alignment.bottomCenter,
+                alignment: Alignment.bottomCenter,
                 child: Container(
                   margin: EdgeInsets.only(bottom: 3.h),
                   child: SizedBox(
@@ -109,10 +149,46 @@ class SignUpScreen extends StatelessWidget {
                     child: SignUpButton(
                       color: brown2,
                       textcolor: Colors.white,
-                                onPressed: () {
-                                  Navigator.pushReplacementNamed(context, '/preAssessment');
-                                },
-                              ),
+                      onPressed: ()async {
+                        if (email == "" || password == "") {
+                          SnackBar snackbar = SnackBar(
+                            content: Text('Please fill in all the fields.'),
+                          );
+                          ScaffoldMessenger.of(context).showSnackBar(snackbar);
+                          return;
+                        }
+                        if (email != "" && password != ""&& email.contains('@')&&email.contains('.')&&email.contains('com')) {
+                          int signUpResult = await signUp();
+                          if (signUpResult == 1) {
+                            SnackBar snackbar = SnackBar(
+                              content: Text('The password provided is too weak.'),
+                            );
+                            ScaffoldMessenger.of(context).showSnackBar(snackbar);
+                            return;
+                          } else if (signUpResult == 2) {
+                            SnackBar snackbar = SnackBar(
+                              content: Text('The account already exists for that email.'),
+                            );
+                            ScaffoldMessenger.of(context).showSnackBar(snackbar);
+                            return;
+                          } else if (signUpResult == 3) {
+                            SnackBar snackbar = SnackBar(
+                              content: Text('An error occurred while signing up.'),
+                            );
+                            ScaffoldMessenger.of(context).showSnackBar(snackbar);
+                            return;
+                          }
+                          // await firestore.collection('Users').doc(auth.currentUser!.uid).set({
+                          //   'email': auth.currentUser!.email,
+                          //   'Image':"toBeAdded"
+                          // });
+                          Navigator.pushReplacementNamed(
+                              context, '/preAssessment');
+                          return;
+                        }
+                       
+                      },
+                    ),
                   ),
                 )),
           ],

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:momento/constants.dart';
+import 'package:momento/screens/Resources/PhysicianScreen.dart';
 import 'package:momento/widgets/buttons/loginButton.dart';
 import 'package:sizer/sizer.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
@@ -111,11 +112,15 @@ class _ChooseResourcesScreenState extends State<ChooseResourcesScreen> {
             VideoWidget(
               controller: _controller2,
             ),
-            SizedBox(height: 5.h,),
+            SizedBox(height: 5  .h,),
             SizedBox(
               width: 80.w,
                 child: LoginButton(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) {
+                  return PhysicianScreen();
+                }));
+              },
               text: "Contact your Physician",
             ))
           ],

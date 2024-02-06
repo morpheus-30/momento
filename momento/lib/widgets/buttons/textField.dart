@@ -4,13 +4,17 @@ import 'package:momento/constants.dart';
 class MomentotextField extends StatelessWidget {
 
   String inputText;
-  MomentotextField({required this.inputText});
+  var onSaved;
+  bool obscureText = false;
+  MomentotextField({required this.inputText, this.onSaved = null, this.obscureText = false});
 
   @override
   Widget build(BuildContext context) {
     return Theme(
       data: ThemeData(primaryColor: brown2),
       child: TextField(
+        obscureText: obscureText,
+        onChanged: onSaved,
         decoration: InputDecoration(
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),

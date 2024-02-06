@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:momento/constants.dart';
 
@@ -6,6 +7,7 @@ class LoginButton extends StatelessWidget {
   String text;
   Color color;
   LoginButton({required this.onPressed, this.text = "Log In", this.color = brown2});
+  
 
   @override
   Widget build(BuildContext context) {

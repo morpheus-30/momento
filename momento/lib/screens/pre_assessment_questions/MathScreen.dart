@@ -6,10 +6,12 @@ import 'package:momento/widgets/buttons/textField.dart';
 import 'package:sizer/sizer.dart';
 
 class MathScreen extends StatelessWidget {
-  const MathScreen({super.key});
+  Map<String, dynamic> data;
+  MathScreen({required this.data});
 
   @override
   Widget build(BuildContext context) {
+    String ans = "";
     return Sizer(builder: ((context, orientation, deviceType) {
       return Scaffold(
         resizeToAvoidBottomInset: false,
@@ -17,7 +19,9 @@ class MathScreen extends StatelessWidget {
           leadingWidth: 25.w,
           actions: [
             IconButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.pushNamed(context, '/Help');
+                },
                 icon: Icon(
                   Icons.help_outline_outlined,
                   color: Colors.white,
@@ -95,7 +99,11 @@ class MathScreen extends StatelessWidget {
               SizedBox(
                 height: 10.h,
               ),
-              MomentotextField(inputText: "Type Response"),
+              MomentotextField(
+                  inputText: "Type Response",
+                  onSaved: (value) {
+                    ans = value;
+                  }),
               SizedBox(
                 height: 10.h,
               ),
@@ -103,7 +111,17 @@ class MathScreen extends StatelessWidget {
                 width: 90.w,
                 child: LoginButton(
                   onPressed: () {
-                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>DateScreen()));
+                    if(ans==""){
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        content: Text("Please enter a value"),
+                      ));
+                      return;
+                    }
+                    data["maths"] = int.parse(ans) ;
+                    Navigator.pushReplacement(context,
+                        MaterialPageRoute(builder: (context) => DateScreen(
+                          data: data,
+                        )));
                   },
                   text: "Continue",
                 ),

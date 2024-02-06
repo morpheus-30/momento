@@ -1,5 +1,7 @@
 //make a screen named datescreen for date question today date
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:momento/screens/pre_assessment_questions/ResultsScreen.dart';
 import 'package:momento/screens/pre_assessment_questions/dateDropDownData.dart';
@@ -8,13 +10,17 @@ import 'package:momento/widgets/buttons/textField.dart';
 import 'package:sizer/sizer.dart';
 
 class DateScreen extends StatefulWidget {
-  const DateScreen({super.key});
+  Map<String, dynamic> data;
+  DateScreen({required this.data});
 
   @override
   State<DateScreen> createState() => _DateScreenState();
 }
 
 class _DateScreenState extends State<DateScreen> {
+  String Date = "";
+  String Month = "";
+  String Year = "";
   @override
   Widget build(BuildContext context) {
     return Sizer(builder: ((context, orientation, devicetype) {
@@ -24,7 +30,9 @@ class _DateScreenState extends State<DateScreen> {
           leadingWidth: 25.w,
           actions: [
             IconButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.pushNamed(context, '/Help');
+                },
                 icon: Icon(
                   Icons.help_outline_outlined,
                   color: Colors.white,
@@ -43,25 +51,6 @@ class _DateScreenState extends State<DateScreen> {
             ),
           ),
           backgroundColor: Color(0xFFC68642),
-          leading: Row(
-            children: [
-              IconButton(
-                icon: const Icon(
-                  Icons.arrow_back_ios,
-                  color: Colors.white,
-                ),
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-              ),
-              IconButton(
-                  onPressed: () {},
-                  icon: Icon(
-                    Icons.home,
-                    color: Colors.white,
-                  ))
-            ],
-          ),
         ),
         body: Stack(
           children: [
@@ -87,11 +76,18 @@ class _DateScreenState extends State<DateScreen> {
                       children: [
                         SizedBox(
                             width: 20.w,
-                            child: MomentotextField(inputText: "DD")),
+                            child: MomentotextField(
+                                inputText: "DD",
+                                onSaved: (value) {
+                                  Date = value;
+                                })),
                         SizedBox(
                           width: 5.w,
                         ),
                         DropdownMenu(
+                          onSelected: (value) {
+                            Month = value;
+                          },
                           hintText: "MM",
                           textStyle: TextStyle(
                             color: Colors.black,
@@ -110,9 +106,6 @@ class _DateScreenState extends State<DateScreen> {
                               ),
                             ),
                           ),
-                          onSelected: (value) {
-                            
-                          },
                           width: 30.w,
                           dropdownMenuEntries:
                               MonthDropDownData.map((e) => DropdownMenuEntry(
@@ -124,6 +117,9 @@ class _DateScreenState extends State<DateScreen> {
                           width: 5.w,
                         ),
                         DropdownMenu(
+                          onSelected: (value) {
+                            Year = value;
+                          },
                           hintText: "YYYY",
                           textStyle: TextStyle(
                             color: Colors.black,
@@ -159,14 +155,21 @@ class _DateScreenState extends State<DateScreen> {
                 margin: EdgeInsets.only(bottom: 5.h),
                 width: 90.w,
                 child: LoginButton(
-                  onPressed: () {
+                  onPressed: ()async {
+                    String date = Date + "/" + Month + "/" + Year;
+                    widget.data["Date"] = date;
+                    print(widget.data);
+                    await FirebaseFirestore.instance.collection('Users').doc(FirebaseAuth.instance.currentUser!.uid).set({
+                            'email': FirebaseAuth.instance.currentUser!.email,
+                            'Image':"",
+                            'preques': widget.data,
+                          });
                     Navigator.popUntil(context, (route) => route.isFirst);
                     Navigator.pushReplacement(context, MaterialPageRoute(
                       builder: (context) {
                         return ResultsScreen();
                       },
-                    )
-                        );
+                    ));
                   },
                   text: "Continue",
                 ),

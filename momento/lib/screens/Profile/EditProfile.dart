@@ -1,33 +1,74 @@
+import 'dart:io';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:momento/constants.dart';
 import 'package:momento/widgets/buttons/loginButton.dart';
 import 'package:sizer/sizer.dart';
 
-class EditProfile extends StatelessWidget {
-  const EditProfile({super.key});
+class EditProfile extends StatefulWidget {
+  @override
+  State<EditProfile> createState() => _EditProfileState();
+}
+
+class _EditProfileState extends State<EditProfile> {
+  ImagePicker picker = ImagePicker();
+
+  File? image;
+  bool loading = false;
+  String imageUrl = "";
+  @override
+  void initState() {
+    // TODO: implement initState
+    getProfileImage();
+  }
+
+  void getProfileImage() async {
+    imageUrl = await FirebaseFirestore.instance
+        .collection('Users')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .get()
+        .then((value) => value['Image']);
+    setState(() {});
+  }
+
+  Future getImage() async {
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      image = File(pickedFile.path);
+    }
+  }
+
+  uploadImage() async {
+    if (image == null) {
+      return;
+    }
+   
+    final user = FirebaseAuth.instance.currentUser;
+    final ref = FirebaseStorage.instance
+        .ref()
+        .child('profile_images')
+        .child(user!.uid + '.jpg');
+    await ref.putFile(image!);
+    imageUrl = await ref.getDownloadURL();
+    await user.updatePhotoURL(imageUrl);
+   
+    print(imageUrl);
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    dynamic imageWidget = imageUrl == ""
+        ? AssetImage("assets/images/profile.png")
+        : NetworkImage(imageUrl);
+    String password = "";
+    
+    return loading==true?Scaffold(body: Center(child: CircularProgressIndicator()),):Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        actions: [
-          IconButton(
-              onPressed: () {},
-              icon: Icon(
-                Icons.notifications,
-                color: Colors.white,
-              )),
-          IconButton(
-            onPressed: () {
-              
-            },
-            icon: Icon(
-              Icons.question_mark,
-              color: Colors.white,
-            ),
-          ),
-        ],
         elevation: 0,
         leadingWidth: 30.w,
         centerTitle: true,
@@ -56,6 +97,7 @@ class EditProfile extends StatelessWidget {
             IconButton(
               onPressed: () {
                 Navigator.popUntil(context, ModalRoute.withName('/home'));
+                Navigator.pushNamed(context, '/home');
               },
               icon: Icon(
                 Icons.home,
@@ -80,16 +122,38 @@ class EditProfile extends StatelessWidget {
                 padding: const EdgeInsets.all(10.0),
                 child: CircleAvatar(
                   child: CircleAvatar(
-                    backgroundColor: Colors.white.withOpacity(0.5),
-                    radius: 30.w,
-                    
-                    child: Icon(
-                      Icons.edit,
-                      color: Colors.white,
-                      size: 20.w,
-                    ),
-                  ),
-                  backgroundImage: AssetImage("assets/images/profile.png"),
+                      backgroundColor: Colors.white.withOpacity(0.5),
+                      radius: 30.w,
+                      child: IconButton(
+                        onPressed: () async {
+                          await getImage();
+                          setState(() {
+                            loading = true;
+                          });
+                          await uploadImage();
+                          await FirebaseFirestore.instance
+                              .collection('Users')
+                              .doc(FirebaseAuth.instance.currentUser!.uid)
+                              .update({
+                            'Image': imageUrl,
+                          });
+                          setState(() {
+                            loading = false;
+                          });
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                            content: Text("Profile Picture Updated"),
+                          ));
+                          Navigator.popUntil(
+                                  context, ModalRoute.withName('/home'));
+                          Navigator.pushNamed(context, '/home');
+                        },
+                        icon: Icon(
+                          Icons.edit,
+                          color: Colors.white,
+                          size: 20.w,
+                        ),
+                      )),
+                  backgroundImage: imageWidget,
                   radius: 30.w,
                 ),
               ),
@@ -106,40 +170,46 @@ class EditProfile extends StatelessWidget {
                 child: SizedBox(
                   width: 80.w,
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      TextField(
-                        decoration: InputDecoration(
-                          border: OutlineInputBorder(),
-                          labelText: 'Username',
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(
+                          "Welcome "+FirebaseAuth.instance.currentUser!.email.toString(),
+                          style: TextStyle(
+                            fontFamily: "Montserrat",
+                            color: brown2,
+                            fontSize: 20.sp,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          textAlign: TextAlign.center,
                         ),
-                      ),
-                      SizedBox(height: 3.h),
-                      TextField(
-                        decoration: InputDecoration(
-                          border: OutlineInputBorder(),
-                          labelText: 'Email',
-                        ),
-                      ),
-                      SizedBox(height: 3.h),
-                      TextField(
-                        decoration: InputDecoration(
-                          border: OutlineInputBorder(),
-                          labelText: 'Password',
-                        ),
-                      ),
-                      SizedBox(height: 5.h),
-                      Container(
-                        width: 80.w,
-                        child: LoginButton(
-                          onPressed: () {
-                            Navigator.popUntil(context, ModalRoute.withName('/home'));
+                        SizedBox(height: 5.h),
+                        TextField(
+                          onChanged: (value) {
+                            password = value;
                           },
-                          text: "Update Profile",
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(),
+                            labelText: 'Password',
+                          ),
                         ),
-                      ),
-                    ]
-                  ),
+                        SizedBox(height: 5.h),
+                        Container(
+                          width: 80.w,
+                          child: LoginButton(
+                            onPressed: () async {
+                              if (password == "") {
+                                return;
+                              }
+                              await FirebaseAuth.instance.currentUser!
+                                  .updatePassword(password);
+                              Navigator.popUntil(
+                                  context, ModalRoute.withName('/home'));
+                                  Navigator.pushNamed(context, '/home');
+                            },
+                            text: "Update Password",
+                          ),
+                        ),
+                      ]),
                 ),
               ),
             ),

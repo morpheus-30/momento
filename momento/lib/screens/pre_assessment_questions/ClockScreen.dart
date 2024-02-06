@@ -1,18 +1,47 @@
+import 'dart:io';
+import 'dart:typed_data';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:momento/constants.dart';
 import 'package:momento/screens/pre_assessment_questions/ListenAndSpell.dart';
 import 'package:momento/widgets/buttons/signUpButton.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:screenshot/screenshot.dart';
 import 'package:sizer/sizer.dart';
 import 'DrawingBoard.dart';
 
 class ClockScreen extends StatefulWidget {
-  const ClockScreen({super.key});
-
   @override
   State<ClockScreen> createState() => _ClockScreenState();
 }
 
 class _ClockScreenState extends State<ClockScreen> {
+  Uint8List? image;
+  String imageurl = "";
+  ScreenshotController screenshotController = ScreenshotController();
+  uploadImage() async {
+    image = await screenshotController.capture();
+    final tempDir = await getTemporaryDirectory();
+    File imageFile = await File('${tempDir.path}/image.png').create();
+    imageFile.writeAsBytesSync(image!);
+    // print(imageFile);
+    if (image == null) {
+      print("image is null");
+      return;
+    }
+    final user = FirebaseAuth.instance.currentUser;
+    final ref = FirebaseStorage.instance
+        .ref()
+        .child('clock_images')
+        .child(user!.uid + '.jpg');
+    await ref.putFile(imageFile);
+    imageurl = await ref.getDownloadURL();
+    print(imageurl);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -20,7 +49,9 @@ class _ClockScreenState extends State<ClockScreen> {
           leadingWidth: 25.w,
           actions: [
             IconButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.pushNamed(context, '/Help');
+                },
                 icon: Icon(
                   Icons.help_outline_outlined,
                   color: Colors.white,
@@ -50,12 +81,6 @@ class _ClockScreenState extends State<ClockScreen> {
                   Navigator.pop(context);
                 },
               ),
-              IconButton(
-                  onPressed: () {},
-                  icon: Icon(
-                    Icons.home,
-                    color: Colors.white,
-                  ))
             ],
           ),
         ),
@@ -84,16 +109,22 @@ class _ClockScreenState extends State<ClockScreen> {
                   )),
                   height: 90.w,
                   width: 90.w,
-                  child: DrawingBoard(),
+                  child: Screenshot(
+                    child: DrawingBoard(),
+                    controller: screenshotController,
+                  ),
                 ),
                 SizedBox(
                   width: 80.w,
                   child: SignUpButton(
-                    onPressed: () {
+                    onPressed: () async {
+                      await uploadImage();
                       Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => ListenAndSpell(),
+                          builder: (context) => ListenAndSpell(
+                            data: {"clockDraw": imageurl},
+                          ),
                         ),
                       );
                     },

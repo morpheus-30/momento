@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:momento/constants.dart';
 import 'package:momento/screens/pre_assessment_questions/MathScreen.dart';
@@ -7,6 +9,8 @@ import 'package:sizer/sizer.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class VideoScreen extends StatelessWidget {
+  Map<String, dynamic> data;
+  VideoScreen({required this.data});
   final YoutubePlayerController _controller = YoutubePlayerController(
     initialVideoId: 'WlHYWYBbJ0U',
     flags: const YoutubePlayerFlags(
@@ -21,6 +25,11 @@ class VideoScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    List<String> objects;
+    String word1 = "";
+    String word2 = "";
+    String word3 = "";
+    String word4 = "";
     return Sizer(builder: (context, orientation, deviceType) {
       return Scaffold(
         resizeToAvoidBottomInset: false,
@@ -28,7 +37,9 @@ class VideoScreen extends StatelessWidget {
           leadingWidth: 25.w,
           actions: [
             IconButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.pushNamed(context, '/Help');
+                },
                 icon: Icon(
                   Icons.help_outline_outlined,
                   color: Colors.white,
@@ -47,25 +58,6 @@ class VideoScreen extends StatelessWidget {
             ),
           ),
           backgroundColor: brown2,
-          leading: Row(
-            children: [
-              IconButton(
-                icon: const Icon(
-                  Icons.arrow_back_ios,
-                  color: Colors.white,
-                ),
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-              ),
-              IconButton(
-                  onPressed: () {},
-                  icon: Icon(
-                    Icons.home,
-                    color: Colors.white,
-                  ))
-            ],
-          ),
         ),
         body: Center(
           child: Container(
@@ -142,7 +134,7 @@ class VideoScreen extends StatelessWidget {
                   // ),
                   child: YoutubePlayer(
                     bottomActions: [
-                      PlayPauseButton(),  
+                      PlayPauseButton(),
                       CurrentPosition(),
                       ProgressBar(isExpanded: true),
                       RemainingDuration(),
@@ -154,13 +146,31 @@ class VideoScreen extends StatelessWidget {
                   width: 80.w,
                   child: Column(
                     children: [
-                      MomentotextField(inputText: "Object #1"),
+                      MomentotextField(
+                          inputText: "Object #1",
+                          onSaved: (value) {
+                            word1 = value;
+                          }),
                       SizedBox(height: 1.h),
-                      MomentotextField(inputText: "Object #2"),
+                      MomentotextField(
+                          inputText: "Object #2",
+                          onSaved: (value) {
+                            word2 = value;
+                          }),
                       SizedBox(height: 1.h),
-                      MomentotextField(inputText: "Object #3"),
+                      MomentotextField(
+                        inputText: "Object #3",
+                        onSaved: (value) {
+                          word3 = value;
+                        },
+                      ),
                       SizedBox(height: 1.h),
-                      MomentotextField(inputText: "Object #4"),
+                      MomentotextField(
+                        inputText: "Object #4",
+                        onSaved: (value) {
+                          word4 = value;
+                        },
+                      )
                     ],
                   ),
                 ),
@@ -171,10 +181,14 @@ class VideoScreen extends StatelessWidget {
                   width: 80.w,
                   child: LoginButton(
                     onPressed: () {
+                      objects = [word1, word2, word3, word4];
+                      data["4Objects"] = objects;
                       Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => MathScreen()));
+                              builder: (context) => MathScreen(
+                                data: data,
+                              )));
                     },
                     text: "Continue",
                   ),

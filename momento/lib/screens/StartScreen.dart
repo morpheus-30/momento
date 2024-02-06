@@ -1,4 +1,6 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:momento/screens/HomeScreen.dart';
 import 'package:momento/widgets/buttons/loginButton.dart';
 import 'package:momento/widgets/buttons/signUpButton.dart';
 import 'package:momento/constants.dart';
@@ -9,35 +11,62 @@ class StartScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Sizer(builder: (context, orientation, deviceType) {
-      return Scaffold(
-        backgroundColor: brown2,
-        body: Stack(
-          alignment: Alignment.bottomCenter,
-          children: [
-            Center(child: SizedBox(width:85.w,child: Image.asset('assets/images/logo.jpeg'))),
-            Container(
-              margin: EdgeInsets.only(bottom: 3.h),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+    return StreamBuilder(
+      stream: FirebaseAuth.instance.authStateChanges(),
+      builder: (BuildContext context, AsyncSnapshot snapshot) {
+        if (snapshot.hasError) {
+          return Text(snapshot.error.toString());
+        }
+        if (snapshot.connectionState == ConnectionState.active) {
+          if (snapshot.hasData) {
+            return Sizer(builder: (context, orientation, deviceType) {
+              return HomeScreen();
+            });
+          }
+          return Sizer(builder: (context, orientation, deviceType) {
+            return Scaffold(
+              backgroundColor: brown2,
+              body: Stack(
+                alignment: Alignment.bottomCenter,
                 children: [
-                  SizedBox(
-                    child: LoginButton(
-                      onPressed: (){
-                        Navigator.pushNamed(context, '/login');
-                      },
+                  Center(
+                      child: SizedBox(
+                          width: 85.w,
+                          child: Image.asset('assets/images/logo.jpeg'))),
+                  Container(
+                    margin: EdgeInsets.only(bottom: 3.h),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        SizedBox(
+                          child: LoginButton(
+                            onPressed: () {
+                              Navigator.pushNamed(context, '/login');
+                            },
+                          ),
+                          width: 45.w,
+                        ),
+                        SizedBox(
+                            width: 45.w,
+                            child: SignUpButton(
+                              onPressed: () {
+                                Navigator.pushNamed(context, '/singup');
+                              },
+                            )),
+                      ],
                     ),
-                    width: 45.w,
-                  ),
-                  SizedBox(width: 45.w,child: SignUpButton(onPressed: (){
-                    Navigator.pushNamed(context, '/singup');
-                  },)),
+                  )
                 ],
               ),
-            )
-          ],
-        ),
-      );
-    });
+            );
+          });
+          
+        }
+        return Scaffold(
+          body: Center(
+            child: CircularProgressIndicator(),
+        ));
+      },
+    );
   }
 }

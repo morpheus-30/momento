@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "315711735336",
+    "project_id": "momento-f1772",
+    "storage_bucket": "momento-f1772.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:315711735336:android:90cd3d7d1a8ed66fb2571d",
+        "android_client_info": {
+          "package_name": "com.example.momento"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBCX1gn7EydDvP_agiha11IBFv4Ok2UmQE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
