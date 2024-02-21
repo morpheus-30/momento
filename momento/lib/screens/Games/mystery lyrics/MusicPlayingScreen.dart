@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:string_similarity/string_similarity.dart';
 
 import 'package:flutter/material.dart';
@@ -141,13 +143,16 @@ class _MusicPlayingScreenState extends State<MusicPlayingScreen> {
           _startListening();
           Future.delayed(const Duration(seconds: 10), () async {
             if (i - 1 >= 0) {
-            //  print("Score ${ lyrics![i - 1].words.similarityTo(_wordsSpoken) }");
+              //  print("Score ${ lyrics![i - 1].words.similarityTo(_wordsSpoken) }");
               setState(() {
-                Score += (lyrics![i - 1].words.toLowerCase().similarityTo(_wordsSpoken.toLowerCase()) ) *
+                Score += (lyrics![i - 1]
+                        .words
+                        .toLowerCase()
+                        .similarityTo(_wordsSpoken.toLowerCase())) *
                     100;
-                    Score = Score.roundToDouble();
+                Score = Score.roundToDouble();
               });
-            }else{
+            } else {
               setState(() {
                 Score += 100;
               });
@@ -212,14 +217,14 @@ class _MusicPlayingScreenState extends State<MusicPlayingScreen> {
                           ColouredBgIconButton(
                             iconSize: 20.sp,
                             onPressed: () async {
-                              if(_speechEabled&&!hasBeenStarted){
-                                  player.play();
-                                  hasBeenStarted = true;
-                              }else if(!_speechEabled){
+                              if (_speechEabled && !hasBeenStarted) {
+                                player.play();
+                                hasBeenStarted = true;
+                              } else if (!_speechEabled) {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
-                                    content: Text(
-                                        "Speech to text not available"),
+                                    content:
+                                        Text("Speech to text not available"),
                                   ),
                                 );
                               }
@@ -462,133 +467,188 @@ class _MusicPlayingScreenState extends State<MusicPlayingScreen> {
                 ),
         ),
         onWillPop: () {
-          int finalScore =  ((Score/(lyrics!.length*100))*100).round();
-          int numberOfStars = finalScore>80?3:finalScore>60?2:finalScore>40?1:0;
+          int finalScore = ((Score / (lyrics!.length * 100)) * 100).round();
+          int numberOfStars = finalScore > 80
+              ? 3
+              : finalScore > 60
+                  ? 2
+                  : finalScore > 40
+                      ? 1
+                      : 0;
           dynamic alert = AlertDialog(
-          title: Text("Are you sure you want to exit?"),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text("No"),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-                dynamic alert2 = AlertDialog(
-                  title: const Text(
-                    "Score",
-                    textAlign: TextAlign.center,
-                  ),
-                  titleTextStyle: TextStyle(
-                    fontSize: 20.sp,
-                    fontWeight: FontWeight.bold,
-                    fontFamily: "Montserrat",
-                    color: Colors.black,
-                  ),
-                  contentTextStyle: TextStyle(
-                    fontSize: 70.sp,
-                    color: Colors.black,
-                    fontWeight: FontWeight.bold,
-                    fontFamily: "Montserrat",
-                  ),
-                  content: SizedBox(
-                    height: 30.h,
-                    child: Column(
-                      children: [
-                        Text(
-                          finalScore.toString(),
-                          textAlign: TextAlign.center,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              Icons.star,
-                              size: 40.sp,
-                              color: numberOfStars>0?Colors.yellow:Colors.grey,
-                            ),
-                            Icon(
-                              Icons.star,
-                              size: 40.sp,
-                              color: numberOfStars>1?Colors.yellow:Colors.grey,
-                            ),
-                            Icon(
-                              Icons.star,
-                              size: 40.sp,
-                              color: numberOfStars>2?Colors.yellow:Colors.grey,
-                            ),
-                          ],
-                        ),
-                        SizedBox(
-                          height: 3.h,
-                        ),
-                        SizedBox(
-                          height: 5.h,
-                          width: 80.w,
-                          child: Row(
+            title: Text("Are you sure you want to exit?"),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text("No"),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  dynamic alert2 = AlertDialog(
+                    title: const Text(
+                      "Score",
+                      textAlign: TextAlign.center,
+                    ),
+                    titleTextStyle: TextStyle(
+                      fontSize: 20.sp,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: "Montserrat",
+                      color: Colors.black,
+                    ),
+                    contentTextStyle: TextStyle(
+                      fontSize: 70.sp,
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: "Montserrat",
+                    ),
+                    content: SizedBox(
+                      height: 30.h,
+                      child: Column(
+                        children: [
+                          Text(
+                            finalScore.toString(),
+                            textAlign: TextAlign.center,
+                          ),
+                          Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              IconButton(
-                                alignment: Alignment.center,
-                                onPressed: ()async {
-                                  setState(() {
-                                    hasBeenStarted = false;
-                                    Score = 0;
-                                  });
-                                  player.stop();
-                                  player.seek(Duration.zero);
-                                  Navigator.pop(context);
-                                },
-                                padding: EdgeInsets.zero,
-                                icon: Icon(
-                                  Icons.loop,
-                                  size: 40.sp,
-                                ),
+                              Icon(
+                                Icons.star,
+                                size: 40.sp,
+                                color: numberOfStars > 0
+                                    ? Colors.yellow
+                                    : Colors.grey,
                               ),
-                              SizedBox(
-                                width: 5.w,
+                              Icon(
+                                Icons.star,
+                                size: 40.sp,
+                                color: numberOfStars > 1
+                                    ? Colors.yellow
+                                    : Colors.grey,
                               ),
-                              IconButton(
-                                alignment: Alignment.center,
-                                padding: EdgeInsets.zero,
-                                onPressed: () async{
-                                  player.dispose();
-                                  Navigator.popUntil(
-                                      context, (route) => route.isFirst);
-                                  Navigator.pushReplacementNamed(
-                                      context, '/home');
-                                },
-                                icon: Icon(
-                                  Icons.exit_to_app,
-                                  size: 40.sp,
-                                ),
+                              Icon(
+                                Icons.star,
+                                size: 40.sp,
+                                color: numberOfStars > 2
+                                    ? Colors.yellow
+                                    : Colors.grey,
                               ),
                             ],
                           ),
-                        ),
-                      ],
+                          SizedBox(
+                            height: 3.h,
+                          ),
+                          SizedBox(
+                            height: 5.h,
+                            width: 80.w,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                IconButton(
+                                  alignment: Alignment.center,
+                                  onPressed: () async {
+                                    setState(() {
+                                      hasBeenStarted = false;
+                                      Score = 0;
+                                    });
+                                    player.stop();
+                                    player.seek(Duration.zero);
+                                    Navigator.pop(context);
+                                  },
+                                  padding: EdgeInsets.zero,
+                                  icon: Icon(
+                                    Icons.loop,
+                                    size: 40.sp,
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 5.w,
+                                ),
+                                IconButton(
+                                  alignment: Alignment.center,
+                                  padding: EdgeInsets.zero,
+                                  onPressed: () async {
+                                    player.dispose();
+                                    await FirebaseFirestore.instance
+                                        .collection('MysteryLyrics')
+                                        .doc(FirebaseAuth
+                                            .instance.currentUser!.uid)
+                                        .collection('Scores')
+                                        .doc(DateTime.now().toString())
+                                        .set({
+                                      'Score': finalScore,
+                                      'Date': DateTime.now().toString(),
+                                    });
+                                    // dynamic oldScores = await FirebaseFirestore
+                                    //     .instance
+                                    //     .collection('MysteryLyrics')
+                                    //     .doc(FirebaseAuth
+                                    //         .instance.currentUser!.uid)
+                                    //     .collection('Scores')
+                                    //     .get();
+                                    dynamic highScore;
+                                    await FirebaseFirestore.instance
+                                        .collection('MysteryLyrics')
+                                        .doc(FirebaseAuth
+                                            .instance.currentUser!.uid)
+                                        .get()
+                                        .then((value) {
+                                      highScore = value.data()!['HighScore'];
+                                    });
+                                    if (Score.toInt() > highScore) {
+                                      await FirebaseFirestore.instance
+                                          .collection('MysteryLyrics')
+                                          .doc(FirebaseAuth
+                                              .instance.currentUser!.uid)
+                                          .update({
+                                        'HighScore': Score.toInt(),
+                                      });
+                                    }
+                                    print("HighScore updated");
+                                    // oldScores.docs.forEach((element) {
+                                    //   print(element.data());
+                                    // });
+                                    Navigator.popUntil(
+                                        context, (route) => route.isFirst);
+                                    Navigator.pushReplacementNamed(
+                                        context, '/home');
+                                    Navigator.popUntil(
+                                        context, (route) => route.isFirst);
+                                    Navigator.pushReplacementNamed(
+                                        context, '/home');
+                                  },
+                                  icon: Icon(
+                                    Icons.exit_to_app,
+                                    size: 40.sp,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                );
-                showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return alert2;
-                  },
-                );
-              },
-              child: Text("Yes"),
-            ),
-          ],
-        );
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return alert;
-          },
-        );
+                  );
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return alert2;
+                    },
+                  );
+                },
+                child: Text("Yes"),
+              ),
+            ],
+          );
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return alert;
+            },
+          );
           return Future.value(true);
         });
   }

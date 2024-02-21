@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:math';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:momento/constants.dart';
 import 'package:momento/widgets/buttons/loginButton.dart';
@@ -135,7 +137,7 @@ class _PatternMatchGameScreenState extends State<PatternMatchGameScreen> {
           title: Text("Are you sure you want to exit?"),
           actions: [
             TextButton(
-              onPressed: () {
+              onPressed: () async {
                 Navigator.of(context).pop();
               },
               child: Text("No"),
@@ -221,7 +223,54 @@ class _PatternMatchGameScreenState extends State<PatternMatchGameScreen> {
                               IconButton(
                                 alignment: Alignment.center,
                                 padding: EdgeInsets.zero,
-                                onPressed: () {
+                                onPressed: () async {
+                                  // print("Fetching data");
+                                  await FirebaseFirestore.instance
+                                      .collection('Pattern')
+                                      .doc(FirebaseAuth
+                                          .instance.currentUser!.uid)
+                                      .collection('Scores')
+                                      .doc(DateTime.now().toString())
+                                      .set(
+                                    {
+                                      'score': score,
+                                      'Level': widget.level,
+                                    },
+                                  );
+                                  dynamic highScore = 0;
+                                  // print("Fetching HIgh Score");
+                                  await FirebaseFirestore.instance
+                                      .collection('Pattern')
+                                      .doc(FirebaseAuth
+                                          .instance.currentUser!.uid)
+                                      .get()
+                                      .then((value) {
+                                    if (value.data() != null) {
+                                      highScore = value.data()!['HighScore'];
+                                    }
+                                  });
+
+                                  if (highScore < score || highScore == 0) {
+                                    await FirebaseFirestore.instance
+                                        .collection('Pattern')
+                                        .doc(FirebaseAuth
+                                            .instance.currentUser!.uid)
+                                        .set({
+                                      'HighScore': score,
+                                    }, SetOptions(merge: true));
+                                    // print("Updating High Score");
+                                  }
+
+                                  // dynamic oldScores = await FirebaseFirestore
+                                  //     .instance
+                                  //     .collection('Pattern')
+                                  //     .doc(FirebaseAuth
+                                  //         .instance.currentUser!.uid)
+                                  //     .collection('Scores')
+                                  //     .get();
+                                  // oldScores.docs.forEach((element) {
+                                  //   print(element.data());
+                                  // });
                                   Navigator.popUntil(
                                       context, (route) => route.isFirst);
                                   Navigator.pushReplacementNamed(
@@ -260,23 +309,6 @@ class _PatternMatchGameScreenState extends State<PatternMatchGameScreen> {
       },
       child: Scaffold(
         appBar: AppBar(
-          actions: [
-            IconButton(
-                onPressed: () {},
-                icon: Icon(
-                  Icons.notifications,
-                  color: Colors.white,
-                )),
-            IconButton(
-              onPressed: () {
-                Navigator.pushNamed(context, '/Help');
-              },
-              icon: Icon(
-                Icons.question_mark,
-                color: Colors.white,
-              ),
-            ),
-          ],
           elevation: 0,
           leadingWidth: 30.w,
           centerTitle: true,
@@ -304,7 +336,7 @@ class _PatternMatchGameScreenState extends State<PatternMatchGameScreen> {
                     title: Text("Are you sure you want to exit?"),
                     actions: [
                       TextButton(
-                        onPressed: () {
+                        onPressed: () async {
                           Navigator.of(context).pop();
                         },
                         child: Text("No"),
@@ -391,7 +423,30 @@ class _PatternMatchGameScreenState extends State<PatternMatchGameScreen> {
                                         IconButton(
                                           alignment: Alignment.center,
                                           padding: EdgeInsets.zero,
-                                          onPressed: () {
+                                          onPressed: () async {
+                                            print("Fetching data");
+                                            //back button app bar
+                                            await FirebaseFirestore.instance
+                                                .collection('Pattern')
+                                                .doc(FirebaseAuth
+                                                    .instance.currentUser!.uid)
+                                                .collection('Scores')
+                                                .add({
+                                              'score': score,
+                                              'Level': widget.level,
+                                              'DateTime':
+                                                  DateTime.now().toString(),
+                                            });
+                                            dynamic oldScores =
+                                                await FirebaseFirestore.instance
+                                                    .collection('Pattern')
+                                                    .doc(FirebaseAuth.instance
+                                                        .currentUser!.uid)
+                                                    .collection('Scores')
+                                                    .get();
+                                            oldScores.docs.forEach((element) {
+                                              print(element.data());
+                                            });
                                             Navigator.popUntil(context,
                                                 (route) => route.isFirst);
                                             Navigator.pushReplacementNamed(
@@ -427,16 +482,6 @@ class _PatternMatchGameScreenState extends State<PatternMatchGameScreen> {
                     },
                   );
                 },
-              ),
-              IconButton(
-                onPressed: () {
-                  Navigator.popUntil(context, (route) => route.isFirst);
-                  Navigator.pushReplacementNamed(context, '/home');
-                },
-                icon: Icon(
-                  Icons.home,
-                  color: Colors.white,
-                ),
               ),
             ],
           ),

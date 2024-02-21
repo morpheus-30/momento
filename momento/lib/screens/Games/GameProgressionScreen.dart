@@ -1,12 +1,36 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:draw_graph/draw_graph.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:momento/constants.dart';
 import 'package:momento/widgets/buttons/loginButton.dart';
 import 'package:sizer/sizer.dart';
 import 'package:draw_graph/models/feature.dart';
 
-class ProgressionScreen extends StatelessWidget {
+class ProgressionScreen extends StatefulWidget {
   const ProgressionScreen({super.key});
+
+  @override
+  State<ProgressionScreen> createState() => _ProgressionScreenState();
+}
+
+class _ProgressionScreenState extends State<ProgressionScreen> {
+
+  dynamic scores;
+
+  Future<void> getScores() async {
+    await FirebaseFirestore.instance
+        .collection("MysteryLyrics")
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .collection("Scores")
+        .get();
+    setState(() {});
+  }
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {

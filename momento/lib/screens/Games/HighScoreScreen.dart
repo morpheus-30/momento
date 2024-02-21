@@ -1,10 +1,38 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:momento/constants.dart';
 import 'package:momento/widgets/buttons/loginButton.dart';
 import 'package:sizer/sizer.dart';
 
-class HighScoreScreen extends StatelessWidget {
-  const HighScoreScreen({super.key});
+class HighScoreScreen extends StatefulWidget {
+  @override
+  State<HighScoreScreen> createState() => _HighScoreScreenState();
+}
+
+class _HighScoreScreenState extends State<HighScoreScreen> {
+  int patternGameScore = -1;
+
+  int mysteryLyricsScore = -1;
+
+  Future<void> getHighScores() async {
+    patternGameScore = await FirebaseFirestore.instance
+        .collection("Pattern")
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .get()
+        .then((value) => value['HighScore']);
+    mysteryLyricsScore = await FirebaseFirestore.instance
+        .collection("MysteryLyrics")
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .get()
+        .then((value) => value['HighScore']);
+    setState(() {});
+  }
+
+  @override
+  void initState() {
+    getHighScores();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -85,13 +113,13 @@ class HighScoreScreen extends StatelessWidget {
                   SizedBox(height: 4.h),
                   ScoreWidget(
                     gameName: "Pattern Game",
-                    score: 100,
+                    score: patternGameScore,
                     color: Colors.red[900]!,
                   ),
                   SizedBox(height: 2.h),
                   ScoreWidget(
                     gameName: "Mystery Lyrics",
-                    score: 10,
+                    score: mysteryLyricsScore,
                     color: Colors.green[900]!,
                   ),
                   SizedBox(height: 2.h),

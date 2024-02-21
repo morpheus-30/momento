@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:momento/screens/Games/GameProgressionScreen.dart';
 import 'package:momento/screens/Games/GamesRecommendations.dart';
-import 'package:momento/screens/Games/pattern/PatternGame.dart';
 import 'package:momento/screens/HelpScreen.dart';
 import 'package:momento/screens/Games/HighScoreScreen.dart';
 import 'package:momento/screens/MusicPreferences/MusicPreferences.dart';

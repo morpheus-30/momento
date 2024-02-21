@@ -42,7 +42,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 color: Colors.white,
               )),
           IconButton(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.pushNamed(context, '/Help');
+            },
             icon: Icon(
               Icons.question_mark,
               color: Colors.white,

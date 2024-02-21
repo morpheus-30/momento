@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:momento/constants.dart';
@@ -24,18 +25,18 @@ class HomeScreen extends StatelessWidget {
                 color: Colors.white,
               )),
           IconButton(
-            onPressed: () {
+            onPressed: () async {
               // Navigator.pushNamed(context, '/Help');
-              Navigator.push(context, MaterialPageRoute(builder: (context) => DateScreen(
-                data: {"name": "Date"}
-              )));
+              // Navigator.push(context, MaterialPageRoute(builder: (context) => DateScreen(
+              //   data: {"name": "Date"}
+              // )));
+              
             },
             icon: Icon(
               Icons.question_mark,
               color: Colors.white,
             ),
           ),
-
         ],
         elevation: 2,
         leadingWidth: 30.w,
@@ -52,9 +53,7 @@ class HomeScreen extends StatelessWidget {
         backgroundColor: brown2,
         leading: Row(
           mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            
-          ],
+          children: [],
         ),
       ),
       body: Center(
@@ -70,9 +69,9 @@ class HomeScreen extends StatelessWidget {
                 )),
             SizedBox(height: 8.h),
             Column(
-              children: [ 
+              children: [
                 ...["Games", "Resources", "High Score", "Profile"]
-                    .map((e) =>   Column(
+                    .map((e) => Column(
                           children: [
                             SizedBox(
                               width: 80.w,
@@ -87,7 +86,6 @@ class HomeScreen extends StatelessWidget {
                           ],
                         ))
                     .toList()
-
               ],
             )
           ],
