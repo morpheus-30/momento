@@ -155,15 +155,31 @@ class _DateScreenState extends State<DateScreen> {
                 margin: EdgeInsets.only(bottom: 5.h),
                 width: 90.w,
                 child: LoginButton(
-                  onPressed: ()async {
+                  onPressed: () async {
                     String date = Date + "/" + Month + "/" + Year;
                     widget.data["Date"] = date;
                     print(widget.data);
-                    await FirebaseFirestore.instance.collection('Users').doc(FirebaseAuth.instance.currentUser!.uid).set({
-                            'email': FirebaseAuth.instance.currentUser!.email,
-                            'Image':"",
-                            'preques': widget.data,
-                          });
+                    await FirebaseFirestore.instance
+                        .collection('Users')
+                        .doc(FirebaseAuth.instance.currentUser!.uid)
+                        .set({
+                      'email': FirebaseAuth.instance.currentUser!.email,
+                      'Image': "",
+                      'preques': widget.data,
+                      'lastDailyTriviaDone': "00000000",
+                    });
+                    await FirebaseFirestore.instance
+                        .collection('Pattern')
+                        .doc(FirebaseAuth.instance.currentUser!.uid)
+                        .set({
+                      'HighScore': 0,
+                    }, SetOptions(merge: true));
+                    await FirebaseFirestore.instance
+                        .collection('MysteryLyrics')
+                        .doc(FirebaseAuth.instance.currentUser!.uid)
+                        .set({
+                      'HighScore': 0,
+                    }, SetOptions(merge: true));
                     Navigator.popUntil(context, (route) => route.isFirst);
                     Navigator.pushReplacement(context, MaterialPageRoute(
                       builder: (context) {

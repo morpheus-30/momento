@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:momento/screens/daily_trivia/DailytriviaIntro.dart';
+import 'package:momento/screens/StartScreen.dart';
+// import 'package:momento/screens/daily_trivia/DailytriviaIntro.dart';
 import 'package:momento/widgets/buttons/signUpButton.dart';
 import 'package:momento/constants.dart';
 import 'package:momento/widgets/buttons/textField.dart';
@@ -26,11 +27,11 @@ class _LoginScreenState extends State<LoginScreen> {
     } on FirebaseAuthException catch (e) {
       print(e.code);
       if (e.code == 'invalid-credential') {
-        print('Either the user does not exist or the password is wrong.');
+        // print('Either the user does not exist or the password is wrong.');
         return 1;
-      } 
+      }
     } catch (e) {
-      print('An error occurred.');
+      // print('An error occurred.');
       return 2;
     }
     return 2;
@@ -105,34 +106,55 @@ class _LoginScreenState extends State<LoginScreen> {
                             fontWeight: FontWeight.bold,
                           )),
                       SizedBox(height: 1.h),
-                      Row(
-                        children: [
-                          SizedBox(
-                            width: 70.w,
-                            child: MomentotextField(
-                              obscureText: obscureText,
-                              onSaved: (value) {
-                                password = value;
+                      Theme(
+                        data: ThemeData(primaryColor: brown2),
+                        child: TextField(
+                          obscureText: obscureText,
+                          onChanged: (value) {
+                            password = value;
+                          },
+                          decoration: InputDecoration(
+                            suffixIcon: IconButton(
+                              icon: Icon(
+                                obscureText
+                                    ? Icons.visibility
+                                    : Icons.visibility_off,
+                                color: brown2,
+                              ),
+                              onPressed: () {
+                                setState(() {
+                                  obscureText = !obscureText;
+                                });
                               },
-                              inputText: "Password",
+                            ),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                              borderSide: BorderSide(
+                                width: 2,
+                                color: brown2,
+                                style: BorderStyle.solid,
+                              ),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                              borderSide: BorderSide(
+                                width: 2,
+                                color: brown2,
+                                style: BorderStyle.solid,
+                              ),
+                            ),
+                            filled: true,
+                            fillColor: Colors.grey[200],
+                            contentPadding: EdgeInsets.all(20),
+                            hintText: "Password",
+                            hintStyle: TextStyle(
+                              fontSize: 12,
+                              color: Colors.grey[400],
+                              fontFamily: "Montserrat",
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
-                          SizedBox(
-                            width: 5.w,
-                          ),
-                          IconButton(
-                            icon: Icon(
-                              obscureText
-                                  ? Icons.visibility_off
-                                  : Icons.visibility,
-                              color: brown2,
-                            ),
-                            onPressed: () {
-                              obscureText = !obscureText;
-                              setState(() {});
-                            },
-                          ),
-                        ],
+                        ),
                       ),
                     ],
                   ),
@@ -164,16 +186,17 @@ class _LoginScreenState extends State<LoginScreen> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => DailyTriviaIntro(),
+                              builder: (context) => StartScreen(),
                             ),
                           );
                         } else if (result == 1) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
-                              content: Text('Either the user does not exist or the password is wrong.'),
+                              content: Text(
+                                  'Either the user does not exist or the password is wrong.'),
                             ),
                           );
-                        }else {
+                        } else {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content:

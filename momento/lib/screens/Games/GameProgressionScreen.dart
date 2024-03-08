@@ -8,50 +8,49 @@ import 'package:sizer/sizer.dart';
 import 'package:draw_graph/models/feature.dart';
 
 class ProgressionScreen extends StatefulWidget {
-  const ProgressionScreen({super.key});
+  String collection;
+  ProgressionScreen({required this.collection});
 
   @override
   State<ProgressionScreen> createState() => _ProgressionScreenState();
 }
 
 class _ProgressionScreenState extends State<ProgressionScreen> {
+  // dynamic scores;
+  Map<int, int> dateToScore = {};
 
-  dynamic scores;
-
-  Future<void> getScores() async {
+  Future<void> getScores(String collection) async {
+    dynamic myScores;
     await FirebaseFirestore.instance
-        .collection("MysteryLyrics")
+        .collection(collection)
         .doc(FirebaseAuth.instance.currentUser!.uid)
         .collection("Scores")
-        .get();
+        .get()
+        .then((value) => myScores = value.docs);
+    for (var score in myScores) {
+      // print("${score.id} : ${score.data()}");
+      DateTime date = DateTime.parse(score.id);
+      if (dateToScore.containsKey(date.day)) {
+        int currScore = score.data()["score"];
+        dateToScore[date.day] = ((dateToScore[date.day]! + currScore)/2).toInt();
+      } else {
+        dateToScore[date.day] = score.data()["score"];
+      }
+    }
+    // print(dateToScore);
     setState(() {});
   }
 
   @override
   void initState() {
     super.initState();
+    getScores(widget.collection);
   }
 
   @override
   Widget build(BuildContext context) {
-    Map<int, int> dateToScore = {
-      1: 169,
-      2: 278,
-      3: 878,
-      4: 981,
-      5: 651,
-      6: 789,
-      7: 123,
-      8: 456,
-      9: 231,
-      10: 789,
-      13: 169,
-      17: 278,
-      19: 878,
-      23: 981,
-      28: 651,
-      31: 789,
-    };
+    // getScores("Pattern");
+    // dateToScore[30] = 200;
     List<int> dates = [
       1,
       2,
@@ -82,10 +81,10 @@ class _ProgressionScreenState extends State<ProgressionScreen> {
       27,
       28,
       29,
-      30,
-      31
+      30
     ];
     List<double> scores = [];
+
     for (int i = 0; i < dates.length; i++) {
       if (dateToScore.containsKey(dates[i])) {
         scores.add(dateToScore[dates[i]]!.toDouble() / 1000);
@@ -93,7 +92,9 @@ class _ProgressionScreenState extends State<ProgressionScreen> {
         scores.add(0);
       }
     }
-    print(scores);
+
+    // print("myscires");
+    // print(scores);
 
     return Scaffold(
       body: Container(
@@ -123,16 +124,13 @@ class _ProgressionScreenState extends State<ProgressionScreen> {
                 showDescription: true,
                 graphColor: Colors.black,
                 verticalFeatureDirection: true,
-                labelX: [
-                  "1",
-                  "5",
-                  "10",
-                  "15",
-                  "20",
-                  "25",
-                  "30",
-                  "31",
-                ],
+                labelX: dates.map((e){
+                  if(e%5==0){
+                    return e.toString();
+                  }
+                  return " ";
+                
+                }).toList(),
                 labelY: [
                   "0",
                   "200",
@@ -140,6 +138,9 @@ class _ProgressionScreenState extends State<ProgressionScreen> {
                   "600",
                   "800",
                   "1000",
+                  "2000",
+                  "3000",
+                  "4000"
                 ],
               ),
               SizedBox(height: 5.h),

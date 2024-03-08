@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:just_audio/just_audio.dart';
 import 'package:momento/constants.dart';
 import 'package:momento/widgets/buttons/loginButton.dart';
 import 'package:sizer/sizer.dart';
@@ -45,7 +46,7 @@ class _PatternMatchGameScreenState extends State<PatternMatchGameScreen> {
   int score = 0;
   void showPattern(List<int> pattern) {
     int i = 0;
-    int showDelay = widget.level == "Hard" ? 800 : 1500;
+    int showDelay = 1500;
     Timer.periodic(Duration(milliseconds: showDelay), (timer) {
       setState(() {
         // print("i: $i");
@@ -58,15 +59,19 @@ class _PatternMatchGameScreenState extends State<PatternMatchGameScreen> {
           });
         });
         if (pattern[i] == 1) {
+          audioPlayer.setAsset("assets/audio/c_major.wav");
           container1Color = colorMap[0];
           i++;
         } else if (pattern[i] == 2) {
+          audioPlayer.setAsset("assets/audio/d_major.wav");
           container2Color = colorMap[1];
           i++;
         } else if (pattern[i] == 3) {
+          audioPlayer.setAsset("assets/audio/e_major.wav");
           container3Color = colorMap[2];
           i++;
         } else if (pattern[i] == 4) {
+          audioPlayer.setAsset("assets/audio/f_major.wav");
           container4Color = colorMap[3];
           i++;
         }
@@ -128,6 +133,8 @@ class _PatternMatchGameScreenState extends State<PatternMatchGameScreen> {
       container4Color = originalColors[3];
     });
   }
+
+  AudioPlayer audioPlayer = AudioPlayer();
 
   @override
   Widget build(BuildContext context) {
@@ -580,11 +587,14 @@ class _PatternMatchGameScreenState extends State<PatternMatchGameScreen> {
                     ),
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        primary: Colors.transparent,
+                        backgroundColor: Colors.transparent,
                         shadowColor: Colors.transparent,
                       ),
                       onPressed: flag == false
-                          ? () {
+                          ? () async {
+                              await audioPlayer
+                                  .setAsset("assets/audio/c_major.wav");
+                              await audioPlayer.play();
                               print(1);
                               setState(() {
                                 container1Color = colorMap[0];
@@ -607,11 +617,14 @@ class _PatternMatchGameScreenState extends State<PatternMatchGameScreen> {
                     ),
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        primary: Colors.transparent,
+                        backgroundColor: Colors.transparent,
                         shadowColor: Colors.transparent,
                       ),
                       onPressed: flag == false
-                          ? () {
+                          ? () async {
+                              await audioPlayer
+                                  .setAsset("assets/audio/d_major.wav");
+                              await audioPlayer.play();
                               print(2);
                               setState(() {
                                 container2Color = colorMap[1];
@@ -634,11 +647,14 @@ class _PatternMatchGameScreenState extends State<PatternMatchGameScreen> {
                     ),
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        primary: Colors.transparent,
+                        backgroundColor: Colors.transparent,
                         shadowColor: Colors.transparent,
                       ),
                       onPressed: flag == false
-                          ? () {
+                          ? () async{
+                            await audioPlayer
+                              .setAsset("assets/audio/e_major.wav");
+                          await audioPlayer.play();
                               print(3);
                               setState(() {
                                 container3Color = colorMap[2];
@@ -661,11 +677,14 @@ class _PatternMatchGameScreenState extends State<PatternMatchGameScreen> {
                     ),
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        primary: Colors.transparent,
+                        backgroundColor: Colors.transparent,
                         shadowColor: Colors.transparent,
                       ),
                       onPressed: flag == false
-                          ? () {
+                          ? ()async{
+                            await audioPlayer
+                              .setAsset("assets/audio/d_major.wav");
+                          await audioPlayer.play();
                               print(4);
                               setState(() {
                                 container4Color = colorMap[3];
@@ -701,19 +720,21 @@ class _PatternMatchGameScreenState extends State<PatternMatchGameScreen> {
                                   nextButtonText = "Submit";
                                 });
                                 if (widget.level == 'Easy') {
-                                  currentPattern = [1, 2, 3, 4]..shuffle();
+                                  // currentPattern = [1, 2, 3, 4]..shuffle();
+                                  currentPattern = [
+                                    Random().nextInt(4) + 1,
+                                    Random().nextInt(4) + 1,
+                                    Random().nextInt(4) + 1,
+                                  ];
                                 } else if (widget.level == 'Medium') {
                                   currentPattern = [
                                     Random().nextInt(4) + 1,
                                     Random().nextInt(4) + 1,
                                     Random().nextInt(4) + 1,
                                     Random().nextInt(4) + 1,
-                                    Random().nextInt(4) + 1,
-                                    Random().nextInt(4) + 1
                                   ];
                                 } else if (widget.level == 'Hard') {
                                   currentPattern = [
-                                    Random().nextInt(4) + 1,
                                     Random().nextInt(4) + 1,
                                     Random().nextInt(4) + 1,
                                     Random().nextInt(4) + 1,

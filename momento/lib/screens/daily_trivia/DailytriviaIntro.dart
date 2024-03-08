@@ -1,11 +1,27 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:momento/constants.dart';
+import 'package:momento/screens/daily_trivia/DailytriviaCompleted.dart';
+import 'package:momento/screens/daily_trivia/HourOfDay.dart';
+import 'package:momento/screens/daily_trivia/NameOfAnimal.dart';
 import 'package:momento/screens/daily_trivia/Options.dart';
 import 'package:momento/widgets/buttons/signUpButton.dart';
 import 'package:sizer/sizer.dart';
 
 class DailyTriviaIntro extends StatelessWidget {
-  const DailyTriviaIntro({super.key});
+  User? user = FirebaseAuth.instance.currentUser;
+
+  List<Widget> questions = [
+    HourOfDay(),
+    NameOfAnimal(
+      animal: "cat",
+    ),
+    NameOfAnimal(
+      animal: "dog",
+    ),
+    OptionsScreenDailyTrivia()
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +57,8 @@ class DailyTriviaIntro extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Text("Hello User,",
+              Text("Hello ${user!.email},",
+                  textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 30.sp,
                     color: Colors.white,
@@ -74,9 +91,21 @@ class DailyTriviaIntro extends StatelessWidget {
               SizedBox(
                 width: 60.w,
                 child: SignUpButton(
-                  onPressed: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => OptionsScreenDailyTrivia()));
-                  },
+                  onPressed: () async {
+                    questions.shuffle();
+                    List<Widget> randomList = questions.sublist(0, 2);
+                    dynamic result1 = await Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => randomList[0]));
+                    dynamic result2 = await Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => randomList[1]));
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => DailyTriviaCompleted(
+                          data: [result1, result2],
+                        ),
+                      ),
+                    );},
                   text: "Let's Start",
                 ),
               ),

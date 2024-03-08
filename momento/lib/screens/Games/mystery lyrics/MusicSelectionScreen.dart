@@ -28,7 +28,7 @@ class _MusicSelectionScreenState extends State<MusicSelectionScreen> {
               )),
           IconButton(
             onPressed: () {
-              Navigator.pushNamed(context, '/Help');
+              Navigator.pushNamed(context, '/mysteryLyricsHelp');
             },
             icon: Icon(
               Icons.question_mark,

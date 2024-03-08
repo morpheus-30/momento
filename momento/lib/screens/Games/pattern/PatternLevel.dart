@@ -19,7 +19,7 @@ class PatternLevelScreen extends StatelessWidget {
               )),
           IconButton(
             onPressed: () {
-              Navigator.pushNamed(context, '/Help');
+              Navigator.pushNamed(context, '/patternHelp');
             },
             icon: Icon(
               Icons.question_mark,
@@ -108,7 +108,7 @@ class PatternLevelScreen extends StatelessWidget {
                     ),
                   ),
                   style: ElevatedButton.styleFrom(
-                    primary: brown2,
+                    backgroundColor: brown2,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),

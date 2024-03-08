@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import './screens/daily_trivia/Completed.dart';
+import 'screens/daily_trivia/DailytriviaCompleted.dart';
 
 const brown = Color(0xFFAB6D26);
 const darkBrown = Color(0xFF674117);

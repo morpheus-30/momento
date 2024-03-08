@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:momento/constants.dart';
+// import 'package:momento/constants.dart';
 
 class SignUpButton extends StatelessWidget {
   Function onPressed;
@@ -13,7 +13,7 @@ class SignUpButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
-        primary: color,
+        backgroundColor: color,
         shape: const RoundedRectangleBorder(
           side: BorderSide(color: Colors.transparent, width: 2),
           borderRadius: BorderRadius.all(

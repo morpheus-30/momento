@@ -14,7 +14,7 @@ class MysteryDifficultyScreen extends StatelessWidget {
         actions: [
           IconButton(
               onPressed: () {},
-              icon: Icon(
+              icon:const Icon(
                 Icons.notifications,
                 color: Colors.white,
               )),
@@ -22,7 +22,7 @@ class MysteryDifficultyScreen extends StatelessWidget {
             onPressed: () {
               Navigator.pushNamed(context, '/Help');
             },
-            icon: Icon(
+            icon:const Icon(
               Icons.question_mark,
               color: Colors.white,
             ),
@@ -31,7 +31,7 @@ class MysteryDifficultyScreen extends StatelessWidget {
         elevation: 0,
         leadingWidth: 30.w,
         centerTitle: true,
-        title: Text(
+        title:const Text(
           "Mystery Lyrics",
           textAlign: TextAlign.center,
           style: TextStyle(
@@ -57,7 +57,7 @@ class MysteryDifficultyScreen extends StatelessWidget {
               onPressed: () {
                 Navigator.popUntil(context, ModalRoute.withName('/home'));
               },
-              icon: Icon(
+              icon:const Icon(
                 Icons.home,
                 color: Colors.white,
               ),
@@ -109,7 +109,7 @@ class MysteryDifficultyScreen extends StatelessWidget {
                     ),
                   ),
                   style: ElevatedButton.styleFrom(
-                    primary: brown2,
+                    backgroundColor: brown2,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),

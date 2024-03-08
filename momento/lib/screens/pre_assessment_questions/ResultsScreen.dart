@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:momento/constants.dart';
 import 'package:momento/screens/HomeScreen.dart';
+import 'package:momento/screens/StartScreen.dart';
 import 'package:momento/widgets/buttons/loginButton.dart';
 import 'package:sizer/sizer.dart';
 
@@ -125,7 +126,7 @@ class ResultsScreen extends StatelessWidget {
                 width: 80.w,
                 child: LoginButton(
                   onPressed: () {
-                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomeScreen()));
+                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => StartScreen()));
                   },
                   text: "Continue",
                 )),

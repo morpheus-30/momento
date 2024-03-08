@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:string_similarity/string_similarity.dart';
-
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:intl/intl.dart';
@@ -9,12 +8,10 @@ import 'package:just_audio/just_audio.dart';
 import 'package:momento/constants.dart';
 import 'package:momento/screens/Games/mystery%20lyrics/models/lyricModel.dart';
 import 'package:momento/screens/Games/mystery%20lyrics/models/musicModel.dart';
-
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:sizer/sizer.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 import 'package:spotify/spotify.dart';
-
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
 class MusicPlayingScreen extends StatefulWidget {
@@ -85,12 +82,12 @@ class _MusicPlayingScreenState extends State<MusicPlayingScreen> {
         // print(music.songName!+" "+music.artistName!);
         String manipulatedName = music.songName! + music.artistName!;
         manipulatedName = manipulatedName.replaceAll(" ", "");
-        print(manipulatedName);
+        // print(manipulatedName);
         get(Uri.parse(
                 "https://paxsenixofc.my.id/server/getLyricsMusix.php?q=${manipulatedName}&type=default"))
             .then((response) {
           String data = response.body;
-          print(data);
+          // print(data);
           if (data == "") {
             lyrics = [Lyric(words: "No lyrics found", time: DateTime.now())];
             // print("No lyrics found");
@@ -213,6 +210,7 @@ class _MusicPlayingScreenState extends State<MusicPlayingScreen> {
                       width: 100.w,
                       color: brown2,
                       child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
                           ColouredBgIconButton(
                             iconSize: 20.sp,
@@ -448,17 +446,243 @@ class _MusicPlayingScreenState extends State<MusicPlayingScreen> {
                         ],
                       ),
                     ),
-                    Container(
-                      margin:
-                          EdgeInsets.only(bottom: 5.h, left: 5.w, right: 5.w),
-                      child: Text(
-                        _wordsSpoken,
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 20.sp,
-                          fontFamily: 'Montserrat',
+                    // Container(
+                    //   margin:
+                    //       EdgeInsets.only(bottom: 5.h, left: 5.w, right: 5.w),
+                    //   child: Text(
+                    //     _wordsSpoken,
+                    //     style: TextStyle(
+                    //       color: Colors.black,
+                    //       fontSize: 20.sp,
+                    //       fontFamily: 'Montserrat',
+                    //     ),
+                    //   ),
+                    // ),
+                    SizedBox(
+                      width: 3.w,
+                      height: 3.h,
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        int tempScore =
+                            ((Score / (lyrics!.length * 100)) * 100).round();
+                        int finalScore = Score.toInt();
+                        int numberOfStars = tempScore > 80
+                            ? 3
+                            : tempScore > 60
+                                ? 2
+                                : tempScore > 40
+                                    ? 1
+                                    : 0;
+                        dynamic alert = AlertDialog(
+                          title: Text("Are you sure you want to exit?"),
+                          actions: [
+                            TextButton(
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                              child: Text("No"),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                                dynamic alert2 = AlertDialog(
+                                  title: const Text(
+                                    "Score",
+                                    textAlign: TextAlign.center,
+                                  ),
+                                  titleTextStyle: TextStyle(
+                                    fontSize: 20.sp,
+                                    fontWeight: FontWeight.bold,
+                                    fontFamily: "Montserrat",
+                                    color: Colors.black,
+                                  ),
+                                  contentTextStyle: TextStyle(
+                                    fontSize: 70.sp,
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.bold,
+                                    fontFamily: "Montserrat",
+                                  ),
+                                  content: SizedBox(
+                                    height: 30.h,
+                                    child: Column(
+                                      children: [
+                                        Text(
+                                          finalScore.toString(),
+                                          textAlign: TextAlign.center,
+                                        ),
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Icon(
+                                              Icons.star,
+                                              size: 40.sp,
+                                              color: numberOfStars > 0
+                                                  ? Colors.yellow
+                                                  : Colors.grey,
+                                            ),
+                                            Icon(
+                                              Icons.star,
+                                              size: 40.sp,
+                                              color: numberOfStars > 1
+                                                  ? Colors.yellow
+                                                  : Colors.grey,
+                                            ),
+                                            Icon(
+                                              Icons.star,
+                                              size: 40.sp,
+                                              color: numberOfStars > 2
+                                                  ? Colors.yellow
+                                                  : Colors.grey,
+                                            ),
+                                          ],
+                                        ),
+                                        SizedBox(
+                                          height: 3.h,
+                                        ),
+                                        SizedBox(
+                                          height: 5.h,
+                                          width: 80.w,
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              IconButton(
+                                                alignment: Alignment.center,
+                                                onPressed: () async {
+                                                  setState(() {
+                                                    hasBeenStarted = false;
+                                                    Score = 0;
+                                                  });
+                                                  player.stop();
+                                                  player.seek(Duration.zero);
+                                                  Navigator.pop(context);
+                                                },
+                                                padding: EdgeInsets.zero,
+                                                icon: Icon(
+                                                  Icons.loop,
+                                                  size: 40.sp,
+                                                ),
+                                              ),
+                                              SizedBox(
+                                                width: 5.w,
+                                              ),
+                                              IconButton(
+                                                alignment: Alignment.center,
+                                                padding: EdgeInsets.zero,
+                                                onPressed: () async {
+                                                  player.dispose();
+                                                  await FirebaseFirestore
+                                                      .instance
+                                                      .collection(
+                                                          'MysteryLyrics')
+                                                      .doc(FirebaseAuth.instance
+                                                          .currentUser!.uid)
+                                                      .collection('Scores')
+                                                      .doc(DateTime.now()
+                                                          .toString())
+                                                      .set({
+                                                    'score': finalScore,
+                                                  });
+                                                  // dynamic oldScores = await FirebaseFirestore
+                                                  //     .instance
+                                                  //     .collection('MysteryLyrics')
+                                                  //     .doc(FirebaseAuth
+                                                  //         .instance.currentUser!.uid)
+                                                  //     .collection('Scores')
+                                                  //     .get();
+                                                  dynamic highScore;
+                                                  await FirebaseFirestore
+                                                      .instance
+                                                      .collection(
+                                                          'MysteryLyrics')
+                                                      .doc(FirebaseAuth.instance
+                                                          .currentUser!.uid)
+                                                      .get()
+                                                      .then((value) {
+                                                    highScore = value
+                                                        .data()!['HighScore'];
+                                                  });
+                                                  if (Score.toInt() >
+                                                      highScore) {
+                                                    await FirebaseFirestore
+                                                        .instance
+                                                        .collection(
+                                                            'MysteryLyrics')
+                                                        .doc(FirebaseAuth
+                                                            .instance
+                                                            .currentUser!
+                                                            .uid)
+                                                        .update({
+                                                      'HighScore':
+                                                          Score.toInt(),
+                                                    });
+                                                  }
+                                                  // print("HighScore updated");
+                                                  // oldScores.docs.forEach((element) {
+                                                  //   print(element.data());
+                                                  // });
+                                                  Navigator.popUntil(context,
+                                                      (route) => route.isFirst);
+                                                  Navigator
+                                                      .pushReplacementNamed(
+                                                          context, '/home');
+                                                  Navigator.popUntil(context,
+                                                      (route) => route.isFirst);
+                                                  Navigator
+                                                      .pushReplacementNamed(
+                                                          context, '/home');
+                                                },
+                                                icon: Icon(
+                                                  Icons.exit_to_app,
+                                                  size: 40.sp,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                );
+                                showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return alert2;
+                                  },
+                                );
+                              },
+                              child: Text("Yes"),
+                            ),
+                          ],
+                        );
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return alert;
+                          },
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: brown2,
+                        minimumSize: Size(80.w, 8.h),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
                         ),
                       ),
+                      child: Text(
+                        "Exit",
+                        style: TextStyle(
+                          fontSize: 15.sp,
+                          fontFamily: "Montserrat",
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 5.h,
                     ),
                   ],
                 )
@@ -467,12 +691,13 @@ class _MusicPlayingScreenState extends State<MusicPlayingScreen> {
                 ),
         ),
         onWillPop: () {
-          int finalScore = ((Score / (lyrics!.length * 100)) * 100).round();
-          int numberOfStars = finalScore > 80
+          int tempScore = ((Score / (lyrics!.length * 100)) * 100).round();
+          int finalScore = Score.toInt();
+          int numberOfStars = tempScore > 80
               ? 3
-              : finalScore > 60
+              : tempScore > 60
                   ? 2
-                  : finalScore > 40
+                  : tempScore > 40
                       ? 1
                       : 0;
           dynamic alert = AlertDialog(
@@ -579,8 +804,7 @@ class _MusicPlayingScreenState extends State<MusicPlayingScreen> {
                                         .collection('Scores')
                                         .doc(DateTime.now().toString())
                                         .set({
-                                      'Score': finalScore,
-                                      'Date': DateTime.now().toString(),
+                                      'score': finalScore,
                                     });
                                     // dynamic oldScores = await FirebaseFirestore
                                     //     .instance
@@ -607,7 +831,7 @@ class _MusicPlayingScreenState extends State<MusicPlayingScreen> {
                                         'HighScore': Score.toInt(),
                                       });
                                     }
-                                    print("HighScore updated");
+                                    // print("HighScore updated");
                                     // oldScores.docs.forEach((element) {
                                     //   print(element.data());
                                     // });

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:momento/screens/Games/GameProgressionScreen.dart';
 import 'package:momento/screens/Games/GamesRecommendations.dart';
+import 'package:momento/screens/Games/mystery%20lyrics/MysteryLyricHelpScreen.dart';
+import 'package:momento/screens/Games/pattern/PatternHelpScreen.dart';
 import 'package:momento/screens/HelpScreen.dart';
 import 'package:momento/screens/Games/HighScoreScreen.dart';
 import 'package:momento/screens/MusicPreferences/MusicPreferences.dart';
@@ -52,8 +54,9 @@ class MyApp extends StatelessWidget {
         '/Help' : (_) => HelpScreen(),
         '/Music Preferences' : (_) => MusicPreferencesScreen(),
         '/Resources' : (_) => ChooseResourcesScreen(),
-        '/High Score':(_)=>HighScoreScreen(),
-        '/Progression':(_)=>ProgressionScreen(),
+        '/Progression':(_)=> HighScoreScreen(),
+        '/mysteryLyricsHelp' :(_)=> MysteryLyricHelpScreen(),
+        '/patternHelp' :(_)=> PatternHelp(),
       },
     );
   }

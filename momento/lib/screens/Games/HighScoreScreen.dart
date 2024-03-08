@@ -1,7 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:momento/constants.dart';
+import 'package:momento/screens/Games/GameProgressionScreen.dart';
 import 'package:momento/widgets/buttons/loginButton.dart';
 import 'package:sizer/sizer.dart';
 
@@ -14,6 +17,8 @@ class _HighScoreScreenState extends State<HighScoreScreen> {
   int patternGameScore = -1;
 
   int mysteryLyricsScore = -1;
+
+  List<dynamic> dailyTriviaData = [];
 
   Future<void> getHighScores() async {
     patternGameScore = await FirebaseFirestore.instance
@@ -29,9 +34,38 @@ class _HighScoreScreenState extends State<HighScoreScreen> {
     setState(() {});
   }
 
+  Future<void> getDailyTriviaData() async {
+    await FirebaseFirestore.instance
+        .collection('Users')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .collection('DailyTrivia')
+        .get()
+        .then((value) {
+      value.docs.forEach((element) {
+        int score = 0;
+
+        print(element.data());
+        for (var i in element.data()['result']) {
+          if (i['iscorrect']) {
+            score++;
+          }
+        }
+
+        
+
+        dailyTriviaData.add({
+          "Date": element.id.toString(),
+          "Score": score,
+        });
+      });
+    });
+    print(dailyTriviaData);
+  }
+
   @override
   void initState() {
     getHighScores();
+    getDailyTriviaData();
   }
 
   @override
@@ -112,17 +146,40 @@ class _HighScoreScreenState extends State<HighScoreScreen> {
                   ),
                   SizedBox(height: 4.h),
                   ScoreWidget(
-                    gameName: "Pattern Game",
+                    gameName: "Pattern",
                     score: patternGameScore,
                     color: Colors.red[900]!,
                   ),
                   SizedBox(height: 2.h),
                   ScoreWidget(
-                    gameName: "Mystery Lyrics",
+                    gameName: "MysteryLyrics",
                     score: mysteryLyricsScore,
                     color: Colors.green[900]!,
                   ),
                   SizedBox(height: 2.h),
+                ],
+              ),
+              Align(
+                alignment: Alignment.topLeft,
+                child: Text(
+                  "DailyTrivia History",
+                  textAlign: TextAlign.left,
+                  style: TextStyle(
+                    fontSize: 15.sp,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: "Montserrat",
+                  ),
+                ),
+              ),
+              ListView(
+                shrinkWrap: true,
+                children: [
+                  ...dailyTriviaData
+                      .map((e) => DailyTriviaHistoryTile(
+                            date: e["Date"],
+                            score: e['Score'],
+                          ))
+                      .toList()
                 ],
               ),
               SizedBox(
@@ -148,7 +205,14 @@ class _HighScoreScreenState extends State<HighScoreScreen> {
                               color: Colors.red[900]!,
                               onPressed: () {
                                 Navigator.pop(context);
-                                Navigator.pushNamed(context, '/Progression');
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => ProgressionScreen(
+                                      collection: "Pattern",
+                                    ),
+                                  ),
+                                );
                               },
                               text: "Pattern Game",
                             ),
@@ -157,7 +221,14 @@ class _HighScoreScreenState extends State<HighScoreScreen> {
                               color: Colors.green[900]!,
                               onPressed: () {
                                 Navigator.pop(context);
-                                Navigator.pushNamed(context, '/Progression');
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => ProgressionScreen(
+                                      collection: "MysteryLyrics",
+                                    ),
+                                  ),
+                                );
                               },
                               text: "Mystery Lyrics",
                             ),
@@ -186,12 +257,62 @@ class _HighScoreScreenState extends State<HighScoreScreen> {
                       },
                     );
                   },
-                  text: "Progression",
+                  text: "Detailed Progression",
                 ),
               ),
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+class DailyTriviaHistoryTile extends StatelessWidget {
+  String date;
+  int score;
+  DailyTriviaHistoryTile({required this.date, required this.score});
+
+  @override
+  Widget build(BuildContext context) {
+    DateTime parsedDate = DateTime.parse(date);
+    String formattedDate =
+        "${parsedDate.day}/${parsedDate.month}/${parsedDate.year}";
+
+    return Container(
+
+      height: 8.h,
+      decoration: BoxDecoration(
+      color: score == 2 ? Colors.green[200] : Colors.red[200],
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Row(
+        children: [
+          SizedBox(
+            width: 40.w,
+            child: Text(
+              formattedDate,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 15.sp,
+                fontWeight: FontWeight.bold,
+                fontFamily: "Montserrat",
+              ),
+            ),
+          ),
+          SizedBox(
+            width: 40.w,
+            child: Text(
+              "${score.toString()}/2",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 15.sp,
+                fontWeight: FontWeight.bold,
+                fontFamily: "Montserrat",
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

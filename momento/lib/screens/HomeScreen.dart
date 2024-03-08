@@ -1,13 +1,18 @@
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:momento/constants.dart';
+import 'package:momento/screens/daily_trivia/HourOfDay.dart';
+import 'package:momento/screens/daily_trivia/NameOfAnimal.dart';
 import 'package:momento/screens/pre_assessment_questions/DateScreen.dart';
 import 'package:momento/widgets/buttons/loginButton.dart';
 import 'package:sizer/sizer.dart';
 
 class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -27,10 +32,8 @@ class HomeScreen extends StatelessWidget {
           IconButton(
             onPressed: () async {
               // Navigator.pushNamed(context, '/Help');
-              // Navigator.push(context, MaterialPageRoute(builder: (context) => DateScreen(
-              //   data: {"name": "Date"}
-              // )));
-              
+              // Navigator.push(context,
+              //     MaterialPageRoute(builder: (context) => NameOfAnimal()));
             },
             icon: Icon(
               Icons.question_mark,
@@ -70,7 +73,7 @@ class HomeScreen extends StatelessWidget {
             SizedBox(height: 8.h),
             Column(
               children: [
-                ...["Games", "Resources", "High Score", "Profile"]
+                ...["Games", "Resources", "Progression", "Profile"]
                     .map((e) => Column(
                           children: [
                             SizedBox(

@@ -23,10 +23,7 @@ class HelpScreen extends StatelessWidget {
               ),
               SizedBox(height: 5.h),
               ...[
-                "FAQ",
                 "Profile",
-                "Tutorials",
-                "Customization",
                 "Progression",
                 "Resources"
               ]
@@ -35,7 +32,9 @@ class HelpScreen extends StatelessWidget {
                           SizedBox(
                             width: 80.w,
                             child: SignUpButton(
-                              onPressed: () {},
+                              onPressed: () {
+                                Navigator.pushNamed(context, '/$e');  
+                              },
                               text: e,
                             ),
                           ),

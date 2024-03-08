@@ -73,14 +73,17 @@ class GamesRecommendationScreen extends StatelessWidget {
           children: [
             Column(
               children: [
-                Text("Game Recommendations",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 20.sp,
-                      fontFamily: "Montserrat",
-                      fontWeight: FontWeight.bold,
-                    )),
-                SizedBox(height: 5.h),
+                SizedBox(
+                  width: 90.w,
+                  child: Text("Game\nRecommendations",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 25  .sp,
+                        fontFamily: "Montserrat",
+                        fontWeight: FontWeight.bold,
+                      )),
+                ),
+                SizedBox(height: 20.h),
                 SizedBox(
                   width: 80.w,
                   child: LoginButton(
@@ -109,29 +112,6 @@ class GamesRecommendationScreen extends StatelessWidget {
                 ),
               ],
             ),
-            Column(
-              children: [
-                Text("Game Pathways",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 20.sp,
-                      fontFamily: "Montserrat",
-                      fontWeight: FontWeight.bold,
-                    )),
-                SizedBox(height: 5.h),
-                SizedBox(
-                  width: 80.w,
-                  child: LoginButton(onPressed: () {}, text: "Short-Term"),
-                ),
-                SizedBox(
-                  height: 3.h,
-                ),
-                SizedBox(
-                  width: 80.w,
-                  child: LoginButton(onPressed: () {}, text: "Long-Term"),
-                ),
-              ],
-            )
           ],
         ),
       ),
