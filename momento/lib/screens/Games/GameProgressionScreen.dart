@@ -37,7 +37,7 @@ class _ProgressionScreenState extends State<ProgressionScreen> {
         dateToScore[date.day] = score.data()["score"];
       }
     }
-    // print(dateToScore);
+    print(dateToScore);
     setState(() {});
   }
 

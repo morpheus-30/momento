@@ -12,12 +12,6 @@ class PatternLevelScreen extends StatelessWidget {
       appBar: AppBar(
         actions: [
           IconButton(
-              onPressed: () {},
-              icon: Icon(
-                Icons.notifications,
-                color: Colors.white,
-              )),
-          IconButton(
             onPressed: () {
               Navigator.pushNamed(context, '/patternHelp');
             },

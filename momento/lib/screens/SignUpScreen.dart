@@ -42,7 +42,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   Widget build(BuildContext context) {
     return Sizer(builder: (context, orientation, deviceType) {
       return Scaffold(
-        resizeToAvoidBottomInset: false,
+        // resizeToAvoidBottomInset: false,
         appBar: AppBar(
           elevation: 2,
           centerTitle: true,
@@ -76,7 +76,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text("Name",
+                      Text("Email",
                           style: TextStyle(
                             fontSize: 12.sp,
                             color: Colors.black,
@@ -88,7 +88,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         onSaved: (value) {
                           email = value;
                         },
-                        inputText: "Name",
+                        inputText: "Ema il",
                       ),
                     ],
                   ),
@@ -106,34 +106,55 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             fontWeight: FontWeight.bold,
                           )),
                       SizedBox(height: 1.h),
-                      Row(
-                        children: [
-                          SizedBox(
-                            width: 75.w,
-                            child: MomentotextField(
-                              obscureText: obscureText,
-                              onSaved: (value) {
-                                password = value;
+                      Theme(
+                        data: ThemeData(primaryColor: brown2),
+                        child: TextField(
+                          obscureText: obscureText,
+                          onChanged: (value) {
+                            password = value;
+                          },
+                          decoration: InputDecoration(
+                            suffixIcon: IconButton(
+                              icon: Icon(
+                                obscureText
+                                    ? Icons.visibility
+                                    : Icons.visibility_off,
+                                color: brown2,
+                              ),
+                              onPressed: () {
+                                setState(() {
+                                  obscureText = !obscureText;
+                                });
                               },
-                              inputText: "Password",
+                            ),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                              borderSide: BorderSide(
+                                width: 2,
+                                color: brown2,
+                                style: BorderStyle.solid,
+                              ),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                              borderSide: BorderSide(
+                                width: 2,
+                                color: brown2,
+                                style: BorderStyle.solid,
+                              ),
+                            ),
+                            filled: true,
+                            fillColor: Colors.grey[200],
+                            contentPadding: EdgeInsets.all(20),
+                            hintText: "Password",
+                            hintStyle: TextStyle(
+                              fontSize: 12,
+                              color: Colors.grey[400],
+                              fontFamily: "Montserrat",
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
-                          SizedBox(
-                            width: 5.w,
-                          ),
-                          IconButton(
-                            icon: Icon(
-                              obscureText
-                                  ? Icons.visibility_off
-                                  : Icons.visibility,
-                              color: brown2,
-                            ),
-                            onPressed: () {
-                              obscureText = !obscureText;
-                              setState(() {});
-                            },
-                          ),
-                        ],
+                        ),
                       ),
                     ],
                   ),
@@ -184,6 +205,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           // });
                           Navigator.pushReplacementNamed(
                               context, '/preAssessment');
+                          return;
+                        }else{
+                          SnackBar snackbar = SnackBar(
+                            content: Text('Please enter a valid email.'),
+                          );
+                          ScaffoldMessenger.of(context).showSnackBar(snackbar);
                           return;
                         }
                        

@@ -131,12 +131,16 @@ class ListenAndSpell extends StatelessWidget {
             width: 80.w,
             child: LoginButton(
               onPressed: () {
-                data["listenAndSpell"] = word;
+                data["listenAndSpell"] = {
+                  "word": word,
+                  "isCorrect": word.toLowerCase() == "momento"
+                };
                 Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(builder: (context) => VideoScreen(
-                    data:  data,
-                  )),
+                  MaterialPageRoute(
+                      builder: (context) => VideoScreen(
+                            data: data,
+                          )),
                 );
               },
               text: "Continue",

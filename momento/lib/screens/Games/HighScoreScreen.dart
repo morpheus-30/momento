@@ -73,21 +73,6 @@ class _HighScoreScreenState extends State<HighScoreScreen> {
     return Scaffold(
       appBar: AppBar(
         actions: [
-          IconButton(
-              onPressed: () {},
-              icon: Icon(
-                Icons.notifications,
-                color: Colors.white,
-              )),
-          IconButton(
-            onPressed: () {
-              Navigator.pushNamed(context, '/Help');
-            },
-            icon: Icon(
-              Icons.question_mark,
-              color: Colors.white,
-            ),
-          ),
         ],
         elevation: 2,
         leadingWidth: 30.w,
@@ -114,15 +99,15 @@ class _HighScoreScreenState extends State<HighScoreScreen> {
                 Navigator.pop(context);
               },
             ),
-            IconButton(
-              onPressed: () {
-                Navigator.popUntil(context, ModalRoute.withName('/home'));
-              },
-              icon: Icon(
-                Icons.home,
-                color: Colors.white,
-              ),
-            ),
+            // IconButton(
+            //   onPressed: () {
+            //     Navigator.popUntil(context, ModalRoute.withName('/home'));
+            //   },
+            //   icon: Icon(
+            //     Icons.home,
+            //     color: Colors.white,
+            //   ),
+            // ),
           ],
         ),
       ),
@@ -172,6 +157,8 @@ class _HighScoreScreenState extends State<HighScoreScreen> {
                 ),
               ),
               ListView(
+                reverse: true,
+                physics: BouncingScrollPhysics(),
                 shrinkWrap: true,
                 children: [
                   ...dailyTriviaData
@@ -280,7 +267,7 @@ class DailyTriviaHistoryTile extends StatelessWidget {
         "${parsedDate.day}/${parsedDate.month}/${parsedDate.year}";
 
     return Container(
-
+      margin: EdgeInsets.symmetric(vertical: 1.h),
       height: 8.h,
       decoration: BoxDecoration(
       color: score == 2 ? Colors.green[200] : Colors.red[200],

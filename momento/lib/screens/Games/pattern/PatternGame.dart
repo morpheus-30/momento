@@ -59,19 +59,27 @@ class _PatternMatchGameScreenState extends State<PatternMatchGameScreen> {
           });
         });
         if (pattern[i] == 1) {
+          // print("Playing C");
           audioPlayer.setAsset("assets/audio/c_major.wav");
+          audioPlayer.play();
           container1Color = colorMap[0];
           i++;
         } else if (pattern[i] == 2) {
+          // print("Playing D");
           audioPlayer.setAsset("assets/audio/d_major.wav");
+          audioPlayer.play();
           container2Color = colorMap[1];
           i++;
         } else if (pattern[i] == 3) {
+          // print("Playing E");
           audioPlayer.setAsset("assets/audio/e_major.wav");
+          audioPlayer.play();
           container3Color = colorMap[2];
           i++;
         } else if (pattern[i] == 4) {
+          // print("Playing F");
           audioPlayer.setAsset("assets/audio/f_major.wav");
+          audioPlayer.play();
           container4Color = colorMap[3];
           i++;
         }
@@ -431,33 +439,56 @@ class _PatternMatchGameScreenState extends State<PatternMatchGameScreen> {
                                           alignment: Alignment.center,
                                           padding: EdgeInsets.zero,
                                           onPressed: () async {
-                                            print("Fetching data");
-                                            //back button app bar
                                             await FirebaseFirestore.instance
-                                                .collection('Pattern')
-                                                .doc(FirebaseAuth
-                                                    .instance.currentUser!.uid)
-                                                .collection('Scores')
-                                                .add({
-                                              'score': score,
-                                              'Level': widget.level,
-                                              'DateTime':
-                                                  DateTime.now().toString(),
-                                            });
-                                            dynamic oldScores =
-                                                await FirebaseFirestore.instance
-                                                    .collection('Pattern')
-                                                    .doc(FirebaseAuth.instance
-                                                        .currentUser!.uid)
-                                                    .collection('Scores')
-                                                    .get();
-                                            oldScores.docs.forEach((element) {
-                                              print(element.data());
-                                            });
-                                            Navigator.popUntil(context,
-                                                (route) => route.isFirst);
-                                            Navigator.pushReplacementNamed(
-                                                context, '/home');
+                                      .collection('Pattern')
+                                      .doc(FirebaseAuth
+                                          .instance.currentUser!.uid)
+                                      .collection('Scores')
+                                      .doc(DateTime.now().toString())
+                                      .set(
+                                    {
+                                      'score': score,
+                                      'Level': widget.level,
+                                    },
+                                  );
+                                  dynamic highScore = 0;
+                                  // print("Fetching HIgh Score");
+                                  await FirebaseFirestore.instance
+                                      .collection('Pattern')
+                                      .doc(FirebaseAuth
+                                          .instance.currentUser!.uid)
+                                      .get()
+                                      .then((value) {
+                                    if (value.data() != null) {
+                                      highScore = value.data()!['HighScore'];
+                                    }
+                                  });
+
+                                  if (highScore < score || highScore == 0) {
+                                    await FirebaseFirestore.instance
+                                        .collection('Pattern')
+                                        .doc(FirebaseAuth
+                                            .instance.currentUser!.uid)
+                                        .set({
+                                      'HighScore': score,
+                                    }, SetOptions(merge: true));
+                                    // print("Updating High Score");
+                                  }
+
+                                  // dynamic oldScores = await FirebaseFirestore
+                                  //     .instance
+                                  //     .collection('Pattern')
+                                  //     .doc(FirebaseAuth
+                                  //         .instance.currentUser!.uid)
+                                  //     .collection('Scores')
+                                  //     .get();
+                                  // oldScores.docs.forEach((element) {
+                                  //   print(element.data());
+                                  // });
+                                  Navigator.popUntil(
+                                      context, (route) => route.isFirst);
+                                  Navigator.pushReplacementNamed(
+                                      context, '/home');
                                           },
                                           icon: Icon(
                                             Icons.exit_to_app,

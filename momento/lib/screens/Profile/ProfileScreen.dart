@@ -33,6 +33,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget build(BuildContext context) {
     dynamic imageWidget = imageUrl==""?AssetImage('assets/images/profile.png'):NetworkImage(imageUrl);
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       appBar: AppBar(
         actions: [
           IconButton(

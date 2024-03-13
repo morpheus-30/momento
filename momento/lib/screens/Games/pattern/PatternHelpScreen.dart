@@ -8,6 +8,20 @@ class PatternHelp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // extendBodyBehindAppBar: true,
+      appBar: AppBar(
+        toolbarHeight: 7.h,
+        backgroundColor: Colors.transparent,
+        leading: IconButton(
+          icon: const Icon(
+            Icons.arrow_back_ios,
+            color: Colors.black,
+          ),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+      ),
         body: Padding(
       padding: const EdgeInsets.all(20),
       child: Center(
@@ -16,7 +30,6 @@ class PatternHelp extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(height: 5.h),
               Text(
                 "How to play Pattern Matching?",
                 style: TextStyle(

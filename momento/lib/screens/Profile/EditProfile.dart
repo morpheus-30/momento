@@ -42,9 +42,9 @@ class _EditProfileState extends State<EditProfile> {
     }
   }
 
-  uploadImage() async {
+ Future<bool> uploadImage() async {
     if (image == null) {
-      return;
+      return false;
     }
    
     final user = FirebaseAuth.instance.currentUser;
@@ -55,8 +55,8 @@ class _EditProfileState extends State<EditProfile> {
     await ref.putFile(image!);
     imageUrl = await ref.getDownloadURL();
     await user.updatePhotoURL(imageUrl);
-   
-    print(imageUrl);
+    return true;
+    // print(imageUrl);
   }
 
   @override
@@ -67,7 +67,7 @@ class _EditProfileState extends State<EditProfile> {
     String password = "";
     
     return loading==true?Scaffold(body: Center(child: CircularProgressIndicator()),):Scaffold(
-      resizeToAvoidBottomInset: false,
+      // resizeToAvoidBottomInset: false,
       appBar: AppBar(
         elevation: 0,
         leadingWidth: 30.w,
@@ -107,114 +107,132 @@ class _EditProfileState extends State<EditProfile> {
           ],
         ),
       ),
-      body: Stack(
-        children: [
-          Container(
-            height: 15.h,
-            color: brown2,
-          ),
-          Container(
-            margin: EdgeInsets.only(left: 20.w, right: 20.w),
-            child: CircleAvatar(
-              radius: 40.w,
-              backgroundColor: Colors.white,
-              child: Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: CircleAvatar(
+      body: SingleChildScrollView(
+        child: Stack(
+          children: [
+            Container(
+              height: 15.h,
+              color: brown2,
+            ),
+            Container(
+              margin: EdgeInsets.only(left: 20.w, right: 20.w),
+              child: CircleAvatar(
+                radius: 40.w,
+                backgroundColor: Colors.white,
+                child: Padding(
+                  padding: const EdgeInsets.all(10.0),
                   child: CircleAvatar(
-                      backgroundColor: Colors.white.withOpacity(0.5),
-                      radius: 30.w,
-                      child: IconButton(
-                        onPressed: () async {
-                          await getImage();
-                          setState(() {
-                            loading = true;
-                          });
-                          await uploadImage();
-                          await FirebaseFirestore.instance
-                              .collection('Users')
-                              .doc(FirebaseAuth.instance.currentUser!.uid)
-                              .update({
-                            'Image': imageUrl,
-                          });
-                          setState(() {
-                            loading = false;
-                          });
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                            content: Text("Profile Picture Updated"),
-                          ));
-                          Navigator.popUntil(
-                                  context, ModalRoute.withName('/home'));
-                          Navigator.pushNamed(context, '/home');
-                        },
-                        icon: Icon(
-                          Icons.edit,
-                          color: Colors.white,
-                          size: 20.w,
-                        ),
-                      )),
-                  backgroundImage: imageWidget,
-                  radius: 30.w,
-                ),
-              ),
-            ),
-          ),
-          Container(
-            margin: EdgeInsets.only(top: 40.h),
-            child: Center(
-              child: Theme(
-                data: ThemeData(
-                  primaryColor: brown2,
-                  primaryColorDark: brown2,
-                ),
-                child: SizedBox(
-                  width: 80.w,
-                  child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Text(
-                          "Welcome "+FirebaseAuth.instance.currentUser!.email.toString(),
-                          style: TextStyle(
-                            fontFamily: "Montserrat",
-                            color: brown2,
-                            fontSize: 20.sp,
-                            fontWeight: FontWeight.bold,
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                        SizedBox(height: 5.h),
-                        TextField(
-                          onChanged: (value) {
-                            password = value;
+                    child: CircleAvatar(
+                        backgroundColor: Colors.white.withOpacity(0.5),
+                        radius: 30.w,
+                        child: IconButton(
+                          onPressed: () async {
+                            await getImage();
+                            setState(() {
+                              loading = true;
+                            });
+                            bool uploaded = await uploadImage();
+                            await FirebaseFirestore.instance
+                                .collection('Users')
+                                .doc(FirebaseAuth.instance.currentUser!.uid)
+                                .update({
+                              'Image': imageUrl,
+                            });
+                            setState(() {
+                              loading = false;
+                            });
+                            if (uploaded) {
+                              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              content: Text("Profile Picture Updated"),
+                            ));
+                            Navigator.popUntil(
+                                    context, ModalRoute.withName('/home'));
+                            Navigator.pushNamed(context, '/home');
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(content: Text("No Image Selected")));
+                            }
                           },
-                          decoration: InputDecoration(
-                            border: OutlineInputBorder(),
-                            labelText: 'Password',
+                          icon: Icon(
+                            Icons.edit,
+                            color: Colors.white,
+                            size: 20.w,
                           ),
-                        ),
-                        SizedBox(height: 5.h),
-                        Container(
-                          width: 80.w,
-                          child: LoginButton(
-                            onPressed: () async {
-                              if (password == "") {
-                                return;
-                              }
-                              await FirebaseAuth.instance.currentUser!
-                                  .updatePassword(password);
-                              Navigator.popUntil(
-                                  context, ModalRoute.withName('/home'));
-                                  Navigator.pushNamed(context, '/home');
-                            },
-                            text: "Update Password",
-                          ),
-                        ),
-                      ]),
+                        )),
+                    backgroundImage: imageWidget,
+                    radius: 30.w,
+                  ),
                 ),
               ),
             ),
-          )
-        ],
+            Container(
+              margin: EdgeInsets.only(top: 40.h),
+              child: Center(
+                child: Theme(
+                  data: ThemeData(
+                    primaryColor: brown2,
+                    primaryColorDark: brown2,
+                  ),
+                  child: SizedBox(
+                    width: 80.w,
+                    child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text(
+                            "Welcome "+FirebaseAuth.instance.currentUser!.email.toString(),
+                            style: TextStyle(
+                              fontFamily: "Montserrat",
+                              color: brown2,
+                              fontSize: 20.sp,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                          SizedBox(height: 5.h),
+                          TextField(
+                            onChanged: (value) {
+                              password = value;
+                            },
+                            decoration: InputDecoration(
+                              border: OutlineInputBorder(),
+                              labelText: 'Password',
+                            ),
+                          ),
+                          SizedBox(height: 5.h),
+                          Container(
+                            width: 80.w,
+                            child: LoginButton(
+                              onPressed: () async {
+                                if (password == "") {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                          content: Text("Password cannot be empty")));
+                                  return;
+                                }
+                                try {
+                                  await FirebaseAuth.instance.currentUser!
+                                      .updatePassword(password);
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                          content: Text("Password Updated")));
+                                } on FirebaseAuthException catch (e) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(content: Text("Login Again then try again")));
+                                }
+                                Navigator.popUntil(
+                                    context, ModalRoute.withName('/home'));
+                                    Navigator.pushNamed(context, '/home');
+                              },
+                              text: "Update Password",
+                            ),
+                          ),
+                        ]),
+                  ),
+                ),
+              ),
+            )
+          ],
+        ),
       ),
     );
   }

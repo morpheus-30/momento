@@ -157,7 +157,11 @@ class _DateScreenState extends State<DateScreen> {
                 child: LoginButton(
                   onPressed: () async {
                     String date = Date + "/" + Month + "/" + Year;
-                    widget.data["Date"] = date;
+                    widget.data["Date"] = {
+                      "Date": date,
+                      "isCorrect": date == DateTime.now().toString().substring(0, 10)
+                    };
+
                     print(widget.data);
                     await FirebaseFirestore.instance
                         .collection('Users')

@@ -117,7 +117,10 @@ class MathScreen extends StatelessWidget {
                       ));
                       return;
                     }
-                    data["maths"] = int.parse(ans) ;
+                    data["maths"] = {
+                      "ans": int.parse(ans),
+                      "isCorrect": int.parse(ans) == 64 ? "true" : "false"
+                    } ;
                     Navigator.pushReplacement(context,
                         MaterialPageRoute(builder: (context) => DateScreen(
                           data: data,

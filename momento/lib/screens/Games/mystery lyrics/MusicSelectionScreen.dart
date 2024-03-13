@@ -21,12 +21,6 @@ class _MusicSelectionScreenState extends State<MusicSelectionScreen> {
       appBar: AppBar(
         actions: [
           IconButton(
-              onPressed: () {},
-              icon: Icon(
-                Icons.notifications,
-                color: Colors.white,
-              )),
-          IconButton(
             onPressed: () {
               Navigator.pushNamed(context, '/mysteryLyricsHelp');
             },
@@ -117,7 +111,7 @@ class _MusicSelectionScreenState extends State<MusicSelectionScreen> {
               ),
               child: Container(
                 
-                padding: EdgeInsets.all(90.sp),
+                padding: EdgeInsets.all(90.sp), 
                 color: const Color.fromRGBO(0, 0, 0, 1).withOpacity(0.5),
                 child: Container(
                   decoration: BoxDecoration(
@@ -148,7 +142,7 @@ class _MusicSelectionScreenState extends State<MusicSelectionScreen> {
                           MaterialPageRoute(
                               builder: (context) => MusicPlayingScreen()));
                     },
-                    iconSize: 55.sp,
+                    iconSize: 25.sp,
                     icon: Icon(
                       Icons.play_arrow,
                       color: Colors.white,

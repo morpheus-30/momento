@@ -12,6 +12,7 @@ import 'package:momento/screens/LoginScreen.dart';
 import 'package:momento/screens/PreAssessmentScreen.dart';
 import 'package:momento/screens/Profile/ProfileScreen.dart';
 import 'package:momento/screens/Resources/ChooseResourcesScreen.dart';
+import 'package:momento/screens/Resources/LinkResourcesScreen.dart';
 import 'package:momento/screens/SignUpScreen.dart';
 import 'package:momento/screens/StartScreen.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -53,7 +54,7 @@ class MyApp extends StatelessWidget {
         '/Games' : (_) => GamesRecommendationScreen(),
         '/Help' : (_) => HelpScreen(),
         '/Music Preferences' : (_) => MusicPreferencesScreen(),
-        '/Resources' : (_) => ChooseResourcesScreen(),
+        '/Resources' : (_) => ResourcesLinksScreen(),
         '/Progression':(_)=> HighScoreScreen(),
         '/mysteryLyricsHelp' :(_)=> MysteryLyricHelpScreen(),
         '/patternHelp' :(_)=> PatternHelp(),

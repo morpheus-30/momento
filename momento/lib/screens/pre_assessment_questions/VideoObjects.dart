@@ -25,6 +25,8 @@ class VideoScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    List<String> validObjects = [
+    ];
     List<String> objects;
     String word1 = "";
     String word2 = "";
@@ -182,7 +184,16 @@ class VideoScreen extends StatelessWidget {
                   child: LoginButton(
                     onPressed: () {
                       objects = [word1, word2, word3, word4];
-                      data["4Objects"] = objects;
+                      bool valid = true;
+                      for(int i = 0; i < objects.length; i++){
+                        if(!validObjects.contains(objects[i].toLowerCase())){
+                          valid = false;
+                        }
+                      }
+                      data["4Objects"] = {
+                        "objects": objects,
+                        "isCorrect": valid
+                      };
                       Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(

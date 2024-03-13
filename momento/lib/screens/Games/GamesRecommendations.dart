@@ -15,12 +15,6 @@ class GamesRecommendationScreen extends StatelessWidget {
       appBar: AppBar(
         actions: [
           IconButton(
-              onPressed: () {},
-              icon: Icon(
-                Icons.notifications,
-                color: Colors.white,
-              )),
-          IconButton(
             onPressed: () {
               Navigator.pushNamed(context, '/Help');
             },
@@ -54,15 +48,6 @@ class GamesRecommendationScreen extends StatelessWidget {
               onPressed: () {
                 Navigator.pop(context);
               },
-            ),
-            IconButton(
-              onPressed: () {
-                Navigator.popUntil(context, ModalRoute.withName('/home'));
-              },
-              icon: Icon(
-                Icons.home,
-                color: Colors.white,
-              ),
             ),
           ],
         ),

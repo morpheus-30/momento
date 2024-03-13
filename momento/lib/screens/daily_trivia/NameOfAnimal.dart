@@ -19,7 +19,7 @@ class NameOfAnimal extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: false,
+      // resizeToAvoidBottomInset: false,
       appBar: AppBar(
         actions: [
           IconButton(
@@ -73,74 +73,76 @@ class NameOfAnimal extends StatelessWidget {
       ),
       backgroundColor: Colors.white,
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            SizedBox(
-              width: 80.w,
-              child: Text("Which animal is this?",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 20.sp,
-                    color: Colors.black,
-                    fontFamily: "Montserrat",
-                    fontWeight: FontWeight.bold,
-                  )),
-            ),
-            SizedBox(
-              height: 5.h,
-            ),
-            Image(
-              width: 80.w,
-              height: 40.h,
-              image: AssetImage("assets/images/animal_images/$animal.jpg"),
-            ),
-            SizedBox(
-              height: 5.h,
-            ),
-            SizedBox(
-              width: 80.w,
-              child: TextField(
-                onChanged: (value) {
-                  data["answer"] = value;
-                },
-                decoration: InputDecoration(
-                  hintText: "Enter your answer here",
-                  hintStyle: TextStyle(
-                    fontSize: 12.sp,
-                    color: Colors.black,
-                    fontFamily: "Montserrat",
-                    fontWeight: FontWeight.bold,
-                  ),
-                  enabledBorder: const OutlineInputBorder(
-                    borderSide: BorderSide(
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              SizedBox(
+                width: 80.w,
+                child: Text("Which animal is this?",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 20.sp,
                       color: Colors.black,
+                      fontFamily: "Montserrat",
+                      fontWeight: FontWeight.bold,
+                    )),
+              ),
+              SizedBox(
+                height: 5.h,
+              ),
+              Image(
+                width: 80.w,
+                height: 40.h,
+                image: AssetImage("assets/images/animal_images/$animal.jpg"),
+              ),
+              SizedBox(
+                height: 5.h,
+              ),
+              SizedBox(
+                width: 80.w,
+                child: TextField(
+                  onChanged: (value) {
+                    data["answer"] = value;
+                  },
+                  decoration: InputDecoration(
+                    hintText: "Enter your answer here",
+                    hintStyle: TextStyle(
+                      fontSize: 12.sp,
+                      color: Colors.black,
+                      fontFamily: "Montserrat",
+                      fontWeight: FontWeight.bold,
                     ),
-                  ),
-                  focusedBorder: const OutlineInputBorder(
-                    borderSide: BorderSide(
-                      color: Colors.black,
+                    enabledBorder: const OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Colors.black,
+                      ),
+                    ),
+                    focusedBorder: const OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Colors.black,
+                      ),
                     ),
                   ),
                 ),
               ),
-            ),
-            SizedBox(
-              height: 5.h,
-            ),
-            SizedBox(
-              width: 80.w,
-              child: LoginButton(
-                  onPressed: () {
-                    if (data["answer"].toLowerCase() == animal.toLowerCase()) {
-                      data["iscorrect"] = true;
-                    }
-                    Navigator.pop(context,data);
-                  },
-                  text: "Submit"),
-            ),
-          ],
+              SizedBox(
+                height: 5.h,
+              ),
+              SizedBox(
+                width: 80.w,
+                child: LoginButton(
+                    onPressed: () {
+                      if (data["answer"].toLowerCase() == animal.toLowerCase()) {
+                        data["iscorrect"] = true;
+                      }
+                      Navigator.pop(context,data);
+                    },
+                    text: "Submit"),
+              ),
+            ],
+          ),
         ),
       ),
     );
