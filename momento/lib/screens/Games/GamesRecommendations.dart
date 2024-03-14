@@ -77,7 +77,7 @@ class GamesRecommendationScreen extends StatelessWidget {
                             context,
                             MaterialPageRoute(
                                 builder: (context) =>
-                                    MusicSelectionScreen()));
+                                    MysteryDifficultyScreen()));
                       },
                       text: "Mystery Lyrics"),
                 ),

@@ -13,6 +13,15 @@ class ResourcesLinksScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon: Icon(
+            Icons.arrow_back_ios_new_rounded,
+            color: Colors.white,
+          ),
+        ),  
         title: Text(
           "Resources",
           style: TextStyle(
@@ -29,19 +38,26 @@ class ResourcesLinksScreen extends StatelessWidget {
           physics: BouncingScrollPhysics(),
           children: resourcesData
               .map((data) => Container(
-                margin:  EdgeInsets.only(bottom: 10),
+                margin:  EdgeInsets.only(bottom: 20),
                 child: ListTile(
+                  onTap: ()async{
+                      Uri _uri = Uri.parse(data["link"]?? "google.com");
+                             await launchUrl(_uri);
+                  },
+                  contentPadding: EdgeInsets.all(20),
                   textColor: Colors.white,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20),
                   ),
                   tileColor: brown2,
                       title: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           Container(
                             margin: EdgeInsets.only(bottom: 10),
                             child: Text(
                               data["name"] ?? "",
+                              textAlign: TextAlign.left,
                               style: TextStyle(
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold,
@@ -62,17 +78,16 @@ class ResourcesLinksScreen extends StatelessWidget {
                             fontSize: 15,
                             fontWeight: FontWeight.bold,
                           )),
-                          trailing: 
-                          IconButton(
-                            onPressed: () async {
-                              Uri _uri = Uri.parse(data["link"]?? "google.com");
-                             await launchUrl(_uri);
-                            },
-                            icon: Icon(
-                              Icons.link,
-                              color: Colors.white,
-                            ),
-                          )
+                          // trailing: 
+                          // IconButton(
+                          //   onPressed: () async {
+                            
+                          //   },
+                          //   icon: Icon(
+                          //     Icons.link,
+                          //     color: Colors.white,
+                          //   ),
+                          // )
                     ),
               ))
               .toList()),

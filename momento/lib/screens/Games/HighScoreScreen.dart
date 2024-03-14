@@ -14,9 +14,9 @@ class HighScoreScreen extends StatefulWidget {
 }
 
 class _HighScoreScreenState extends State<HighScoreScreen> {
-  int patternGameScore = -1;
+  int patternGameScore = 0;
 
-  int mysteryLyricsScore = -1;
+  int mysteryLyricsScore = 0;
 
   List<dynamic> dailyTriviaData = [];
 

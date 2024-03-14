@@ -1,5 +1,8 @@
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:momento/widgets/buttons/loginButton.dart';
 import 'package:string_similarity/string_similarity.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
@@ -15,19 +18,24 @@ import 'package:spotify/spotify.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
 class MusicPlayingScreen extends StatefulWidget {
-  const MusicPlayingScreen({super.key});
+  String level;
+  MusicPlayingScreen({required this.level});
+
+  // const MusicPlayingScreen({super.key});
 
   @override
   State<MusicPlayingScreen> createState() => _MusicPlayingScreenState();
 }
 
 class _MusicPlayingScreenState extends State<MusicPlayingScreen> {
+  bool isRecording = false;
   Duration? duration;
   Music music = Music(
     trackId: "7F1yVPuJ4xRdrDvf8OL0HF",
   );
   bool hasBeenStarted = false;
   List<Lyric>? lyrics = [];
+  List<Lyric>? originalLyrics = [];
   double Score = 0;
   final itemScrollController = ItemScrollController();
   final itemPositionsListener = ItemPositionsListener.create();
@@ -36,11 +44,11 @@ class _MusicPlayingScreenState extends State<MusicPlayingScreen> {
   final player = AudioPlayer();
   Uri? audioUrl;
   bool loading = false;
-  bool isRecording = false;
 
-  final SpeechToText _speechToText = SpeechToText();
-  bool _speechEabled = false;
-  String _wordsSpoken = "";
+  // final SpeechToText _speechToText = SpeechToText();
+  List<String> currBlank = [];
+  // bool _speechEabled = false;
+  // String _wordsSpoken = "";
 
   @override
   void dispose() {
@@ -48,8 +56,85 @@ class _MusicPlayingScreenState extends State<MusicPlayingScreen> {
     super.dispose();
   }
 
+  List blankedLyricsAnswers = [];
+  List userBlanksAnswers = [];
+  List sampleWordsForBlanks = [
+    "Hello",
+    "World",
+    "This",
+    "Test",
+    "For",
+    "The",
+    "Blank",
+    "Words",
+    "In",
+    "The",
+    "Lyrics",
+    "Of",
+    "The",
+    "Song",
+    "That",
+    "Playing",
+    "Right",
+    "Now",
+  ];
+  List blankAnswerOptions = [
+    "Click",
+    "On the",
+    "play button",
+  ];
+
+  void modifyLyrics() {
+    if (widget.level == "easy") {
+      for (int i = 0; i < lyrics!.length; i++) {
+        String temp = lyrics![i].words;
+        temp = temp.replaceAll(",", "");
+        // print(temp);
+        List splitted = temp.split(" ");
+        // print(splitted);
+        int randomInd = Random().nextInt(splitted.length);
+        String tempWord = splitted[randomInd];
+        splitted[randomInd] = "______";
+        temp = splitted.join(" ");
+        blankedLyricsAnswers.add(tempWord);
+        lyrics![i].words = temp;
+      }
+    } else {
+      for (int i = 0; i < lyrics!.length; i++) {
+        if (lyrics![i].words.split(" ").length > 2) {
+          String temp = lyrics![i].words;
+          temp = temp.replaceAll(",", "");
+          // print(temp);
+          List splitted = temp.split(" ");
+          // print(splitted);
+          int randomInd1 = Random().nextInt(splitted.length);
+          String tempWord1 = splitted[randomInd1];
+          int randomInd2 = Random().nextInt(splitted.length);
+          while (splitted[randomInd1] == splitted[randomInd2]) {
+            randomInd2 = Random().nextInt(splitted.length);
+          }
+          String tempWord2 = splitted[randomInd2];
+          splitted[randomInd1] = "______";
+          splitted[randomInd2] = "______";
+          temp = splitted.join(" ");
+          List answerWordList = [tempWord1, tempWord2];
+          answerWordList.sort((a, b) {
+            return a.toLowerCase().compareTo(b.toLowerCase());
+          });
+          blankedLyricsAnswers.add(answerWordList.join(" "));
+
+          lyrics![i].words = temp;
+        }
+      }
+    }
+    // print(blankedLyricsAnswers);
+    // for (int i = 0; i < lyrics!.length; i++) {
+    //   print(lyrics![i].words);
+    // }
+  }
+
   void initSpeech() async {
-    _speechEabled = await _speechToText.initialize();
+    // _speechEabled = await _speechToText.initialize();
     setState(() {});
   }
 
@@ -87,10 +172,10 @@ class _MusicPlayingScreenState extends State<MusicPlayingScreen> {
                 "https://paxsenixofc.my.id/server/getLyricsMusix.php?q=${manipulatedName}&type=default"))
             .then((response) {
           String data = response.body;
-          // print(data);
+          print(data);
           if (data == "") {
             lyrics = [Lyric(words: "No lyrics found", time: DateTime.now())];
-            // print("No lyrics found");
+            print("No lyrics found");
             setState(() {});
           } else {
             lyrics = data
@@ -99,8 +184,15 @@ class _MusicPlayingScreenState extends State<MusicPlayingScreen> {
                     words: e.split(']').sublist(1).join(' '),
                     time: DateFormat("[mm:ss.SS]").parse(e.split(' ')[0])))
                 .toList();
+            originalLyrics = data
+                .split('\n')
+                .map((e) => Lyric(
+                    words: e.split(']').sublist(1).join(' '),
+                    time: DateFormat("[mm:ss.SS]").parse(e.split(' ')[0])))
+                .toList();
             setState(() {});
           }
+          modifyLyrics();
         });
         setState(() {
           loading = false;
@@ -137,23 +229,46 @@ class _MusicPlayingScreenState extends State<MusicPlayingScreen> {
           player.pause();
           print("start recording");
 
-          _startListening();
-          Future.delayed(const Duration(seconds: 10), () async {
-            if (i - 1 >= 0) {
-              //  print("Score ${ lyrics![i - 1].words.similarityTo(_wordsSpoken) }");
-              setState(() {
-                Score += (lyrics![i - 1]
-                        .words
-                        .toLowerCase()
-                        .similarityTo(_wordsSpoken.toLowerCase())) *
-                    100;
-                Score = Score.roundToDouble();
-              });
+          // _startListening();
+          // _showBlanks();
+          setState(() {
+            // print("the answer is ${blankedLyricsAnswers[i]}");
+            if (widget.level == "easy") {
+              blankAnswerOptions.clear();
+              blankAnswerOptions.add(blankedLyricsAnswers[i]);
+              blankAnswerOptions.add(sampleWordsForBlanks[
+                  Random().nextInt(sampleWordsForBlanks.length)]);
+              blankAnswerOptions.add(sampleWordsForBlanks[
+                  Random().nextInt(sampleWordsForBlanks.length)]);
+              blankAnswerOptions.shuffle();
             } else {
-              setState(() {
-                Score += 100;
-              });
+              blankAnswerOptions.clear();
+              List splitted = blankedLyricsAnswers[i].split(" ");
+              blankAnswerOptions.add(splitted[0]);
+              blankAnswerOptions.add(splitted[1]);
+              blankAnswerOptions.add(sampleWordsForBlanks[
+                  Random().nextInt(sampleWordsForBlanks.length)]);
+              blankAnswerOptions.shuffle();
             }
+          });
+
+          Future.delayed(const Duration(seconds: 10), () async {
+            if (userBlanksAnswers.isNotEmpty) {
+              userBlanksAnswers.sort((a, b) {
+                return a.toLowerCase().compareTo(b.toLowerCase());
+              });
+              String ans = userBlanksAnswers.join(" ");
+              if (ans.toLowerCase() == blankedLyricsAnswers[i].toLowerCase()) {
+                setState(() {
+                  Score += 50;
+                  Score = Score.roundToDouble();
+                });
+              }
+            }
+            print("Score $Score");
+            setState(() {
+              lyrics![i].words = originalLyrics![i].words;
+            });
             await player.seek(Duration(
                 milliseconds: lyrics![i].time.millisecond +
                     lyrics![i].time.second * 1000 +
@@ -168,32 +283,78 @@ class _MusicPlayingScreenState extends State<MusicPlayingScreen> {
           break;
         }
       }
+      // int i = 0;
+      // while (i<lyrics!.length&& lyrics![i].time.isBefore(dt)) {
+      //   i++;
+      // }
+      // if(i!=0){
+      //   i--;
+      // }
+      // print("ith value $e");
+      // player.pause();
+      // print("showing blanks");
+      // Future.delayed(const Duration(seconds: 10), () async {
+      //   if (i - 1 >= 0) {
+      //     //  print("Score ${ lyrics![i - 1].words.similarityTo(_wordsSpoken) }");
+      //     setState(() {
+      //       Score += 5;
+      //       Score = Score.roundToDouble();
+      //     });
+      //   } else {
+      //     setState(() {
+      //       Score += 100;
+      //     });
+      //   }
+      //   await player.seek(Duration(
+      //       milliseconds: lyrics![i].time.millisecond +
+      //           lyrics![i].time.second * 1000 +
+      //           lyrics![i].time.minute * 60 * 1000 +
+      //           lyrics![i].time.hour * 60 * 60 * 1000));
+      //   await player.play();
+      //   // print("stop playing");
+      // });
     });
 
     super.initState();
   }
 
-  void _onSpeechResult(result) {
-    print(_speechToText.isListening);
-    setState(() {
-      _wordsSpoken = result.recognizedWords;
-    });
-  }
+  // String getCurrLyric(DateTime dt) {
+  //   for (int i = 0; i < lyrics!.length; i++) {
+  //     if (lyrics![i].time.second == dt.second &&
+  //         lyrics![i].time.minute == dt.minute &&
+  //         lyrics![i].time.hour == dt.hour) {
+  //       return lyrics![i].words;
+  //     }
+  //   }
+  //   return "";
+  // }
 
-  void _startListening() async {
-    setState(() {
-      isRecording = true;
-    });
-    print(_speechToText.isListening);
-    await _speechToText.listen(
-      onResult: _onSpeechResult,
-      listenFor: const Duration(seconds: 10),
-      pauseFor: const Duration(seconds: 10),
-    );
-    setState(() {
-      isRecording = false;
-    });
-  }
+  // void _startListening() async {
+  //   setState(() {
+  //     isRecording = true;
+  //   });
+  //   // print(_speechToText.isListening);
+  //   // await _speechToText.listen(
+  //   //   onResult: _onSpeechResult,
+  //   //   listenFor: const Duration(seconds: 10),
+  //   //   pauseFor: const Duration(seconds: 10),
+  //   // );
+  //   setState(() {
+  //     isRecording = false;
+  //   });
+  // }
+
+  // void _showBlanks() {
+  //   setState(() {
+  //     isRecording = true;
+  //   });
+  //   Future.delayed(const Duration(seconds: 5), () async {
+  //     print("Show blanks");
+  //   });
+  //   setState(() {
+  //     isRecording = false;
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -215,16 +376,9 @@ class _MusicPlayingScreenState extends State<MusicPlayingScreen> {
                           ColouredBgIconButton(
                             iconSize: 20.sp,
                             onPressed: () async {
-                              if (_speechEabled && !hasBeenStarted) {
+                              if (!hasBeenStarted) {
                                 player.play();
                                 hasBeenStarted = true;
-                              } else if (!_speechEabled) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content:
-                                        Text("Speech to text not available"),
-                                  ),
-                                );
                               }
                               // if (player.playing) {
                               //   player.pause();
@@ -278,7 +432,7 @@ class _MusicPlayingScreenState extends State<MusicPlayingScreen> {
                               //         lyrics![0].time.hour * 60 * 60 * 1000);
                               // await player.setClip(
                               //     start: lastDuration,
-                              //     end: Duration(
+                              //     end: Dura  tion(
                               //         milliseconds: lyrics![0]
                               //                 .time
                               //                 .millisecond +
@@ -395,57 +549,115 @@ class _MusicPlayingScreenState extends State<MusicPlayingScreen> {
                     //   iconSize: 60.sp,
                     //   iconColor: Colors.black,
                     // ),
-                    Container(
-                      width: 90.w,
-                      margin:
-                          EdgeInsets.only(bottom: 5.h, left: 5.w, right: 5.w),
-                      padding: EdgeInsets.symmetric(horizontal: 5.w),
-                      decoration: BoxDecoration(
-                        color: brown2,
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Text(
-                        _speechToText.isListening
-                            ? "Listening..."
-                            : _speechEabled
-                                ? "Please wait for your turn"
-                                : "Speech not available",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 18.sp,
-                          fontFamily: 'Montserrat',
-                        ),
-                      ),
+                    // Container(
+                    //   width: 90.w,
+                    //   margin:
+                    //       EdgeInsets.only(bottom: 5.h, left: 5.w, right: 5.w),
+                    //   padding: EdgeInsets.symmetric(horizontal: 5.w),
+                    //   decoration: BoxDecoration(
+                    //     color: brown2,
+                    //     borderRadius: BorderRadius.circular(10),
+                    //   ),
+                    //   child: Text(
+                    //     _speechToText.isListening
+                    //         ? "Listening..."
+                    //         : _speechEabled
+                    //             ? "Please wait for your turn"
+                    //             : "Speech not available",
+                    //     style: TextStyle(
+                    //       color: Colors.white,
+                    //       fontSize: 18.sp,
+                    //       fontFamily: 'Montserrat',
+                    //     ),
+                    //   ),
+                    // ),
+
+                    StreamBuilder<bool>(
+                      stream: player.playingStream,
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData && snapshot.data!) {
+                          return SizedBox.shrink();
+                        } else {
+                          return Center(
+                            child: SizedBox(
+                              height: 25.h,
+                              width: 90.w,
+                              child: ListView(
+                                scrollDirection: Axis.vertical,
+                                children: blankAnswerOptions.map((e) {
+                                  return TextButton(
+                                    style: ButtonStyle(
+                                      backgroundColor: userBlanksAnswers
+                                              .contains(e)
+                                          ? MaterialStateProperty.all<Color>(
+                                              Colors.green)
+                                          : MaterialStateProperty.all<Color>(
+                                              brown2),
+                                      side:
+                                          MaterialStateProperty.all<BorderSide>(
+                                        BorderSide(
+                                          color: Colors.white,
+                                          width: 2,
+                                        ),
+                                      ),
+                                    ),
+                                    onPressed: () {
+                                      if (widget.level == "easy") {
+                                        userBlanksAnswers.clear();
+                                      } else {
+                                        if (userBlanksAnswers.length >= 2) {
+                                          userBlanksAnswers.clear();
+                                        }
+                                      }
+                                      userBlanksAnswers.add(e);
+                                      setState(() {});
+                                    },
+                                    child: Text(
+                                      e,
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 15.sp,
+                                        fontFamily: 'Montserrat',
+                                      ),
+                                    ),
+                                  );
+                                }).toList(),
+                              ),
+                            ),
+                          );
+                        }
+                      },
                     ),
-                    Container(
-                      width: 90.w,
-                      margin:
-                          EdgeInsets.only(bottom: 5.h, left: 5.w, right: 5.w),
-                      padding: EdgeInsets.symmetric(horizontal: 5.w),
-                      decoration: BoxDecoration(
-                        color: brown2,
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Row(
-                        children: [
-                          Text("Score:",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 20.sp,
-                                fontFamily: 'Montserrat',
-                              )),
-                          SizedBox(
-                            width: 5.w,
-                          ),
-                          Text(Score.round().toString(),
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 20.sp,
-                                fontFamily: 'Montserrat',
-                              )),
-                        ],
-                      ),
-                    ),
+
+                    // Container(
+                    //   width: 90.w,
+                    //   margin:
+                    //       EdgeInsets.only(bottom: 5.h, left: 5.w, right: 5.w),
+                    //   padding: EdgeInsets.symmetric(horizontal: 5.w),
+                    //   decoration: BoxDecoration(
+                    //     color: brown2,
+                    //     borderRadius: BorderRadius.circular(10),
+                    //   ),
+                    //   child: Row(
+                    //     children: [
+                    //       Text("Score:",
+                    //           style: TextStyle(
+                    //             color: Colors.white,
+                    //             fontSize: 20.sp,
+                    //             fontFamily: 'Montserrat',
+                    //           )),
+                    //       SizedBox(
+                    //         width: 5.w,
+                    //       ),
+                    //       Text(Score.round().toString(),
+                    //           style: TextStyle(
+                    //             color: Colors.white,
+                    //             fontSize: 20.sp,
+                    //             fontFamily: 'Montserrat',
+                    //           )),
+                    //     ],
+                    //   ),
+                    // ),
                     // Container(
                     //   margin:
                     //       EdgeInsets.only(bottom: 5.h, left: 5.w, right: 5.w),
@@ -683,6 +895,14 @@ class _MusicPlayingScreenState extends State<MusicPlayingScreen> {
                     ),
                     SizedBox(
                       height: 5.h,
+                    ),
+                    IconButton(
+                      onPressed: () {
+                        for (int i = 0; i < lyrics!.length; i++) {
+                          print(originalLyrics![i].words);
+                        }
+                      },
+                      icon: Icon(Icons.mic_none_outlined),
                     ),
                   ],
                 )

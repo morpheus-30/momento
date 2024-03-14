@@ -1,21 +1,21 @@
 // import 'package:audioplayers/audioplayers.dart
 import 'package:flutter/material.dart';
 import 'package:momento/constants.dart';
-import 'package:momento/screens/Games/mystery%20lyrics/MusicPlayingScreen.dart';
+import 'package:momento/screens/Games/mystery%20lyrics/MusicPlayingScreenBlank.dart';
+import 'package:momento/screens/Games/mystery%20lyrics/MusicPlayingScreenHard.dart';
 import 'package:sizer/sizer.dart';
 import 'package:spotify/spotify.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
 class MusicSelectionScreen extends StatefulWidget {
-  const MusicSelectionScreen({super.key});  
+  String level;
+  MusicSelectionScreen({required this.level});
 
   @override
   State<MusicSelectionScreen> createState() => _MusicSelectionScreenState();
 }
 
 class _MusicSelectionScreenState extends State<MusicSelectionScreen> {
-
-
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -110,8 +110,7 @@ class _MusicSelectionScreenState extends State<MusicSelectionScreen> {
                 ),
               ),
               child: Container(
-                
-                padding: EdgeInsets.all(90.sp), 
+                padding: EdgeInsets.all(35.w),
                 color: const Color.fromRGBO(0, 0, 0, 1).withOpacity(0.5),
                 child: Container(
                   decoration: BoxDecoration(
@@ -140,7 +139,11 @@ class _MusicSelectionScreenState extends State<MusicSelectionScreen> {
                       Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => MusicPlayingScreen()));
+                              builder: (context) => widget.level == "hard"
+                                  ? MusicPlayingScreenHard()
+                                  : MusicPlayingScreen(
+                                      level: widget.level,
+                                    )));
                     },
                     iconSize: 25.sp,
                     icon: Icon(
