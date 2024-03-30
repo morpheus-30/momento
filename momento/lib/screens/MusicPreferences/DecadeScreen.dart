@@ -41,7 +41,7 @@ class _DecadeScreenState extends State<DecadeScreen> {
           ),
         ],
         elevation: 0,
-        leadingWidth: 30.w,
+        // leadingWidth: 30.w,
         centerTitle: true,
         title: Text(
           "Music Preferences",
@@ -65,15 +65,7 @@ class _DecadeScreenState extends State<DecadeScreen> {
                 Navigator.pop(context);
               },
             ),
-            IconButton(
-              onPressed: () {
-                Navigator.popUntil(context, ModalRoute.withName('/home'));
-              },
-              icon: Icon(
-                Icons.home,
-                color: Colors.white,
-              ),
-            ),
+
           ],
         ),
       ),

@@ -159,10 +159,13 @@ class _DateScreenState extends State<DateScreen> {
                     String date = Date + "/" + Month + "/" + Year;
                     widget.data["Date"] = {
                       "Date": date,
-                      "isCorrect": date == DateTime.now().toString().substring(0, 10)
+                      "isCorrect": date == "${DateTime.now().day}/${MonthDropDownData[DateTime.now().month-1]}/${DateTime.now().year}"
                     };
 
                     print(widget.data);
+                    // print("Date: $date");
+                    // print("Today's Date: ${DateTime.now().day}/${MonthDropDownData[DateTime.now().month-1]}/${DateTime.now().year}");
+                    // print("isCorrect: ${date == "${DateTime.now().day}/${MonthDropDownData[DateTime.now().month-1]}/${DateTime.now().year}"}");
                     await FirebaseFirestore.instance
                         .collection('Users')
                         .doc(FirebaseAuth.instance.currentUser!.uid)
@@ -185,9 +188,12 @@ class _DateScreenState extends State<DateScreen> {
                       'HighScore': 0,
                     }, SetOptions(merge: true));
                     Navigator.popUntil(context, (route) => route.isFirst);
+                    print(widget.data);
                     Navigator.pushReplacement(context, MaterialPageRoute(
                       builder: (context) {
-                        return ResultsScreen();
+                        return ResultsScreen(
+                          data: widget.data,
+                        );
                       },
                     ));
                   },

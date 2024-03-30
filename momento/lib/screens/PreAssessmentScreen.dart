@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:momento/constants.dart';
+import 'package:momento/screens/pre_assessment_questions/SelectMonths.dart';
 import 'package:momento/screens/pre_assessment_questions/ClockScreen.dart';
 import 'package:momento/widgets/buttons/signUpButton.dart';
 import 'package:sizer/sizer.dart';
@@ -65,7 +66,7 @@ class PreAssessmentScreen extends StatelessWidget {
                   width: 85.w,
                   child: SignUpButton(
                     onPressed: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => ClockScreen()));
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => SelectMonths()));
                     },
                     text: "Start",
                     color: brown2,

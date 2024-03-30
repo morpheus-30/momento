@@ -28,7 +28,7 @@ class _ArtistScreenState extends State<ArtistScreen> {
           ),
         ],
         elevation: 0,
-        leadingWidth: 30.w,
+        // leadingWidth: 30.w,
         centerTitle: true,
         title: Text(
           "Music Preferences",
@@ -52,15 +52,7 @@ class _ArtistScreenState extends State<ArtistScreen> {
                 Navigator.pop(context);
               },
             ),
-            IconButton(
-              onPressed: () {
-                Navigator.popUntil(context, ModalRoute.withName('/home'));
-              },
-              icon: Icon(
-                Icons.home,
-                color: Colors.white,
-              ),
-            ),
+           
           ],
         ),
       ),

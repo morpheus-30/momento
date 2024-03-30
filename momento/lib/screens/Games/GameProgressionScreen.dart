@@ -97,96 +97,98 @@ class _ProgressionScreenState extends State<ProgressionScreen> {
     // print(scores);
 
     return Scaffold(
-      body: Container(
-        margin: EdgeInsets.only(top: 10.h),
-        child: Center(
-          child: Column(
-            children: [
-              Text(
-                "Progression",
-                style: TextStyle(
-                  fontSize: 30.sp,
-                  fontFamily: "Montserrat",
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
+      body: SingleChildScrollView(
+        child: Container(
+          margin: EdgeInsets.only(top: 10.h),
+          child: Center(
+            child: Column(
+              children: [
+                Text(
+                  "Progression",
+                  style: TextStyle(
+                    fontSize: 30.sp,
+                    fontFamily: "Montserrat",
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
                 ),
-              ),
-              SizedBox(height: 5.h),
-              LineGraph(
-                features: [
-                  Feature(
-                    data: scores,
-                    color: brown2,
-                    title: "Scores",
-                  )
-                ],
-                size: Size(320, 350),
-                showDescription: true,
-                graphColor: Colors.black,
-                verticalFeatureDirection: true,
-                labelX: dates.map((e){
-                  if(e%5==0){
-                    return e.toString();
-                  }
-                  return " ";
-                
-                }).toList(),
-                labelY: [
-                  "0",
-                  "200",
-                  "400",
-                  "600",
-                  "800",
-                  "1000",
-                  "2000",
-                  "3000",
-                  "4000"
-                ],
-              ),
-              SizedBox(height: 5.h),
-              Text(
-                "Result of the last 31 days",
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 10.sp,
-                  fontFamily: "Montserrat",
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
+                SizedBox(height: 5.h),
+                LineGraph(
+                  features: [
+                    Feature(
+                      data: scores,
+                      color: brown2,
+                      title: "Scores",
+                    )
+                  ],
+                  size: Size(320, 350),
+                  showDescription: true,
+                  graphColor: Colors.black,
+                  verticalFeatureDirection: true,
+                  labelX: dates.map((e){
+                    if(e%5==0){
+                      return e.toString();
+                    }
+                    return " ";
+                  
+                  }).toList(),
+                  labelY: [
+                    "0",
+                    "200",
+                    "400",
+                    "600",
+                    "800",
+                    "1000",
+                    "2000",
+                    "3000",
+                    "4000"
+                  ],
                 ),
-              ),
-              SizedBox(height: 1.h),
-              Text(
-                "Result shows a decrease in activity",
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 12.sp,
-                  fontFamily: "Montserrat",
-                  fontWeight: FontWeight.bold,
-                  color: Colors.red[900]!,
+                SizedBox(height: 5.h),
+                Text(
+                  "Result of the last 31 days",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 10.sp,
+                    fontFamily: "Montserrat",
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
                 ),
-              ),
-              SizedBox(height: 2.h),
-              SizedBox(
-                width: 80.w,
-                child: LoginButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  text: "Back",
+                SizedBox(height: 1.h),
+                Text(
+                  "Result shows a decrease in activity",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 12.sp,
+                    fontFamily: "Montserrat",
+                    fontWeight: FontWeight.bold,
+                    color: Colors.red[900]!,
+                  ),
                 ),
-              ),
-              SizedBox(height: 2.h),
-              Text(
-                "This tool does not provide medical advice It is intended for informational purposes only. It is not a substitute for professional medical advice, diagnosis or treatment.",
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 8.sp,
-                  fontFamily: "Montserrat",
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
+                SizedBox(height: 2.h),
+                SizedBox(
+                  width: 80.w,
+                  child: LoginButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    text: "Back",
+                  ),
                 ),
-              ),
-            ],
+                SizedBox(height: 2.h),
+                Text(
+                  "This tool does not provide medical advice It is intended for informational purposes only. It is not a substitute for professional medical advice, diagnosis or treatment.",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 8.sp,
+                    fontFamily: "Montserrat",
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

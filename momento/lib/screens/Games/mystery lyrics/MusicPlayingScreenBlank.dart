@@ -1,9 +1,8 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:momento/widgets/buttons/loginButton.dart';
-import 'package:string_similarity/string_similarity.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:intl/intl.dart';
@@ -13,7 +12,6 @@ import 'package:momento/screens/Games/mystery%20lyrics/models/lyricModel.dart';
 import 'package:momento/screens/Games/mystery%20lyrics/models/musicModel.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:sizer/sizer.dart';
-import 'package:speech_to_text/speech_to_text.dart';
 import 'package:spotify/spotify.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
@@ -34,6 +32,7 @@ class _MusicPlayingScreenState extends State<MusicPlayingScreen> {
     trackId: "7F1yVPuJ4xRdrDvf8OL0HF",
   );
   bool hasBeenStarted = false;
+  int countdown = 0;
   List<Lyric>? lyrics = [];
   List<Lyric>? originalLyrics = [];
   double Score = 0;
@@ -201,6 +200,156 @@ class _MusicPlayingScreenState extends State<MusicPlayingScreen> {
     });
     String currentSecond = "";
     player.positionStream.listen((duration) {
+      if (duration.inSeconds > 45) {
+        player.stop();
+        int tempScore = ((Score / (200)) * 100).round();
+        int finalScore = Score.toInt();
+        int numberOfStars = tempScore > 80
+            ? 3
+            : tempScore > 60
+                ? 2
+                : tempScore > 40
+                    ? 1
+                    : 0;
+
+        dynamic alert2 = AlertDialog(
+          title: const Text(
+            "Score",
+            textAlign: TextAlign.center,
+          ),
+          titleTextStyle: TextStyle(
+            fontSize: 20.sp,
+            fontWeight: FontWeight.bold,
+            fontFamily: "Montserrat",
+            color: Colors.black,
+          ),
+          contentTextStyle: TextStyle(
+            fontSize: 70.sp,
+            color: Colors.black,
+            fontWeight: FontWeight.bold,
+            fontFamily: "Montserrat",
+          ),
+          content: SizedBox(
+            height: 30.h,
+            child: Column(
+              children: [
+                Text(
+                  finalScore.toString(),
+                  textAlign: TextAlign.center,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.star,
+                      size: 40.sp,
+                      color: numberOfStars > 0 ? Colors.yellow : Colors.grey,
+                    ),
+                    Icon(
+                      Icons.star,
+                      size: 40.sp,
+                      color: numberOfStars > 1 ? Colors.yellow : Colors.grey,
+                    ),
+                    Icon(
+                      Icons.star,
+                      size: 40.sp,
+                      color: numberOfStars > 2 ? Colors.yellow : Colors.grey,
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: 3.h,
+                ),
+                SizedBox(
+                  height: 5.h,
+                  width: 80.w,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      IconButton(
+                        alignment: Alignment.center,
+                        onPressed: () async {
+                          setState(() {
+                            hasBeenStarted = false;
+                            Score = 0;
+                          });
+                          player.stop();
+                          player.seek(Duration.zero);
+                          Navigator.pop(context);
+                        },
+                        padding: EdgeInsets.zero,
+                        icon: Icon(
+                          Icons.loop,
+                          size: 40.sp,
+                        ),
+                      ),
+                      SizedBox(
+                        width: 5.w,
+                      ),
+                      IconButton(
+                        alignment: Alignment.center,
+                        padding: EdgeInsets.zero,
+                        onPressed: () async {
+                          player.dispose();
+                          await FirebaseFirestore.instance
+                              .collection('MysteryLyrics')
+                              .doc(FirebaseAuth.instance.currentUser!.uid)
+                              .collection('Scores')
+                              .doc(DateTime.now().toString())
+                              .set({
+                            'score': finalScore,
+                          });
+                          // dynamic oldScores = await FirebaseFirestore
+                          //     .instance
+                          //     .collection('MysteryLyrics')
+                          //     .doc(FirebaseAuth
+                          //         .instance.currentUser!.uid)
+                          //     .collection('Scores')
+                          //     .get();
+                          dynamic highScore;
+                          await FirebaseFirestore.instance
+                              .collection('MysteryLyrics')
+                              .doc(FirebaseAuth.instance.currentUser!.uid)
+                              .get()
+                              .then((value) {
+                            highScore = value.data()!['HighScore'];
+                          });
+                          if (Score.toInt() > highScore) {
+                            await FirebaseFirestore.instance
+                                .collection('MysteryLyrics')
+                                .doc(FirebaseAuth.instance.currentUser!.uid)
+                                .update({
+                              'HighScore': Score.toInt(),
+                            });
+                          }
+                          // print("HighScore updated");
+                          // oldScores.docs.forEach((element) {
+                          //   print(element.data());
+                          // });
+                          Navigator.popUntil(context, (route) => route.isFirst);
+                          Navigator.pushReplacementNamed(context, '/home');
+                          Navigator.popUntil(context, (route) => route.isFirst);
+                          Navigator.pushReplacementNamed(context, '/home');
+                        },
+                        icon: Icon(
+                          Icons.exit_to_app,
+                          size: 40.sp,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return alert2;
+          },
+        );
+      }
       // print(event);
       // print(lyrics!.length);
       // print(duration.inSeconds.remainder(60));
@@ -252,30 +401,67 @@ class _MusicPlayingScreenState extends State<MusicPlayingScreen> {
             }
           });
 
-          Future.delayed(const Duration(seconds: 10), () async {
-            if (userBlanksAnswers.isNotEmpty) {
-              userBlanksAnswers.sort((a, b) {
-                return a.toLowerCase().compareTo(b.toLowerCase());
-              });
-              String ans = userBlanksAnswers.join(" ");
-              if (ans.toLowerCase() == blankedLyricsAnswers[i].toLowerCase()) {
-                setState(() {
-                  Score += 50;
-                  Score = Score.roundToDouble();
-                });
-              }
-            }
-            print("Score $Score");
+          // Future.delayed(const Duration(seconds: 10), () async {
+          //   if (userBlanksAnswers.isNotEmpty) {
+          //     userBlanksAnswers.sort((a, b) {
+          //       return a.toLowerCase().compareTo(b.toLowerCase());
+          //     });
+          //     String ans = userBlanksAnswers.join(" ");
+          //     if (ans.toLowerCase() == blankedLyricsAnswers[i].toLowerCase()) {
+          //       setState(() {
+          //         Score += 50;
+          //         Score = Score.roundToDouble();
+          //       });
+          //     }
+          //   }
+          //   print("Score $Score");
+          //   setState(() {
+          //     lyrics![i].words = originalLyrics![i].words;
+          //   });
+          //   await player.seek(Duration(
+          //       milliseconds: lyrics![i].time.millisecond +
+          //           lyrics![i].time.second * 1000 +
+          //           lyrics![i].time.minute * 60 * 1000 +
+          //           lyrics![i].time.hour * 60 * 60 * 1000));
+          //   await player.play();
+          //   // print("stop playing");
+          // });
+          bool delayed = false;
+          Timer.periodic(Duration(seconds: 1), (timer) async {
+            delayed = true;
             setState(() {
-              lyrics![i].words = originalLyrics![i].words;
+              countdown++;
             });
-            await player.seek(Duration(
-                milliseconds: lyrics![i].time.millisecond +
-                    lyrics![i].time.second * 1000 +
-                    lyrics![i].time.minute * 60 * 1000 +
-                    lyrics![i].time.hour * 60 * 60 * 1000));
-            await player.play();
-            // print("stop playing");
+            if (countdown == 10) {
+              timer.cancel();
+              if (userBlanksAnswers.isNotEmpty) {
+                userBlanksAnswers.sort((a, b) {
+                  return a.toLowerCase().compareTo(b.toLowerCase());
+                });
+                String ans = userBlanksAnswers.join(" ");
+                if (ans.toLowerCase() ==
+                    blankedLyricsAnswers[i].toLowerCase()) {
+                  setState(() {
+                    Score += 50;
+                    Score = Score.roundToDouble();
+                  });
+                }
+              }
+              print("Score $Score");
+              setState(() {
+                lyrics![i].words = originalLyrics![i].words;
+              });
+              await player.seek(Duration(
+                  milliseconds: lyrics![i].time.millisecond +
+                      lyrics![i].time.second * 1000 +
+                      lyrics![i].time.minute * 60 * 1000 +
+                      lyrics![i].time.hour * 60 * 60 * 1000));
+              await player.play();
+              setState(() {
+                countdown = 0;
+              });
+
+            }
           });
 
           currentSecond =
@@ -572,62 +758,83 @@ class _MusicPlayingScreenState extends State<MusicPlayingScreen> {
                     //   ),
                     // ),
 
-                    StreamBuilder<bool>(
-                      stream: player.playingStream,
-                      builder: (context, snapshot) {
-                        if (snapshot.hasData && snapshot.data!) {
-                          return SizedBox.shrink();
-                        } else {
-                          return Center(
-                            child: SizedBox(
-                              height: 25.h,
-                              width: 90.w,
-                              child: ListView(
-                                scrollDirection: Axis.vertical,
-                                children: blankAnswerOptions.map((e) {
-                                  return TextButton(
-                                    style: ButtonStyle(
-                                      backgroundColor: userBlanksAnswers
-                                              .contains(e)
-                                          ? MaterialStateProperty.all<Color>(
-                                              Colors.green)
-                                          : MaterialStateProperty.all<Color>(
-                                              brown2),
-                                      side:
-                                          MaterialStateProperty.all<BorderSide>(
-                                        BorderSide(
-                                          color: Colors.white,
-                                          width: 2,
+                    hasBeenStarted
+                        ? StreamBuilder<bool>(
+                            stream: player.playingStream,
+                            builder: (context, snapshot) {
+                              if (snapshot.hasData && snapshot.data!) {
+                                return SizedBox.shrink();
+                              } else {
+                                return Column(
+                                  children: [
+                                    Center(
+                                      child: SizedBox(
+                                        height: 25.h,
+                                        width: 90.w,
+                                        child: ListView(
+                                          scrollDirection: Axis.vertical,
+                                          children: blankAnswerOptions.map((e) {
+                                            return TextButton(
+                                              style: ButtonStyle(
+                                                backgroundColor:
+                                                    userBlanksAnswers
+                                                            .contains(e)
+                                                        ? MaterialStateProperty
+                                                            .all<Color>(
+                                                                Colors.green)
+                                                        : MaterialStateProperty
+                                                            .all<Color>(brown2),
+                                                side: MaterialStateProperty.all<
+                                                    BorderSide>(
+                                                  const BorderSide(
+                                                    color: Colors.white,
+                                                    width: 2,
+                                                  ),
+                                                ),
+                                              ),
+                                              onPressed: () {
+                                                if (widget.level == "easy") {
+                                                  userBlanksAnswers.clear();
+                                                } else {
+                                                  if (userBlanksAnswers
+                                                          .length >=
+                                                      2) {
+                                                    userBlanksAnswers.clear();
+                                                  }
+                                                }
+                                                userBlanksAnswers.add(e);
+                                                setState(() {});
+                                              },
+                                              child: Text(
+                                                e,
+                                                style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 15.sp,
+                                                  fontFamily: 'Montserrat',
+                                                ),
+                                              ),
+                                            );
+                                          }).toList(),
                                         ),
                                       ),
                                     ),
-                                    onPressed: () {
-                                      if (widget.level == "easy") {
-                                        userBlanksAnswers.clear();
-                                      } else {
-                                        if (userBlanksAnswers.length >= 2) {
-                                          userBlanksAnswers.clear();
-                                        }
-                                      }
-                                      userBlanksAnswers.add(e);
-                                      setState(() {});
-                                    },
-                                    child: Text(
-                                      e,
+                                    SizedBox(
+                                      height: 2.h,
+                                    ),
+                                    Text(
+                                      "Time left: ${10 - countdown}",
                                       style: TextStyle(
-                                        color: Colors.white,
+                                        color: Colors.black,
                                         fontSize: 15.sp,
                                         fontFamily: 'Montserrat',
                                       ),
                                     ),
-                                  );
-                                }).toList(),
-                              ),
-                            ),
-                          );
-                        }
-                      },
-                    ),
+                                  ],
+                                );
+                              }
+                            },
+                          )
+                        : SizedBox(),
 
                     // Container(
                     //   width: 90.w,
@@ -676,8 +883,7 @@ class _MusicPlayingScreenState extends State<MusicPlayingScreen> {
                     ),
                     ElevatedButton(
                       onPressed: () {
-                        int tempScore =
-                            ((Score / (lyrics!.length * 100)) * 100).round();
+                        int tempScore = ((Score / (200)) * 100).round();
                         int finalScore = Score.toInt();
                         int numberOfStars = tempScore > 80
                             ? 3
@@ -878,7 +1084,7 @@ class _MusicPlayingScreenState extends State<MusicPlayingScreen> {
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: brown2,
-                        minimumSize: Size(80.w, 8.h),
+                        minimumSize: Size(80.w, 5.h),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),
@@ -894,15 +1100,29 @@ class _MusicPlayingScreenState extends State<MusicPlayingScreen> {
                       ),
                     ),
                     SizedBox(
-                      height: 5.h,
+                      height: 1.h,
                     ),
-                    IconButton(
-                      onPressed: () {
-                        for (int i = 0; i < lyrics!.length; i++) {
-                          print(originalLyrics![i].words);
-                        }
-                      },
-                      icon: Icon(Icons.mic_none_outlined),
+                    // IconButton(
+                    //   onPressed: () {
+                    //     for (int i = 0; i < lyrics!.length; i++) {
+                    //       print(originalLyrics![i].words);
+                    //     }
+                    //   },
+                    //   icon: Icon(Icons.mic_none_outlined),
+                    // ),
+                    StreamBuilder<Duration>(
+                        stream: player.positionStream,
+                        builder: (context, snapshot) {
+                          return CircularProgressIndicator(
+                            value: snapshot.data != null
+                                ? snapshot.data!.inSeconds / 45
+                                : 0,
+                            backgroundColor: Colors.white,
+                            valueColor: AlwaysStoppedAnimation<Color>(brown2),
+                          );
+                        }),
+                    SizedBox(
+                      height: 2.h,
                     ),
                   ],
                 )
@@ -911,8 +1131,8 @@ class _MusicPlayingScreenState extends State<MusicPlayingScreen> {
                 ),
         ),
         onWillPop: () {
-          int tempScore = ((Score / (lyrics!.length * 100)) * 100).round();
           int finalScore = Score.toInt();
+          int tempScore = ((Score / (200)) * 100).round();
           int numberOfStars = tempScore > 80
               ? 3
               : tempScore > 60
@@ -920,6 +1140,7 @@ class _MusicPlayingScreenState extends State<MusicPlayingScreen> {
                   : tempScore > 40
                       ? 1
                       : 0;
+
           dynamic alert = AlertDialog(
             title: Text("Are you sure you want to exit?"),
             actions: [
@@ -931,6 +1152,7 @@ class _MusicPlayingScreenState extends State<MusicPlayingScreen> {
               ),
               TextButton(
                 onPressed: () {
+                  player.stop();
                   Navigator.pop(context);
                   dynamic alert2 = AlertDialog(
                     title: const Text(

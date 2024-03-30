@@ -18,24 +18,23 @@ import 'package:momento/screens/StartScreen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 
-void main() async{
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
-  ); 
+  );
   runApp(const MyApp());
-  
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   @override
-  void initState() async{
+  void initState() async {
     print('initializing firebase');
     await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  ); 
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
   }
 
   // This widget is the root of your application.
@@ -43,7 +42,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      routes: { 
+      routes: {
         '/': (_) => StartScreen(),
         '/singup': (_) => SignUpScreen(),
         '/login': (_) => LoginScreen(),
@@ -51,15 +50,14 @@ class MyApp extends StatelessWidget {
         '/home': (_) => HomeScreen(),
         '/Profile': (_) => ProfileScreen(),
         '/Edit Profile': (_) => EditProfile(),
-        '/Games' : (_) => GamesRecommendationScreen(),
-        '/Help' : (_) => HelpScreen(),
-        '/Music Preferences' : (_) => MusicPreferencesScreen(),
-        '/Resources' : (_) => ResourcesLinksScreen(),
-        '/Progression':(_)=> HighScoreScreen(),
-        '/mysteryLyricsHelp' :(_)=> MysteryLyricHelpScreen(),
-        '/patternHelp' :(_)=> PatternHelp(),
+        '/Games': (_) => GamesRecommendationScreen(),
+        '/Help': (_) => HelpScreen(),
+        '/Music Preferences': (_) => MusicPreferencesScreen(),
+        '/Resources': (_) => ResourcesLinksScreen(),
+        '/Progression': (_) => HighScoreScreen(),
+        '/mysteryLyricsHelp': (_) => MysteryLyricHelpScreen(),
+        '/patternHelp': (_) => PatternHelp(),
       },
     );
   }
 }
-

@@ -49,15 +49,7 @@ class MusicPreferencesScreen extends StatelessWidget {
                   Navigator.pop(context);
                 },
               ),
-              IconButton(
-                onPressed: () {
-                  Navigator.popUntil(context, ModalRoute.withName('/home'));
-                },
-                icon: Icon(
-                  Icons.home,
-                  color: Colors.white,
-                ),
-              ),
+             
             ],
           ),
         ),

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:momento/constants.dart';
 import 'package:momento/screens/Games/mystery%20lyrics/MusicPlayingScreenBlank.dart';
 import 'package:momento/screens/Games/mystery%20lyrics/MusicPlayingScreenHard.dart';
+import 'package:momento/widgets/buttons/loginButton.dart';
 import 'package:sizer/sizer.dart';
 import 'package:spotify/spotify.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
@@ -96,6 +97,7 @@ class _MusicSelectionScreenState extends State<MusicSelectionScreen> {
                 )),
             SizedBox(height: 7.h),
             Container(
+              padding: EdgeInsets.all(30.w),
               margin: EdgeInsets.only(right: 5.w, left: 5.w),
               height: 40.h,
               width: 100.w,
@@ -109,34 +111,9 @@ class _MusicSelectionScreenState extends State<MusicSelectionScreen> {
                   width: 2,
                 ),
               ),
-              child: Container(
-                padding: EdgeInsets.all(35.w),
-                color: const Color.fromRGBO(0, 0, 0, 1).withOpacity(0.5),
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: brown2.withOpacity(0.5),
-                    // borderRadius: BorderRadius.circular(100),
-                    border: Border.all(
-                      color: Colors.white,
-                      width: 2,
-                    ),
-                    shape: BoxShape.circle,
-                  ),
-                  child: IconButton(
-                    style: ButtonStyle(
-                      shape: MaterialStateProperty.all<CircleBorder>(
-                          CircleBorder()),
-                      side: MaterialStateProperty.all<BorderSide>(
-                        BorderSide(
-                          color: brown2,
-                          width: 2,
-                        ),
-                      ),
-                      backgroundColor: MaterialStateProperty.all<Color>(brown2),
-                      shadowColor: MaterialStateProperty.all<Color>(brown2),
-                    ),
-                    onPressed: () {
-                      Navigator.pushReplacement(
+              child: LoginButton(
+                onPressed: () {
+                  Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
                               builder: (context) => widget.level == "hard"
@@ -144,14 +121,8 @@ class _MusicSelectionScreenState extends State<MusicSelectionScreen> {
                                   : MusicPlayingScreen(
                                       level: widget.level,
                                     )));
-                    },
-                    iconSize: 25.sp,
-                    icon: Icon(
-                      Icons.play_arrow,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
+                },
+                text: "Play",
               ),
             ),
             SizedBox(height: 6.h),

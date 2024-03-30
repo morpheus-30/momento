@@ -60,25 +60,25 @@ class _PatternMatchGameScreenState extends State<PatternMatchGameScreen> {
         });
         if (pattern[i] == 1) {
           // print("Playing C");
-          audioPlayer.setAsset("assets/audio/c_major.wav");
+          audioPlayer.setAsset("assets/audio/c.mpeg");
           audioPlayer.play();
           container1Color = colorMap[0];
           i++;
         } else if (pattern[i] == 2) {
           // print("Playing D");
-          audioPlayer.setAsset("assets/audio/d_major.wav");
+          audioPlayer.setAsset("assets/audio/d.mpeg");
           audioPlayer.play();
           container2Color = colorMap[1];
           i++;
         } else if (pattern[i] == 3) {
           // print("Playing E");
-          audioPlayer.setAsset("assets/audio/e_major.wav");
+          audioPlayer.setAsset("assets/audio/e.mpeg");
           audioPlayer.play();
           container3Color = colorMap[2];
           i++;
         } else if (pattern[i] == 4) {
           // print("Playing F");
-          audioPlayer.setAsset("assets/audio/f_major.wav");
+          audioPlayer.setAsset("assets/audio/f.mpeg");
           audioPlayer.play();
           container4Color = colorMap[3];
           i++;
@@ -624,7 +624,7 @@ class _PatternMatchGameScreenState extends State<PatternMatchGameScreen> {
                       onPressed: flag == false
                           ? () async {
                               await audioPlayer
-                                  .setAsset("assets/audio/c_major.wav");
+                                  .setAsset("assets/audio/c.mpeg");
                               await audioPlayer.play();
                               print(1);
                               setState(() {
@@ -654,7 +654,7 @@ class _PatternMatchGameScreenState extends State<PatternMatchGameScreen> {
                       onPressed: flag == false
                           ? () async {
                               await audioPlayer
-                                  .setAsset("assets/audio/d_major.wav");
+                                  .setAsset("assets/audio/d.mpeg");
                               await audioPlayer.play();
                               print(2);
                               setState(() {
@@ -684,7 +684,7 @@ class _PatternMatchGameScreenState extends State<PatternMatchGameScreen> {
                       onPressed: flag == false
                           ? () async{
                             await audioPlayer
-                              .setAsset("assets/audio/e_major.wav");
+                              .setAsset("assets/audio/e.mpeg");
                           await audioPlayer.play();
                               print(3);
                               setState(() {
@@ -714,7 +714,7 @@ class _PatternMatchGameScreenState extends State<PatternMatchGameScreen> {
                       onPressed: flag == false
                           ? ()async{
                             await audioPlayer
-                              .setAsset("assets/audio/d_major.wav");
+                              .setAsset("assets/audio/d.mpeg");
                           await audioPlayer.play();
                               print(4);
                               setState(() {

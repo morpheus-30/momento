@@ -113,6 +113,156 @@ class _MusicPlayingScreenHardState extends State<MusicPlayingScreenHard> {
     });
     String currentSecond = "";
     player.positionStream.listen((duration) {
+      if (duration.inSeconds > 45) {
+        player.stop();
+       int tempScore = ((Score / (500)) * 100).round();
+        int finalScore = Score.toInt();
+        int numberOfStars = tempScore > 80
+            ? 3
+            : tempScore > 60
+                ? 2
+                : tempScore > 40
+                    ? 1
+                    : 0;
+
+        dynamic alert2 = AlertDialog(
+          title: const Text(
+            "Score",
+            textAlign: TextAlign.center,
+          ),
+          titleTextStyle: TextStyle(
+            fontSize: 20.sp,
+            fontWeight: FontWeight.bold,
+            fontFamily: "Montserrat",
+            color: Colors.black,
+          ),
+          contentTextStyle: TextStyle(
+            fontSize: 70.sp,
+            color: Colors.black,
+            fontWeight: FontWeight.bold,
+            fontFamily: "Montserrat",
+          ),
+          content: SizedBox(
+            height: 30.h,
+            child: Column(
+              children: [
+                Text(
+                  finalScore.toString(),
+                  textAlign: TextAlign.center,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.star,
+                      size: 40.sp,
+                      color: numberOfStars > 0 ? Colors.yellow : Colors.grey,
+                    ),
+                    Icon(
+                      Icons.star,
+                      size: 40.sp,
+                      color: numberOfStars > 1 ? Colors.yellow : Colors.grey,
+                    ),
+                    Icon(
+                      Icons.star,
+                      size: 40.sp,
+                      color: numberOfStars > 2 ? Colors.yellow : Colors.grey,
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: 3.h,
+                ),
+                SizedBox(
+                  height: 5.h,
+                  width: 80.w,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      IconButton(
+                        alignment: Alignment.center,
+                        onPressed: () async {
+                          setState(() {
+                            hasBeenStarted = false;
+                            Score = 0;
+                          });
+                          player.stop();
+                          player.seek(Duration.zero);
+                          Navigator.pop(context);
+                        },
+                        padding: EdgeInsets.zero,
+                        icon: Icon(
+                          Icons.loop,
+                          size: 40.sp,
+                        ),
+                      ),
+                      SizedBox(
+                        width: 5.w,
+                      ),
+                      IconButton(
+                        alignment: Alignment.center,
+                        padding: EdgeInsets.zero,
+                        onPressed: () async {
+                          player.dispose();
+                          await FirebaseFirestore.instance
+                              .collection('MysteryLyrics')
+                              .doc(FirebaseAuth.instance.currentUser!.uid)
+                              .collection('Scores')
+                              .doc(DateTime.now().toString())
+                              .set({
+                            'score': finalScore,
+                          });
+                          // dynamic oldScores = await FirebaseFirestore
+                          //     .instance
+                          //     .collection('MysteryLyrics')
+                          //     .doc(FirebaseAuth
+                          //         .instance.currentUser!.uid)
+                          //     .collection('Scores')
+                          //     .get();
+                          dynamic highScore;
+                          await FirebaseFirestore.instance
+                              .collection('MysteryLyrics')
+                              .doc(FirebaseAuth.instance.currentUser!.uid)
+                              .get()
+                              .then((value) {
+                            highScore = value.data()!['HighScore'];
+                          });
+                          if (Score.toInt() > highScore) {
+                            await FirebaseFirestore.instance
+                                .collection('MysteryLyrics')
+                                .doc(FirebaseAuth.instance.currentUser!.uid)
+                                .update({
+                              'HighScore': Score.toInt(),
+                            });
+                          }
+                          // print("HighScore updated");
+                          // oldScores.docs.forEach((element) {
+                          //   print(element.data());
+                          // });
+                          Navigator.popUntil(context, (route) => route.isFirst);
+                          Navigator.pushReplacementNamed(context, '/home');
+                          Navigator.popUntil(context, (route) => route.isFirst);
+                          Navigator.pushReplacementNamed(context, '/home');
+                        },
+                        icon: Icon(
+                          Icons.exit_to_app,
+                          size: 40.sp,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return alert2;
+          },
+        );
+      }
       // print(event);
       // print(lyrics!.length);
       // print(duration.inSeconds.remainder(60));
@@ -469,8 +619,7 @@ class _MusicPlayingScreenHardState extends State<MusicPlayingScreenHard> {
                     ),
                     ElevatedButton(
                       onPressed: () {
-                        int tempScore =
-                            ((Score / (lyrics!.length * 100)) * 100).round();
+                        int tempScore = ((Score / (500)) * 100).round();
                         int finalScore = Score.toInt();
                         int numberOfStars = tempScore > 80
                             ? 3
@@ -689,6 +838,23 @@ class _MusicPlayingScreenHardState extends State<MusicPlayingScreenHard> {
                     SizedBox(
                       height: 5.h,
                     ),
+                     StreamBuilder<Duration>(
+                        stream: player.positionStream,
+                        builder: (context, snapshot) {
+                          return CircularProgressIndicator(
+                            
+                            value: snapshot.data != null
+                                ? snapshot.data!.inSeconds /
+                                    45
+                                : 0,
+                            backgroundColor: Colors.white,
+                            valueColor: AlwaysStoppedAnimation<Color>(brown2),
+                          
+                          );
+                        }),
+                        SizedBox(
+                          height: 5.h,
+                        ),
                   ],
                 )
               : const Center(
@@ -696,7 +862,7 @@ class _MusicPlayingScreenHardState extends State<MusicPlayingScreenHard> {
                 ),
         ),
         onWillPop: () {
-          int tempScore = ((Score / (lyrics!.length * 100)) * 100).round();
+        int tempScore = ((Score / (500)) * 100).round();
           int finalScore = Score.toInt();
           int numberOfStars = tempScore > 80
               ? 3
