@@ -51,8 +51,6 @@ class _HighScoreScreenState extends State<HighScoreScreen> {
           }
         }
 
-        
-
         dailyTriviaData.add({
           "Date": element.id.toString(),
           "Score": score,
@@ -72,13 +70,12 @@ class _HighScoreScreenState extends State<HighScoreScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        actions: [
-        ],
+        actions: [],
         elevation: 2,
         leadingWidth: 30.w,
         centerTitle: true,
         title: Text(
-          "High Scores",
+          "Progression",
           textAlign: TextAlign.center,
           style: TextStyle(
             color: Colors.white,
@@ -133,7 +130,7 @@ class _HighScoreScreenState extends State<HighScoreScreen> {
                   ScoreWidget(
                     gameName: "Pattern",
                     score: patternGameScore,
-                    color: Colors.red[900]!,
+                    color: Colors.blue[500]!,
                   ),
                   SizedBox(height: 2.h),
                   ScoreWidget(
@@ -189,7 +186,7 @@ class _HighScoreScreenState extends State<HighScoreScreen> {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             LoginButton(
-                              color: Colors.red[900]!,
+                              color: Colors.blue[500]!,
                               onPressed: () {
                                 Navigator.pop(context);
                                 Navigator.push(
@@ -270,7 +267,7 @@ class DailyTriviaHistoryTile extends StatelessWidget {
       margin: EdgeInsets.symmetric(vertical: 1.h),
       height: 8.h,
       decoration: BoxDecoration(
-      color: score == 2 ? Colors.green[200] : Colors.red[200],
+        color: score == 2 ? Colors.green[200] : Colors.red[200],
         borderRadius: BorderRadius.circular(10),
       ),
       child: Row(

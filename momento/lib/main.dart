@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:momento/screens/Games/GameProgressionScreen.dart';
 import 'package:momento/screens/Games/GamesRecommendations.dart';
 import 'package:momento/screens/Games/mystery%20lyrics/MysteryLyricHelpScreen.dart';
 import 'package:momento/screens/Games/pattern/PatternHelpScreen.dart';
@@ -11,7 +10,6 @@ import 'package:momento/screens/HomeScreen.dart';
 import 'package:momento/screens/LoginScreen.dart';
 import 'package:momento/screens/PreAssessmentScreen.dart';
 import 'package:momento/screens/Profile/ProfileScreen.dart';
-import 'package:momento/screens/Resources/ChooseResourcesScreen.dart';
 import 'package:momento/screens/Resources/LinkResourcesScreen.dart';
 import 'package:momento/screens/SignUpScreen.dart';
 import 'package:momento/screens/StartScreen.dart';

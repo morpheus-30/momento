@@ -12,15 +12,28 @@ class SelectMonths extends StatefulWidget {
   State<SelectMonths> createState() => _SelectMonthsState();
 }
 
-
 class _SelectMonthsState extends State<SelectMonths> {
   @override
   void initState() {
     super.initState();
-    months = MonthDropDownData;
     months.shuffle();
   }
-List months = [];
+
+  List months = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December"
+  ];
+
   List<String> selectedMonths = [];
   @override
   Widget build(BuildContext context) {
@@ -76,17 +89,18 @@ List months = [];
                       context,
                       MaterialPageRoute(
                         builder: (context) => ListenAndSpell(
-                          data: {"months": {
-                            "selectedMonths": selectedMonths,
-                            "isCorrect": selectedMonths
-                                .contains("January") &&
-                                selectedMonths.contains("February") &&
-                                selectedMonths.contains("March")
-                          }},
+                          data: {
+                            "months": {
+                              "selectedMonths": selectedMonths,
+                              "isCorrect": selectedMonths.contains("January") &&
+                                  selectedMonths.contains("February") &&
+                                  selectedMonths.contains("March")
+                            }
+                          },
                         ),
                       ),
                     );
-                  }else{
+                  } else {
                     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                       content: Text("Please select 3 months"),
                     ));

@@ -12,12 +12,12 @@ class MysteryDifficultyScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         actions: [
-          IconButton(
-              onPressed: () {},
-              icon: const Icon(
-                Icons.notifications,
-                color: Colors.white,
-              )),
+          // IconButton(
+          //     onPressed: () {},
+          //     icon: const Icon(
+          //       Icons.notifications,
+          //       color: Colors.white,
+          //     )),
           IconButton(
             onPressed: () {
               Navigator.pushNamed(context, '/Help');
@@ -29,7 +29,7 @@ class MysteryDifficultyScreen extends StatelessWidget {
           ),
         ],
         elevation: 0,
-        leadingWidth: 30.w,
+        // leadingWidth: 30.w,
         centerTitle: true,
         title: const Text(
           "Mystery Lyrics",
@@ -53,15 +53,15 @@ class MysteryDifficultyScreen extends StatelessWidget {
                 Navigator.pop(context);
               },
             ),
-            IconButton(
-              onPressed: () {
-                Navigator.popUntil(context, ModalRoute.withName('/home'));
-              },
-              icon: const Icon(
-                Icons.home,
-                color: Colors.white,
-              ),
-            ),
+            // IconButton(
+            //   onPressed: () {
+            //     Navigator.popUntil(context, ModalRoute.withName('/home'));
+            //   },
+            //   icon: const Icon(
+            //     Icons.home,
+            //     color: Colors.white,
+            //   ),
+            // ),
           ],
         ),
       ),

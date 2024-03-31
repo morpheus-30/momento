@@ -88,7 +88,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         onSaved: (value) {
                           email = value;
                         },
-                        inputText: "Ema il",
+                        inputText: "Email",
                       ),
                     ],
                   ),

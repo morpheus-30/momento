@@ -22,7 +22,7 @@ class MathScreen extends StatelessWidget {
                 onPressed: () {
                   Navigator.pushNamed(context, '/Help');
                 },
-                icon: Icon(
+                icon: const Icon(
                   Icons.help_outline_outlined,
                   color: Colors.white,
                 ))

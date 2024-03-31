@@ -119,7 +119,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   "Edit Profile",
                   "Profile Overview",
                   "Music Preferences",
-                  "Appointments"
                 ].map((e) {
                   return Container(
                     margin: EdgeInsets.only(bottom: 3.h),

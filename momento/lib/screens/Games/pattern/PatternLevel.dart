@@ -22,7 +22,7 @@ class PatternLevelScreen extends StatelessWidget {
           ),
         ],
         elevation: 0,
-        leadingWidth: 30.w,
+        // leadingWidth: 30.w,
         centerTitle: true,
         title: Text(
           "Pattern Level",
@@ -46,15 +46,15 @@ class PatternLevelScreen extends StatelessWidget {
                 Navigator.pop(context);
               },
             ),
-            IconButton(
-              onPressed: () {
-                Navigator.popUntil(context, ModalRoute.withName('/home'));
-              },
-              icon: Icon(
-                Icons.home,
-                color: Colors.white,
-              ),
-            ),
+            // IconButton(
+            //   onPressed: () {
+            //     Navigator.popUntil(context, ModalRoute.withName('/home'));
+            //   },
+            //   icon: Icon(
+            //     Icons.home,
+            //     color: Colors.white,
+            //   ),
+            // ),
           ],
         ),
       ),

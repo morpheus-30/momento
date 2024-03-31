@@ -18,7 +18,7 @@ class StartScreen extends StatelessWidget {
         .doc(user.uid)
         .get()
         .then((value) => value.get('lastDailyTriviaDone'));
-        // print(lastDailyTrivia);
+    // print(lastDailyTrivia);
     DateTime parsedDate = DateTime.parse(lastDailyTrivia);
 
     String now =
@@ -49,7 +49,10 @@ class StartScreen extends StatelessWidget {
                   // print("Pushing to daily trivia");
                   // return DailyTriviaIntro();
                   Navigator.popUntil(context, (route) => route.isFirst);
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => DailyTriviaIntro()));
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => DailyTriviaIntro()));
                 }
               });
               return HomeScreen();

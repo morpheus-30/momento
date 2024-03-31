@@ -191,17 +191,17 @@ class _PatternMatchGameScreenState extends State<PatternMatchGameScreen> {
                             Icon(
                               Icons.star,
                               size: 40.sp,
-                              color: Colors.yellow,
+                              color: score >= 100 ? Colors.yellow : Colors.grey,
                             ),
                             Icon(
                               Icons.star,
                               size: 40.sp,
-                              color: Colors.yellow,
+                              color: score >= 200 ? Colors.yellow : Colors.grey,
                             ),
                             Icon(
                               Icons.star,
                               size: 40.sp,
-                              color: Colors.grey,
+                              color: score >= 300 ? Colors.yellow : Colors.grey,
                             ),
                           ],
                         ),
@@ -216,7 +216,42 @@ class _PatternMatchGameScreenState extends State<PatternMatchGameScreen> {
                             children: [
                               IconButton(
                                 alignment: Alignment.center,
-                                onPressed: () {
+                                onPressed: () async {
+                                  await FirebaseFirestore.instance
+                                      .collection('Pattern')
+                                      .doc(FirebaseAuth
+                                          .instance.currentUser!.uid)
+                                      .collection('Scores')
+                                      .doc(DateTime.now().toString())
+                                      .set(
+                                    {
+                                      'score': score,
+                                      'Level': widget.level,
+                                    },
+                                  );
+                                  dynamic highScore = 0;
+                                  // print("Fetching HIgh Score");
+                                  await FirebaseFirestore.instance
+                                      .collection('Pattern')
+                                      .doc(FirebaseAuth
+                                          .instance.currentUser!.uid)
+                                      .get()
+                                      .then((value) {
+                                    if (value.data() != null) {
+                                      highScore = value.data()!['HighScore'];
+                                    }
+                                  });
+
+                                  if (highScore < score || highScore == 0) {
+                                    await FirebaseFirestore.instance
+                                        .collection('Pattern')
+                                        .doc(FirebaseAuth
+                                            .instance.currentUser!.uid)
+                                        .set({
+                                      'HighScore': score,
+                                    }, SetOptions(merge: true));
+                                    // print("Updating High Score");
+                                  }
                                   setState(() {
                                     score = 0;
                                     hasStartBeenPressed = false;
@@ -390,17 +425,23 @@ class _PatternMatchGameScreenState extends State<PatternMatchGameScreen> {
                                       Icon(
                                         Icons.star,
                                         size: 40.sp,
-                                        color: Colors.yellow,
+                                        color: score >= 100
+                                            ? Colors.yellow
+                                            : Colors.grey,
                                       ),
                                       Icon(
                                         Icons.star,
                                         size: 40.sp,
-                                        color: Colors.yellow,
+                                        color: score >= 200
+                                            ? Colors.yellow
+                                            : Colors.grey,
                                       ),
                                       Icon(
                                         Icons.star,
                                         size: 40.sp,
-                                        color: Colors.grey,
+                                        color: score >= 300
+                                            ? Colors.yellow
+                                            : Colors.grey,
                                       ),
                                     ],
                                   ),
@@ -416,7 +457,44 @@ class _PatternMatchGameScreenState extends State<PatternMatchGameScreen> {
                                       children: [
                                         IconButton(
                                           alignment: Alignment.center,
-                                          onPressed: () {
+                                          onPressed: () async {
+                                            await FirebaseFirestore.instance
+                                                .collection('Pattern')
+                                                .doc(FirebaseAuth
+                                                    .instance.currentUser!.uid)
+                                                .collection('Scores')
+                                                .doc(DateTime.now().toString())
+                                                .set(
+                                              {
+                                                'score': score,
+                                                'Level': widget.level,
+                                              },
+                                            );
+                                            dynamic highScore = 0;
+                                            // print("Fetching HIgh Score");
+                                            await FirebaseFirestore.instance
+                                                .collection('Pattern')
+                                                .doc(FirebaseAuth
+                                                    .instance.currentUser!.uid)
+                                                .get()
+                                                .then((value) {
+                                              if (value.data() != null) {
+                                                highScore =
+                                                    value.data()!['HighScore'];
+                                              }
+                                            });
+
+                                            if (highScore < score ||
+                                                highScore == 0) {
+                                              await FirebaseFirestore.instance
+                                                  .collection('Pattern')
+                                                  .doc(FirebaseAuth.instance
+                                                      .currentUser!.uid)
+                                                  .set({
+                                                'HighScore': score,
+                                              }, SetOptions(merge: true));
+                                              // print("Updating High Score");
+                                            }
                                             setState(() {
                                               score = 0;
                                               hasStartBeenPressed = false;
@@ -440,55 +518,57 @@ class _PatternMatchGameScreenState extends State<PatternMatchGameScreen> {
                                           padding: EdgeInsets.zero,
                                           onPressed: () async {
                                             await FirebaseFirestore.instance
-                                      .collection('Pattern')
-                                      .doc(FirebaseAuth
-                                          .instance.currentUser!.uid)
-                                      .collection('Scores')
-                                      .doc(DateTime.now().toString())
-                                      .set(
-                                    {
-                                      'score': score,
-                                      'Level': widget.level,
-                                    },
-                                  );
-                                  dynamic highScore = 0;
-                                  // print("Fetching HIgh Score");
-                                  await FirebaseFirestore.instance
-                                      .collection('Pattern')
-                                      .doc(FirebaseAuth
-                                          .instance.currentUser!.uid)
-                                      .get()
-                                      .then((value) {
-                                    if (value.data() != null) {
-                                      highScore = value.data()!['HighScore'];
-                                    }
-                                  });
+                                                .collection('Pattern')
+                                                .doc(FirebaseAuth
+                                                    .instance.currentUser!.uid)
+                                                .collection('Scores')
+                                                .doc(DateTime.now().toString())
+                                                .set(
+                                              {
+                                                'score': score,
+                                                'Level': widget.level,
+                                              },
+                                            );
+                                            dynamic highScore = 0;
+                                            // print("Fetching HIgh Score");
+                                            await FirebaseFirestore.instance
+                                                .collection('Pattern')
+                                                .doc(FirebaseAuth
+                                                    .instance.currentUser!.uid)
+                                                .get()
+                                                .then((value) {
+                                              if (value.data() != null) {
+                                                highScore =
+                                                    value.data()!['HighScore'];
+                                              }
+                                            });
 
-                                  if (highScore < score || highScore == 0) {
-                                    await FirebaseFirestore.instance
-                                        .collection('Pattern')
-                                        .doc(FirebaseAuth
-                                            .instance.currentUser!.uid)
-                                        .set({
-                                      'HighScore': score,
-                                    }, SetOptions(merge: true));
-                                    // print("Updating High Score");
-                                  }
+                                            if (highScore < score ||
+                                                highScore == 0) {
+                                              await FirebaseFirestore.instance
+                                                  .collection('Pattern')
+                                                  .doc(FirebaseAuth.instance
+                                                      .currentUser!.uid)
+                                                  .set({
+                                                'HighScore': score,
+                                              }, SetOptions(merge: true));
+                                              // print("Updating High Score");
+                                            }
 
-                                  // dynamic oldScores = await FirebaseFirestore
-                                  //     .instance
-                                  //     .collection('Pattern')
-                                  //     .doc(FirebaseAuth
-                                  //         .instance.currentUser!.uid)
-                                  //     .collection('Scores')
-                                  //     .get();
-                                  // oldScores.docs.forEach((element) {
-                                  //   print(element.data());
-                                  // });
-                                  Navigator.popUntil(
-                                      context, (route) => route.isFirst);
-                                  Navigator.pushReplacementNamed(
-                                      context, '/home');
+                                            // dynamic oldScores = await FirebaseFirestore
+                                            //     .instance
+                                            //     .collection('Pattern')
+                                            //     .doc(FirebaseAuth
+                                            //         .instance.currentUser!.uid)
+                                            //     .collection('Scores')
+                                            //     .get();
+                                            // oldScores.docs.forEach((element) {
+                                            //   print(element.data());
+                                            // });
+                                            Navigator.popUntil(context,
+                                                (route) => route.isFirst);
+                                            Navigator.pushReplacementNamed(
+                                                context, '/home');
                                           },
                                           icon: Icon(
                                             Icons.exit_to_app,
@@ -623,8 +703,7 @@ class _PatternMatchGameScreenState extends State<PatternMatchGameScreen> {
                       ),
                       onPressed: flag == false
                           ? () async {
-                              await audioPlayer
-                                  .setAsset("assets/audio/c.mpeg");
+                              await audioPlayer.setAsset("assets/audio/c.mpeg");
                               await audioPlayer.play();
                               print(1);
                               setState(() {
@@ -649,12 +728,11 @@ class _PatternMatchGameScreenState extends State<PatternMatchGameScreen> {
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.transparent,
-                        shadowColor: Colors.transparent,
+                        shadowColor: const Color.fromRGBO(0, 0, 0, 0),
                       ),
                       onPressed: flag == false
                           ? () async {
-                              await audioPlayer
-                                  .setAsset("assets/audio/d.mpeg");
+                              await audioPlayer.setAsset("assets/audio/d.mpeg");
                               await audioPlayer.play();
                               print(2);
                               setState(() {
@@ -682,10 +760,9 @@ class _PatternMatchGameScreenState extends State<PatternMatchGameScreen> {
                         shadowColor: Colors.transparent,
                       ),
                       onPressed: flag == false
-                          ? () async{
-                            await audioPlayer
-                              .setAsset("assets/audio/e.mpeg");
-                          await audioPlayer.play();
+                          ? () async {
+                              await audioPlayer.setAsset("assets/audio/e.mpeg");
+                              await audioPlayer.play();
                               print(3);
                               setState(() {
                                 container3Color = colorMap[2];
@@ -712,10 +789,9 @@ class _PatternMatchGameScreenState extends State<PatternMatchGameScreen> {
                         shadowColor: Colors.transparent,
                       ),
                       onPressed: flag == false
-                          ? ()async{
-                            await audioPlayer
-                              .setAsset("assets/audio/d.mpeg");
-                          await audioPlayer.play();
+                          ? () async {
+                              await audioPlayer.setAsset("assets/audio/d.mpeg");
+                              await audioPlayer.play();
                               print(4);
                               setState(() {
                                 container4Color = colorMap[3];

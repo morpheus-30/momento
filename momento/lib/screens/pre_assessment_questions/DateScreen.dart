@@ -33,7 +33,7 @@ class _DateScreenState extends State<DateScreen> {
                 onPressed: () {
                   Navigator.pushNamed(context, '/Help');
                 },
-                icon: Icon(
+                icon: const Icon(
                   Icons.help_outline_outlined,
                   color: Colors.white,
                 ))
@@ -100,7 +100,7 @@ class _DateScreenState extends State<DateScreen> {
                               Colors.grey[200],
                             ),
                             side: MaterialStateProperty.all(
-                              BorderSide(
+                              const BorderSide(
                                 color: Colors.black,
                                 width: 0.5,
                               ),
@@ -132,7 +132,7 @@ class _DateScreenState extends State<DateScreen> {
                               Colors.grey[200],
                             ),
                             side: MaterialStateProperty.all(
-                              BorderSide(
+                             const BorderSide(
                                 color: Colors.black,
                                 width: 0.5,
                               ),
@@ -162,7 +162,7 @@ class _DateScreenState extends State<DateScreen> {
                       "isCorrect": date == "${DateTime.now().day}/${MonthDropDownData[DateTime.now().month-1]}/${DateTime.now().year}"
                     };
 
-                    print(widget.data);
+                    // print(widget.data);
                     // print("Date: $date");
                     // print("Today's Date: ${DateTime.now().day}/${MonthDropDownData[DateTime.now().month-1]}/${DateTime.now().year}");
                     // print("isCorrect: ${date == "${DateTime.now().day}/${MonthDropDownData[DateTime.now().month-1]}/${DateTime.now().year}"}");
@@ -188,7 +188,7 @@ class _DateScreenState extends State<DateScreen> {
                       'HighScore': 0,
                     }, SetOptions(merge: true));
                     Navigator.popUntil(context, (route) => route.isFirst);
-                    print(widget.data);
+                    // print(widget.data);
                     Navigator.pushReplacement(context, MaterialPageRoute(
                       builder: (context) {
                         return ResultsScreen(
