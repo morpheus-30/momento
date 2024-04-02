@@ -17,7 +17,8 @@ import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
 class MusicPlayingScreen extends StatefulWidget {
   String level;
-  MusicPlayingScreen({required this.level});
+  String trackid;
+  MusicPlayingScreen({required this.level, required this.trackid});
 
   // const MusicPlayingScreen({super.key});
 
@@ -28,9 +29,7 @@ class MusicPlayingScreen extends StatefulWidget {
 class _MusicPlayingScreenState extends State<MusicPlayingScreen> {
   bool isRecording = false;
   Duration? duration;
-  Music music = Music(
-    trackId: "7F1yVPuJ4xRdrDvf8OL0HF",
-  );
+  late Music music;
   bool hasBeenStarted = false;
   int countdown = 0;
   List<Lyric>? lyrics = [];
@@ -76,6 +75,10 @@ class _MusicPlayingScreenState extends State<MusicPlayingScreen> {
     "Playing",
     "Right",
     "Now",
+    "In",
+    "The",
+    "App",
+    
   ];
   List blankAnswerOptions = [
     "Click",
@@ -143,6 +146,7 @@ class _MusicPlayingScreenState extends State<MusicPlayingScreen> {
       loading = true;
     });
     initSpeech();
+    music = Music(trackId: widget.trackid);
 
     final credentials = SpotifyApiCredentials(
         CustomStrings.clientId, CustomStrings.clientSecret);
@@ -266,26 +270,6 @@ class _MusicPlayingScreenState extends State<MusicPlayingScreen> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      IconButton(
-                        alignment: Alignment.center,
-                        onPressed: () async {
-                          setState(() {
-                            hasBeenStarted = false;
-                            Score = 0;
-                          });
-                          player.stop();
-                          player.seek(Duration.zero);
-                          Navigator.pop(context);
-                        },
-                        padding: EdgeInsets.zero,
-                        icon: Icon(
-                          Icons.loop,
-                          size: 40.sp,
-                        ),
-                      ),
-                      SizedBox(
-                        width: 5.w,
-                      ),
                       IconButton(
                         alignment: Alignment.center,
                         padding: EdgeInsets.zero,
@@ -966,26 +950,7 @@ class _MusicPlayingScreenState extends State<MusicPlayingScreen> {
                                             mainAxisAlignment:
                                                 MainAxisAlignment.center,
                                             children: [
-                                              IconButton(
-                                                alignment: Alignment.center,
-                                                onPressed: () async {
-                                                  setState(() {
-                                                    hasBeenStarted = false;
-                                                    Score = 0;
-                                                  });
-                                                  player.stop();
-                                                  player.seek(Duration.zero);
-                                                  Navigator.pop(context);
-                                                },
-                                                padding: EdgeInsets.zero,
-                                                icon: Icon(
-                                                  Icons.loop,
-                                                  size: 40.sp,
-                                                ),
-                                              ),
-                                              SizedBox(
-                                                width: 5.w,
-                                              ),
+                                             
                                               IconButton(
                                                 alignment: Alignment.center,
                                                 padding: EdgeInsets.zero,
@@ -1214,26 +1179,6 @@ class _MusicPlayingScreenState extends State<MusicPlayingScreen> {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                IconButton(
-                                  alignment: Alignment.center,
-                                  onPressed: () async {
-                                    setState(() {
-                                      hasBeenStarted = false;
-                                      Score = 0;
-                                    });
-                                    player.stop();
-                                    player.seek(Duration.zero);
-                                    Navigator.pop(context);
-                                  },
-                                  padding: EdgeInsets.zero,
-                                  icon: Icon(
-                                    Icons.loop,
-                                    size: 40.sp,
-                                  ),
-                                ),
-                                SizedBox(
-                                  width: 5.w,
-                                ),
                                 IconButton(
                                   alignment: Alignment.center,
                                   padding: EdgeInsets.zero,

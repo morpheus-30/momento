@@ -16,8 +16,8 @@ import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
 class MusicPlayingScreenHard extends StatefulWidget {
 
-  // String level;
-  // MusicPlayingScreenHard({required this.level});
+  String trackid;
+  MusicPlayingScreenHard({required this.trackid});
 
   // const MusicPlayingScreenHard({super.key});
 
@@ -27,9 +27,7 @@ class MusicPlayingScreenHard extends StatefulWidget {
 
 class _MusicPlayingScreenHardState extends State<MusicPlayingScreenHard> {
   Duration? duration;
-  Music music = Music(
-    trackId: "7F1yVPuJ4xRdrDvf8OL0HF",
-  );
+  late Music music ;
   bool hasBeenStarted = false;
   List<Lyric>? lyrics = [];
   double Score = 0;
@@ -63,6 +61,7 @@ class _MusicPlayingScreenHardState extends State<MusicPlayingScreenHard> {
       loading = true;
     });
     initSpeech();
+    music = Music(trackId: widget.trackid);
 
     final credentials = SpotifyApiCredentials(
         CustomStrings.clientId, CustomStrings.clientSecret);

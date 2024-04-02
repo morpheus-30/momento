@@ -12,12 +12,6 @@ class MysteryDifficultyScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         actions: [
-          // IconButton(
-          //     onPressed: () {},
-          //     icon: const Icon(
-          //       Icons.notifications,
-          //       color: Colors.white,
-          //     )),
           IconButton(
             onPressed: () {
               Navigator.pushNamed(context, '/Help');
