@@ -78,7 +78,6 @@ class _MusicPlayingScreenState extends State<MusicPlayingScreen> {
     "In",
     "The",
     "App",
-    
   ];
   List blankAnswerOptions = [
     "Click",
@@ -443,8 +442,8 @@ class _MusicPlayingScreenState extends State<MusicPlayingScreen> {
               await player.play();
               setState(() {
                 countdown = 0;
+                userBlanksAnswers.clear();
               });
-
             }
           });
 
@@ -950,7 +949,6 @@ class _MusicPlayingScreenState extends State<MusicPlayingScreen> {
                                             mainAxisAlignment:
                                                 MainAxisAlignment.center,
                                             children: [
-                                             
                                               IconButton(
                                                 alignment: Alignment.center,
                                                 padding: EdgeInsets.zero,

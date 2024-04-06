@@ -129,6 +129,70 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.0"
+  enhanced_url_launcher:
+    dependency: "direct main"
+    description:
+      name: enhanced_url_launcher
+      sha256: "20b324246a2c9f757c2e401064bc2e5ce25950b5c41f80587f4f20c737f4c196"
+      url: "https://pub.dev"
+    source: hosted
+    version: "6.1.12"
+  enhanced_url_launcher_android:
+    dependency: transitive
+    description:
+      name: enhanced_url_launcher_android
+      sha256: "14f7bb2d06e9f7d8ac2e1d4b78afc41deed58a81215b53ad346f6a9db30a2a3a"
+      url: "https://pub.dev"
+    source: hosted
+    version: "6.0.34"
+  enhanced_url_launcher_ios:
+    dependency: transitive
+    description:
+      name: enhanced_url_launcher_ios
+      sha256: "064a5d2fab4267c0064fe8c3d34bc5c56f8bb0c244f833807ac1dc79cd56e0b1"
+      url: "https://pub.dev"
+    source: hosted
+    version: "6.1.6"
+  enhanced_url_launcher_linux:
+    dependency: transitive
+    description:
+      name: enhanced_url_launcher_linux
+      sha256: "40a51297cb89b4e5f1b46602377cf400d63128e18965d83629e5e232efc17458"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.0.7"
+  enhanced_url_launcher_macos:
+    dependency: transitive
+    description:
+      name: enhanced_url_launcher_macos
+      sha256: "17c04ca22fe7be517165fb8e3a383e9839e68081b186ac6149901a4dd7d32f32"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.0.7"
+  enhanced_url_launcher_platform_interface:
+    dependency: transitive
+    description:
+      name: enhanced_url_launcher_platform_interface
+      sha256: dbf7322e0b98bbbfdef61dd874055286deda2366d58e8a9f830b67ab8f67bc9d
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.1.4"
+  enhanced_url_launcher_web:
+    dependency: transitive
+    description:
+      name: enhanced_url_launcher_web
+      sha256: "8de93ead2134b6d309d0f49e995f4f3275287a960c04510e98c6ca2ee7d5dcb4"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.18"
+  enhanced_url_launcher_windows:
+    dependency: transitive
+    description:
+      name: enhanced_url_launcher_windows
+      sha256: a05551ffe6ff5a35b630e620f06d73eef600a1fd43fb446ae41b49af37fd5035
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.0.8"
   fake_async:
     dependency: transitive
     description:
@@ -789,70 +853,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.2.2"
-  url_launcher:
-    dependency: "direct main"
-    description:
-      name: url_launcher
-      sha256: "0ecc004c62fd3ed36a2ffcbe0dd9700aee63bd7532d0b642a488b1ec310f492e"
-      url: "https://pub.dev"
-    source: hosted
-    version: "6.2.5"
-  url_launcher_android:
-    dependency: transitive
-    description:
-      name: url_launcher_android
-      sha256: d4ed0711849dd8e33eb2dd69c25db0d0d3fdc37e0a62e629fe32f57a22db2745
-      url: "https://pub.dev"
-    source: hosted
-    version: "6.3.0"
-  url_launcher_ios:
-    dependency: transitive
-    description:
-      name: url_launcher_ios
-      sha256: "9149d493b075ed740901f3ee844a38a00b33116c7c5c10d7fb27df8987fb51d5"
-      url: "https://pub.dev"
-    source: hosted
-    version: "6.2.5"
-  url_launcher_linux:
-    dependency: transitive
-    description:
-      name: url_launcher_linux
-      sha256: ab360eb661f8879369acac07b6bb3ff09d9471155357da8443fd5d3cf7363811
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.1.1"
-  url_launcher_macos:
-    dependency: transitive
-    description:
-      name: url_launcher_macos
-      sha256: b7244901ea3cf489c5335bdacda07264a6e960b1c1b1a9f91e4bc371d9e68234
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.1.0"
-  url_launcher_platform_interface:
-    dependency: transitive
-    description:
-      name: url_launcher_platform_interface
-      sha256: "552f8a1e663569be95a8190206a38187b531910283c3e982193e4f2733f01029"
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.3.2"
-  url_launcher_web:
-    dependency: transitive
-    description:
-      name: url_launcher_web
-      sha256: fff0932192afeedf63cdd50ecbb1bc825d31aed259f02bb8dba0f3b729a5e88b
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.2.3"
-  url_launcher_windows:
-    dependency: transitive
-    description:
-      name: url_launcher_windows
-      sha256: ecf9725510600aa2bb6d7ddabe16357691b6d2805f66216a97d1b881e21beff7
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.1.1"
   uuid:
     dependency: transitive
     description:
@@ -926,5 +926,5 @@ packages:
     source: hosted
     version: "8.1.2"
 sdks:
-  dart: ">=3.2.3 <4.0.0"
-  flutter: ">=3.16.6"
+  dart: ">=3.2.0 <4.0.0"
+  flutter: ">=3.16.0"

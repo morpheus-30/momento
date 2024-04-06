@@ -1,10 +1,11 @@
+import 'package:enhanced_url_launcher/enhanced_url_launcher.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:momento/constants.dart';
 import 'package:momento/widgets/buttons/loginButton.dart';
-import 'package:url_launcher/url_launcher.dart';
-import 'package:url_launcher/url_launcher_string.dart';
+// import 'package:url_launcher/url_launcher.dart';
+// import 'package:url_launcher/url_launcher_string.dart';
 
 class ResourcesLinksScreen extends StatelessWidget {
   const ResourcesLinksScreen({super.key});
@@ -42,7 +43,7 @@ class ResourcesLinksScreen extends StatelessWidget {
                 child: ListTile(
                   onTap: ()async{
                       Uri _uri = Uri.parse(data["link"]?? "google.com");
-                             await launchUrl(_uri);
+                            await launchUrl(_uri);
                   },
                   contentPadding: EdgeInsets.all(20),
                   textColor: Colors.white,

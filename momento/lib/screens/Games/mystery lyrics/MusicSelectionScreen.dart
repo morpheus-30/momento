@@ -131,7 +131,7 @@ class _MusicSelectionScreenState extends State<MusicSelectionScreen> {
                   )),
               SizedBox(height: 7.h),
               Container(
-                padding: EdgeInsets.all(30.w),
+                padding: EdgeInsets.symmetric(vertical: 30.w,horizontal: 25.w),
                 margin: EdgeInsets.only(right: 5.w, left: 5.w),
                 height: 40.h,
                 width: 100.w,
