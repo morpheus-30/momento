@@ -93,7 +93,7 @@ class GamesRecommendationScreen extends StatelessWidget {
                             MaterialPageRoute(
                                 builder: (context) => PatternLevelScreen()));
                       },
-                      text: "Pattern"),
+                      text: "Pattern Matching"),
                 ),
               ],
             ),
