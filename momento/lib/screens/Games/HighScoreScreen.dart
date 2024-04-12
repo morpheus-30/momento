@@ -128,13 +128,13 @@ class _HighScoreScreenState extends State<HighScoreScreen> {
                   ),
                   SizedBox(height: 4.h),
                   ScoreWidget(
-                    gameName: "Pattern",
+                    gameName: "Pattern Matching",
                     score: patternGameScore,
                     color: Colors.blue[500]!,
                   ),
                   SizedBox(height: 2.h),
                   ScoreWidget(
-                    gameName: "MysteryLyrics",
+                    gameName: "Mystery Lyrics",
                     score: mysteryLyricsScore,
                     color: Colors.green[900]!,
                   ),
@@ -198,7 +198,7 @@ class _HighScoreScreenState extends State<HighScoreScreen> {
                                   ),
                                 );
                               },
-                              text: "Pattern Game",
+                              text: "Pattern Matching",
                             ),
                             SizedBox(height: 2.h),
                             LoginButton(

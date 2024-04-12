@@ -134,17 +134,14 @@ class _MusicPlayingScreenState extends State<MusicPlayingScreen> {
     // }
   }
 
-  void initSpeech() async {
-    // _speechEabled = await _speechToText.initialize();
-    setState(() {});
-  }
+
 
   @override
   void initState() {
     setState(() {
       loading = true;
     });
-    initSpeech();
+    // initSpeech();
     music = Music(trackId: widget.trackid);
 
     final credentials = SpotifyApiCredentials(

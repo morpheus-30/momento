@@ -25,7 +25,7 @@ class PatternLevelScreen extends StatelessWidget {
         // leadingWidth: 30.w,
         centerTitle: true,
         title: Text(
-          "Pattern Level",
+          "Pattern Matching",
           textAlign: TextAlign.center,
           style: TextStyle(
             color: Colors.white,

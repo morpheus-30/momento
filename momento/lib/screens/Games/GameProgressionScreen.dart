@@ -84,14 +84,16 @@ class _ProgressionScreenState extends State<ProgressionScreen> {
       30
     ];
     List<double> scores = [];
-
+    int zerocount = 0;
     for (int i = 0; i < dates.length; i++) {
       if (dateToScore.containsKey(dates[i])) {
         scores.add(dateToScore[dates[i]]!.toDouble() / 1000);
       } else {
         scores.add(0);
+        zerocount++;
       }
     }
+
 
     // print("myscires");
     // print(scores);
@@ -139,9 +141,6 @@ class _ProgressionScreenState extends State<ProgressionScreen> {
                     "600",
                     "800",
                     "1000",
-                    "2000",
-                    "3000",
-                    "4000"
                   ],
                 ),
                 SizedBox(height: 5.h),
@@ -157,7 +156,7 @@ class _ProgressionScreenState extends State<ProgressionScreen> {
                 ),
                 SizedBox(height: 1.h),
                 Text(
-                  "Result shows a decrease in activity",
+                  zerocount>20?"Result shows a decrease in activity":"Result shows a steady activity",
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 12.sp,

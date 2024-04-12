@@ -117,8 +117,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   "Edit Profile",
-                  "Profile Overview",
-                  "Music Preferences",
+                  "Doctors"
                 ].map((e) {
                   return Container(
                     margin: EdgeInsets.only(bottom: 3.h),

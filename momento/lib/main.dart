@@ -11,6 +11,7 @@ import 'package:momento/screens/LoginScreen.dart';
 import 'package:momento/screens/PreAssessmentScreen.dart';
 import 'package:momento/screens/Profile/ProfileScreen.dart';
 import 'package:momento/screens/Resources/LinkResourcesScreen.dart';
+import 'package:momento/screens/Resources/PhysicianScreen.dart';
 import 'package:momento/screens/SignUpScreen.dart';
 import 'package:momento/screens/StartScreen.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -41,20 +42,21 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       routes: {
-        '/': (_) => StartScreen(),
+        '/': (_) => const StartScreen(),
         '/singup': (_) => SignUpScreen(),
         '/login': (_) => LoginScreen(),
-        '/preAssessment': (_) => PreAssessmentScreen(),
+        '/preAssessment': (_) => const PreAssessmentScreen(),
         '/home': (_) => HomeScreen(),
         '/Profile': (_) => ProfileScreen(),
         '/Edit Profile': (_) => EditProfile(),
-        '/Games': (_) => GamesRecommendationScreen(),
+        '/Games': (_) => const GamesRecommendationScreen(),
         '/Help': (_) => HelpScreen(),
-        '/Music Preferences': (_) => MusicPreferencesScreen(),
-        '/Resources': (_) => ResourcesLinksScreen(),
+        '/Music Preferences': (_) => const MusicPreferencesScreen(),
+        '/Resources': (_) => const ResourcesLinksScreen(),
         '/Progression': (_) => HighScoreScreen(),
-        '/mysteryLyricsHelp': (_) => MysteryLyricHelpScreen(),
-        '/patternHelp': (_) => PatternHelp(),
+        '/mysteryLyricsHelp': (_) => const MysteryLyricHelpScreen(),
+        '/patternHelp': (_) => const PatternHelp(),
+        '/Doctors': (_) => const PhysicianScreen(),
       },
     );
   }
