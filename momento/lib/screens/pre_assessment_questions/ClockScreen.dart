@@ -9,7 +9,7 @@ import 'package:momento/constants.dart';
 import 'package:momento/screens/pre_assessment_questions/ListenAndSpell.dart';
 import 'package:momento/widgets/buttons/signUpButton.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:screenshot/screenshot.dart';
+// import 'package:screenshot/screenshot.dart';
 import 'package:sizer/sizer.dart';
 import 'DrawingBoard.dart';
 
@@ -21,9 +21,9 @@ class ClockScreen extends StatefulWidget {
 class _ClockScreenState extends State<ClockScreen> {
   Uint8List? image;
   String imageurl = "";
-  ScreenshotController screenshotController = ScreenshotController();
+  // ScreenshotController screenshotController = ScreenshotController();
   uploadImage() async {
-    image = await screenshotController.capture();
+    // image = await screenshotController.capture();
     final tempDir = await getTemporaryDirectory();
     File imageFile = await File('${tempDir.path}/image.png').create();
     imageFile.writeAsBytesSync(image!);
@@ -101,19 +101,19 @@ class _ClockScreenState extends State<ClockScreen> {
                   ),
                 ),
                 Container(
-                  decoration: BoxDecoration(
-                      border: Border.all(
-                    style: BorderStyle.solid,
-                    color: brown2,
-                    width: 8,
-                  )),
-                  height: 90.w,
-                  width: 90.w,
-                  child: Screenshot(
-                    child: DrawingBoard(),
-                    controller: screenshotController,
-                  ),
-                ),
+                    decoration: BoxDecoration(
+                        border: Border.all(
+                      style: BorderStyle.solid,
+                      color: brown2,
+                      width: 8,
+                    )),
+                    height: 90.w,
+                    width: 90.w,
+                    // child: Screenshot(
+                    //   child: DrawingBoard(),
+                    //   // controller: screenshotController,
+                    // ),
+                    child: DrawingBoard()),
                 SizedBox(
                   width: 80.w,
                   child: SignUpButton(
